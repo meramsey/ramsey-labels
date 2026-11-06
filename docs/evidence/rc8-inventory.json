@@ -1,0 +1,85 @@
+{
+  "archive_sha256": "b62a94518299b891cb125590df96f8f4830f4e552a659eb9c7935f54769a01ef",
+  "files": [
+    {
+      "path": "ramsey-labels-independent/README.txt",
+      "bytes": 3339,
+      "sha256": "5113ba34e25c1cd660aecebc4ada17e803a99030faf3d5f18a64e13738cd1426"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/app.css",
+      "bytes": 2897,
+      "sha256": "d02bb34decd18de22f56fc7f6c7bea81e978032b23bf7107ba5d4001788b4124"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/app.js",
+      "bytes": 20468,
+      "sha256": "d4439883540eb315c239659f18976b5b9501e92d524b1bd4f74c3aaa9485afcb"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/barcodes.js",
+      "bytes": 21676,
+      "sha256": "5ad94f106a8acee62185028113990dd39df132873ef2ead71cce063bb788c971"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/core.js",
+      "bytes": 18980,
+      "sha256": "011face07acb6f5693293b0d0f278025635b693608d62b11f9069b4f22003653"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/defaults.json",
+      "bytes": 24993,
+      "sha256": "733e1aec4da63131035f741e3b2d70f7df24af8f2ba51010511a351a6d280dfd"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/integrations.js",
+      "bytes": 788,
+      "sha256": "c0a077960662e783c7e729e8d55d32feed31709bb9a74675f7226ad0d73ff2fc"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/render.js",
+      "bytes": 24021,
+      "sha256": "f2c7f9ebfc92ea561c74f80a22337c87df6cb1231e4c063ef31164232422d1e6"
+    },
+    {
+      "path": "ramsey-labels-independent/assets/symbol-tables.js",
+      "bytes": 5471,
+      "sha256": "42d42bd482ffd5d8d8ffb179bf9729f81c1eafeba388a8f78c38d884c9519115"
+    },
+    {
+      "path": "ramsey-labels-independent/includes/Data.php",
+      "bytes": 26794,
+      "sha256": "f71654cb16d391d3f7dc8c9625aaa1c58c6896cffad3acb2225555e141f700cf"
+    },
+    {
+      "path": "ramsey-labels-independent/includes/Migration.php",
+      "bytes": 13917,
+      "sha256": "a9e04866f65ce58083ae9eb68e8b9cfe3cb49f88536dfe4de36a9ac2fcf2198b"
+    },
+    {
+      "path": "ramsey-labels-independent/includes/Plugin.php",
+      "bytes": 15381,
+      "sha256": "1d01488c195084347092ff6f143491c286f176c6b9af79ea5ca145b2eb85ffeb"
+    },
+    {
+      "path": "ramsey-labels-independent/includes/Schema.php",
+      "bytes": 13297,
+      "sha256": "35524045cd54b1b56731fdf337e625bc9a5bbc84db0e64bca2a317930349a557"
+    },
+    {
+      "path": "ramsey-labels-independent/includes/Store.php",
+      "bytes": 6945,
+      "sha256": "0ddf1f78b366d52ec793aa094df6215de1e5a260d5a3e0a67bd4bd926691f61f"
+    },
+    {
+      "path": "ramsey-labels-independent/ramsey-labels-independent.php",
+      "bytes": 938,
+      "sha256": "958633f824a78852db8c43078beed33aa3e6033a2f886607e6eb152e1eae4276"
+    },
+    {
+      "path": "ramsey-labels-independent/uninstall.php",
+      "bytes": 583,
+      "sha256": "5a62d58b1f3c733c330efbdafbf5d67d8be45e87c102099730a4a43ee0dccd2e"
+    }
+  ]
+}

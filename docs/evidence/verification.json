@@ -1,0 +1,109 @@
+{
+  "status": "PARTIAL: not approved for publication",
+  "generated_utc": "2026-11-06T03:15:30.841958+00:00",
+  "source_checkpoint": "0a95b8e6fc15ac45ba1a2f002a2f5093395c157f",
+  "artifact": {
+    "version": "1.0.0-rc.9",
+    "commit": "0a95b8e6fc15ac45ba1a2f002a2f5093395c157f",
+    "archive": "ramsey-labels-independent-1.0.0-rc.9.zip",
+    "sha256": "8c369220c6a15286ae38ac1b4f5f3097a3f44b70562169b822d7beef7ae7afdd",
+    "files": {
+      "LICENSE": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "assets/app.css": "6d960c47c8be640ef6eea0f13ae471ac63208d7411dd11e37f618b092437b443",
+      "assets/app.js": "67c5472fe97b148be431c914109d528aa35b6474095db836104cf8df425ec6cd",
+      "assets/barcodes.js": "70441bec012b4fe03648100188f5611a0c1cbe36635096267292f2a3cd7d6880",
+      "assets/core.js": "b9a7e99478fde09518fabaaf4efabfdfef8f35f31b6a0def306391f6bfeb8a89",
+      "assets/defaults.json": "b9e2c36672886099abc30912391224dcb08d0cc31154b2847ff10149ab886550",
+      "assets/integrations.js": "dffd752603c0bff38c6010ee4cec276ba4ccefdd2ac54a4949b27997c6e94771",
+      "assets/render.js": "7acdc9c5bc4323b6c651245252cdc96c2e7849aa44ce6122f50168230ae0be51",
+      "assets/symbol-tables.js": "20da96998b9f4bae53e252d6c4007d5ccde40e6bafd4deab1de3126d7f04199b",
+      "includes/Data.php": "edc7dcd2926aa323fa2ab56c9de797a18a606b03904d4df64672d3c55065802e",
+      "includes/Migration.php": "362e5c3566ee321ea5321fcaff58218142c4dfe829c72ce067251b91bd638902",
+      "includes/Plugin.php": "1e043c067d676e60fbbb2dd2edda54e171fdfe87546aa973ef041d1c61b4df28",
+      "includes/Schema.php": "2ea082cef59cf2da5e77fb967c10dcdbe4626ea2767339ac284c56e722fc94e7",
+      "includes/Store.php": "ce9df41beb95936ead6cddac3d7b1180cbe57803d7fd71ce201b83581dd846ac",
+      "ramsey-labels-independent.php": "5a6d09fabf46a580bff839658fa5d685cea721ed9dec838d12b6d4cff9e23282",
+      "readme.txt": "b6936b371b2bb497ffc70ef4f26f3f693d82dadc7bb5d23a5c1e1dc9e79ca368",
+      "uninstall.php": "f610747837b29decbf4828b0963829267e5ea25923d836a46ae136b02f1b7b57"
+    }
+  },
+  "unit": {
+    "php_tests": 15,
+    "php_assertions": 20,
+    "javascript_tests": 18,
+    "barcode_formats_independently_decoded": 8
+  },
+  "phpunit_runtimes": [
+    "7.4.32",
+    "8.3.36",
+    "8.5.12"
+  ],
+  "web_container_php_versions": {
+    "oldest": "PHP 7.4.32 (cli) (built: Oct 25 2022 15:26:55) ( NTS )",
+    "php83": "PHP 8.3.36 (cli) (built: Nov  5 2026 07:26:44) (NTS)",
+    "php85": "PHP 8.5.12 (cli) (built: Nov  5 2026 07:20:51) (NTS)"
+  },
+  "integration": {
+    "wp_7_1_4_php_8_3_wc_11_2_2_legacy": 80,
+    "wp_7_1_4_php_8_3_wc_11_2_2_hpos": 80,
+    "wp_6_0_3_php_7_4_33_wc_7_0_1_legacy": 79,
+    "wp_7_1_4_php_8_5_wc_11_2_2_legacy": 80,
+    "wp_7_1_4_php_8_5_wc_11_2_2_hpos": 80,
+    "installed_final_zip_clean_wp_7_1_4_php_8_3_wc_11_2_2_legacy": 80
+  },
+  "browser": {
+    "php83_passed": 10,
+    "oldest_passed": 10,
+    "php85_passed": 10,
+    "installed_final_zip_passed": 10,
+    "retries": 0,
+    "physical_printing": false
+  },
+  "upgrade": "Genuine archived RC8 process -> RC9 exact saved library equality on PHP 7.4, 8.3 and 8.5 combinations",
+  "lifecycle": "Activation/deactivation exact library preservation; missing WooCommerce no fatal + notice; default uninstall retention and explicit single-site purge",
+  "pdf": [
+    "PASS: Poppler verifies 5 pages, 50.8 x 25.4 mm media, and independently rasterized PDF QR decodes exact RRA-726474",
+    "PASS: Poppler verifies 131 sheet labels occupy 3 A4 pages"
+  ],
+  "plugin_check": {
+    "version": "2.1.0",
+    "errors": 0,
+    "warnings": 38,
+    "scope": "Installed allowlisted production ZIP, independent clean local site",
+    "detail": "plugin-check.json"
+  },
+  "wpcs": {
+    "status": "FAIL: release blocking, no suppressed baseline",
+    "totals": {
+      "errors": 191,
+      "warnings": 50,
+      "fixable": 6
+    },
+    "detail": "wpcs.json"
+  },
+  "phpstan": {
+    "level": 5,
+    "errors": 0
+  },
+  "javascript_standards": "ESLint and Prettier pass",
+  "dependency_audit": {
+    "npm_findings": 0,
+    "composer_advisories": 0,
+    "abandoned_php_packages": 0
+  },
+  "licenses": [
+    "PASS: license metadata allowlist for 88 npm and 36 Composer development packages",
+    "Runtime dependencies: none; RC8 provenance still requires owner attestation (docs/provenance.md)."
+  ],
+  "secret_scan": "Gitleaks full committed history: no leaks found; artifact allowlist private-path/key scan passed",
+  "ci": "Actionlint passed locally; workflows not run on GitHub and nothing pushed",
+  "pending": [
+    "Full WPCS compliance and warning triage",
+    "Slug/basename/text-domain migration decision",
+    "Owner RC8 provenance/licensing attestation",
+    "Complete internationalization/accessibility/RTL/cross-browser coverage",
+    "Multisite purge, resource/race/fuzz/privacy acceptance",
+    "Physical printer/scanner and live WCPOS acceptance",
+    "Owner branding/contact/publication approvals"
+  ]
+}

@@ -1,0 +1,344 @@
+[
+  {
+    "line": 67,
+    "column": 38,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 67,
+    "column": 57,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 76,
+    "column": 18,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 77,
+    "column": 40,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 84,
+    "column": 18,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 84,
+    "column": 49,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 85,
+    "column": 52,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 85,
+    "column": 73,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 85,
+    "column": 73,
+    "type": "WARNING",
+    "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+    "message": "Detected usage of a non-sanitized input variable: $_GET[&#039;rli_ids&#039;]",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 85,
+    "column": 92,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 85,
+    "column": 92,
+    "type": "WARNING",
+    "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+    "message": "Detected usage of a non-sanitized input variable: $_GET[&#039;rli_id&#039;]",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 86,
+    "column": 45,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 86,
+    "column": 95,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 88,
+    "column": 18,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 89,
+    "column": 47,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 89,
+    "column": 47,
+    "type": "WARNING",
+    "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+    "message": "Detected usage of a non-sanitized input variable: $_GET[&#039;rli_item_ids&#039;]",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 90,
+    "column": 18,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 91,
+    "column": 49,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 91,
+    "column": 49,
+    "type": "WARNING",
+    "code": "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized",
+    "message": "Detected usage of a non-sanitized input variable: $_GET[&#039;rli_categories&#039;]",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 144,
+    "column": 17,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 144,
+    "column": 36,
+    "type": "WARNING",
+    "code": "WordPress.Security.NonceVerification.Recommended",
+    "message": "Processing form data without nonce verification.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 167,
+    "column": 8,
+    "type": "WARNING",
+    "code": "WordPress.PHP.DevelopmentFunctions.error_log_error_log",
+    "message": "error_log() found. Debug code should not normally be used in production.",
+    "docs": "",
+    "file": "includes/Plugin.php"
+  },
+  {
+    "line": 16,
+    "column": 16,
+    "type": "WARNING",
+    "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+    "message": "Use of a direct database call is discouraged.",
+    "docs": "",
+    "file": "includes/Migration.php"
+  },
+  {
+    "line": 16,
+    "column": 16,
+    "type": "WARNING",
+    "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+    "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+    "docs": "",
+    "file": "includes/Migration.php"
+  },
+  {
+    "line": 23,
+    "column": 25,
+    "type": "WARNING",
+    "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+    "message": "Use of a direct database call is discouraged.",
+    "docs": "",
+    "file": "includes/Migration.php"
+  },
+  {
+    "line": 23,
+    "column": 25,
+    "type": "WARNING",
+    "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+    "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+    "docs": "",
+    "file": "includes/Migration.php"
+  },
+  {
+    "line": 23,
+    "column": 26,
+    "type": "WARNING",
+    "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+    "message": "Unescaped parameter $table used in $wpdb-&gt;get_results()\\n$table assigned unsafely at line 21.",
+    "docs": "",
+    "file": "includes/Migration.php"
+  },
+  {
+    "line": 23,
+    "column": 39,
+    "type": "WARNING",
+    "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+    "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at &quot;SELECT * FROM `{$table}` LIMIT 1000&quot;",
+    "docs": "",
+    "file": "includes/Migration.php"
+  },
+  {
+    "line": 114,
+    "column": 24,
+    "type": "WARNING",
+    "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+    "message": "Use of a direct database call is discouraged.",
+    "docs": "",
+    "file": "includes/Store.php"
+  },
+  {
+    "line": 144,
+    "column": 19,
+    "type": "WARNING",
+    "code": "WordPress.DB.SlowDBQuery.slow_db_query_tax_query",
+    "message": "Detected usage of tax_query, possible slow query.",
+    "docs": "",
+    "file": "includes/Data.php"
+  },
+  {
+    "line": 155,
+    "column": 19,
+    "type": "WARNING",
+    "code": "WordPress.DB.SlowDBQuery.slow_db_query_meta_query",
+    "message": "Detected usage of meta_query, possible slow query.",
+    "docs": "",
+    "file": "includes/Data.php"
+  },
+  {
+    "line": 332,
+    "column": 70,
+    "type": "WARNING",
+    "code": "WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound",
+    "message": "Hook names invoked by a theme/plugin should start with the theme/plugin prefix. Found: &quot;rli_field_value&quot;.",
+    "docs": "",
+    "file": "includes/Data.php"
+  },
+  {
+    "line": 372,
+    "column": 62,
+    "type": "WARNING",
+    "code": "WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound",
+    "message": "Hook names invoked by a theme/plugin should start with the theme/plugin prefix. Found: &quot;rli_field_value&quot;.",
+    "docs": "",
+    "file": "includes/Data.php"
+  },
+  {
+    "line": 479,
+    "column": 74,
+    "type": "WARNING",
+    "code": "WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound",
+    "message": "Hook names invoked by a theme/plugin should start with the theme/plugin prefix. Found: &quot;rli_field_value&quot;.",
+    "docs": "",
+    "file": "includes/Data.php"
+  },
+  {
+    "line": 594,
+    "column": 35,
+    "type": "WARNING",
+    "code": "WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound",
+    "message": "Hook names invoked by a theme/plugin should start with the theme/plugin prefix. Found: &quot;rli_records&quot;.",
+    "docs": "",
+    "file": "includes/Data.php"
+  },
+  {
+    "line": 7,
+    "column": 1,
+    "type": "WARNING",
+    "code": "WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound",
+    "message": "Global variables defined by a theme/plugin should start with the theme/plugin prefix. Found: &quot;$cleanup&quot;.",
+    "docs": "",
+    "file": "uninstall.php"
+  },
+  {
+    "line": 18,
+    "column": 10,
+    "type": "WARNING",
+    "code": "WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound",
+    "message": "Global variables defined by a theme/plugin should start with the theme/plugin prefix. Found: &quot;$site_id&quot;.",
+    "docs": "",
+    "file": "uninstall.php"
+  },
+  {
+    "line": 20,
+    "column": 72,
+    "type": "WARNING",
+    "code": "WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound",
+    "message": "Global variables defined by a theme/plugin should start with the theme/plugin prefix. Found: &quot;$rli_class&quot;.",
+    "docs": "",
+    "file": "ramsey-labels-independent.php"
+  }
+]
