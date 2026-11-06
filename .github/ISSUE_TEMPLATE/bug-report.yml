@@ -1,0 +1,17 @@
+name: Bug report
+description: Report a reproducible problem using synthetic data only.
+body:
+  - type: markdown
+    attributes:
+      value: Do not post vulnerabilities, credentials, private URLs or customer/order exports. See SECURITY.md.
+  - type: textarea
+    id: versions
+    attributes: {label: Plugin / WordPress / PHP / WooCommerce / browser versions}
+    validations: {required: true}
+  - type: textarea
+    id: reproduction
+    attributes: {label: Synthetic reproduction steps and expected/actual result}
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: Redacted evidence and failing test command}

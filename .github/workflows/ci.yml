@@ -1,0 +1,118 @@
+name: Quality and release gates
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts
+      - run: npm run lint
+      - run: npm test
+      - run: npm audit --audit-level=low
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false}
+      - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 install --no-interaction --prefer-dist
+      - name: Syntax, PHPUnit and static analysis
+        run: |
+          docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 sh -ec 'for file in includes/*.php ramsey-labels-independent.php uninstall.php; do php -l "$file"; done; vendor/bin/phpunit --do-not-cache-result; vendor/bin/phpstan analyse --memory-limit=1G'
+      - name: Full WordPress Coding Standards (blocking, no baseline)
+        run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 vendor/bin/phpcs
+      - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 audit
+  integration-browser-package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - php: '8.3'
+            wordpress-image: wordpress:7.1.4-php8.3-apache
+            cli-image: wordpress:cli-2.12.0-php8.3
+          - php: '8.5'
+            wordpress-image: wordpress:7.1.4-php8.5-apache@sha256:63f89c89eeba29421a2660ccc87be392e6d72148724d92fa3d0756e9700786b9
+            cli-image: wordpress:cli-php8.5@sha256:a290226b2645cbd4aaad47abcaf72864656117b4d4f06d6789615464f58d2a50
+    env:
+      WP_IMAGE: ${{ matrix.wordpress-image }}
+      CLI_IMAGE: ${{ matrix.cli-image }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: docker compose up -d --wait wordpress
+      - run: bash bin/setup-test-site.sh
+      - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 install --no-interaction --prefer-dist
+      - run: docker compose exec -T -w /var/www/html/wp-content/plugins/ramsey-labels-independent wordpress php vendor/bin/phpunit --do-not-cache-result
+      - run: bash bin/integration.sh
+      - name: Legacy order storage
+        run: |
+          docker compose run --rm cli wp option update woocommerce_custom_orders_table_enabled no
+          bash bin/integration.sh
+      - name: HPOS order storage
+        run: |
+          docker compose run --rm cli wp option update woocommerce_custom_orders_table_enabled yes
+          bash bin/integration.sh
+      - run: bash bin/upgrade-test.sh
+      - run: bash bin/lifecycle-test.sh
+      - run: CHROME_PATH="$(node -e "process.stdout.write(require('@playwright/test').chromium.executablePath())")" npm run test:e2e
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y poppler-utils
+      - run: node bin/check-pdf.cjs
+      - name: Reproducible allowlisted release candidate
+        run: |
+          python3 bin/build.py
+          cp build/*.zip.sha256 build/first.sha256
+          python3 bin/build.py
+          cmp build/first.sha256 build/*.zip.sha256
+      - name: Check packaged production files, not developer tree
+        run: bash bin/check-package.sh
+      - if: always()
+        run: docker compose stop
+  oldest-supported:
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_PROJECT_NAME: ramsey-labels-oldest-test
+      WP_IMAGE: wordpress:6.0-php7.4-apache
+      CLI_IMAGE: wordpress:cli-2.7.1-php7.4
+      TEST_PORT: '18886'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: docker compose up -d --wait wordpress
+      - run: docker compose run --rm cli wp core install --url=http://127.0.0.1:18886 --title='Synthetic Labels Test' --admin_user=labels_admin --admin_password=local-test-only-password --admin_email=labels@example.test --skip-email
+      - run: docker compose run --rm cli wp plugin install woocommerce --version=7.0.1 --activate
+      - run: docker compose run --rm cli wp plugin activate ramsey-labels-independent
+      - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 install --no-interaction --prefer-dist
+      - run: docker compose exec -T -w /var/www/html/wp-content/plugins/ramsey-labels-independent wordpress php vendor/bin/phpunit --do-not-cache-result
+      - run: bash bin/integration.sh
+      - run: bash bin/upgrade-test.sh
+      - run: CHROME_PATH="$(node -e "process.stdout.write(require('@playwright/test').chromium.executablePath())")" npm run test:e2e
+      - if: always()
+        run: docker compose stop
+  security-license:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {fetch-depth: 0, persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts
+      - run: python3 bin/check-licenses.py
+      - name: Scan all recoverable history for secrets
+        run: docker run --rm -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks@sha256:691af3c7c5a48b16f187ce3446d5f194838f91238f27270ed36eef6359a574d9 git /repo --redact --no-banner

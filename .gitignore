@@ -1,0 +1,8 @@
+/node_modules/
+/vendor/
+/build/
+/test-results/
+/playwright-report/
+/.phpunit.cache/
+/.phpunit.result.cache
+/.env

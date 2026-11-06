@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset name="Ramsey Labels">
+    <description>Full WordPress standards; findings remain release gates.</description>
+    <file>ramsey-labels-independent.php</file><file>uninstall.php</file><file>includes</file>
+    <arg name="extensions" value="php"/>
+    <rule ref="WordPress"/>
+    <config name="testVersion" value="7.4-"/>
+</ruleset>

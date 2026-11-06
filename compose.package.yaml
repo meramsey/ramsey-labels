@@ -1,0 +1,35 @@
+name: ramsey-labels-package-test
+services:
+  db:
+    image: mariadb:11.4.5
+    environment:
+      MARIADB_ROOT_PASSWORD: synthetic-local-only
+      MARIADB_DATABASE: labels_package
+      MARIADB_USER: labels_test
+      MARIADB_PASSWORD: synthetic-local-only
+    volumes: ["package_database:/var/lib/mysql"]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      retries: 40
+  wordpress:
+    image: wordpress:7.1.4-php8.3-apache
+    ports: ["127.0.0.1:18887:80"]
+    environment: &package_env
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: labels_package
+      WORDPRESS_DB_USER: labels_test
+      WORDPRESS_DB_PASSWORD: synthetic-local-only
+      WORDPRESS_CONFIG_EXTRA: "define('WP_ENVIRONMENT_TYPE', 'local');"
+    volumes: ["package_wordpress:/var/www/html"]
+    depends_on:
+      db: {condition: service_healthy}
+  cli:
+    image: wordpress:cli-2.12.0-php8.3
+    user: "33:33"
+    environment: *package_env
+    volumes: ["package_wordpress:/var/www/html", "./:/evidence:ro"]
+    profiles: [tools]
+volumes:
+  package_database:
+  package_wordpress:
