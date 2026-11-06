@@ -1,0 +1,18 @@
+# Informational exclusions. bin/build.py's exact allowlist is authoritative.
+/.git
+/.github
+/node_modules
+/vendor
+/tests
+/bin
+/docs
+/build
+/test-results
+/playwright-report
+*.zip
+composer.*
+package*.json
+*.xml*
+*.neon
+*.yaml
+.*

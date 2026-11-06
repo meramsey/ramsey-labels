@@ -1,0 +1,10 @@
+name: Feature request
+description: Describe the printing problem before suggesting an implementation.
+body:
+  - type: textarea
+    id: problem
+    attributes: {label: Problem and synthetic example}
+    validations: {required: true}
+  - type: textarea
+    id: compatibility
+    attributes: {label: Compatibility, privacy and migration considerations}

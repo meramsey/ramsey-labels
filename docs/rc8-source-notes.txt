@@ -1,3 +1,4 @@
+ARCHIVAL RC8 NOTES — not current feature/test claims
 Ramsey Labels Independent — test build 1.0.0-rc.1
 ================================================
 Independent WooCommerce label editor and print engine.
