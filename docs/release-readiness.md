@@ -28,9 +28,39 @@ instances use separately named local Docker networks/volumes and loopback ports.
 - ESLint/Prettier, PHPStan level 5, dependency audit and license metadata checks run locally.
 - GitHub workflows are SHA-pinned, read-only, validated locally and not executed remotely.
 
-Exact counts, hashes, scanner results and remaining standard diagnostics are recorded in
-`docs/evidence/verification.json` once final verification is generated. Raw local outputs,
+## Final local results (2026-11-06 UTC)
+
+| Gate | Actual result |
+|---|---|
+| PHP unit | 15 tests / 20 assertions pass on PHP 7.4.32, 8.3.36 and 8.5.12 |
+| JS unit / independent decoder | 18 tests pass; all 8 advertised formats independently decoded |
+| WordPress integration | 80 + 80 assertions on PHP 8.3 legacy/HPOS; 79 on oldest; 80 + 80 on PHP 8.5 legacy/HPOS |
+| Installed final ZIP integration | Another 80 assertions pass in a fresh independent WordPress installation |
+| Browser E2E | 10 scenarios pass in each of 4 environments (40 executions, no retries/skips) |
+| Genuine RC8 upgrade | Full custom library/profile/default/template/DPI equality on PHP 7.4, 8.3 and 8.5 |
+| PDF | Exact thermal media, 5-page count, independently rasterized SKU QR; 131 sheet labels / 3 A4 pages |
+| PHP syntax / static | All 7 runtime PHP files pass syntax; PHPStan level 5 has 0 errors |
+| JavaScript standards | ESLint / Prettier pass |
+| Packaged Plugin Check 2.1.0 | 0 errors, 38 warnings requiring review |
+| Full WPCS | **FAIL: 191 errors and 50 warnings**; release remains blocked |
+| Dependency / secret scans | npm: 0; Composer advisories: 0; full-history Gitleaks: no leaks found |
+| Development licenses | Approved metadata for 88 npm and 36 Composer packages; RC8 owner attestation still pending |
+| CI definitions | Actionlint passes locally; GitHub execution not authorized/performed |
+
+The final ZIP contains 17 allowlisted files and no tests, developer packages, CI scripts,
+original archive, Git metadata, private paths or test artifacts. Two builds were byte-identical.
+All installed files were independently hash-compared to the archive manifest before the
+installed-package integration and browser suites were run.
+
+Artifact: `build/ramsey-labels-independent-1.0.0-rc.9.zip`
+
+SHA-256: `8c369220c6a15286ae38ac1b4f5f3097a3f44b70562169b822d7beef7ae7afdd`
+
+Exact counts, file hashes, scanner results and remaining standard diagnostics are recorded in
+`docs/evidence/verification.json`. Raw local outputs,
 PDFs, rasters and screenshots remain in `build/`; they are excluded from the release ZIP.
+The recorded source checkpoint identifies the frozen runtime files. The subsequent audit
+commit adds reporting/evidence only; rebuilding it produces the same ZIP bytes.
 
 ## Blocking / incomplete
 

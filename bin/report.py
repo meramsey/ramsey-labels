@@ -32,11 +32,15 @@ assert 'PASS: activation' in text('lifecycle.txt') and 'PASS: missing WooCommerc
 assert 'PASS: RC8-to-RC9 full saved library exact equality' in text('upgrade.txt')
 assert 'PASS: RC8-to-RC9 full saved library exact equality' in text('oldest-upgrade.txt')
 assert 'PASS: RC8-to-RC9 full saved library exact equality' in text('php85-upgrade.txt')
+assert 'PASS: all 17 installed files match final ZIP manifest' in text('package-file-integrity.txt')
 pcp=[]
+pcp_file=''
 for line in text('package-plugin-check.txt').splitlines():
-    if line.startswith('['):pcp.extend(json.loads(line))
+    if line.startswith('FILE: '):pcp_file=line[6:]
+    if line.startswith('['):pcp.extend(dict(finding,file=pcp_file) for finding in json.loads(line))
 pcp_counts=collections.Counter(x['type'] for x in pcp)
 assert pcp_counts['ERROR']==0
+(out/'plugin-check.json').write_text(json.dumps(pcp,indent=2)+'\n')
 wpcs=json.loads(text('phpcs-detail.json'))
 sanitized_wpcs={'totals':wpcs['totals'],'files':{name.split('/app/')[-1]:file for name,file in wpcs['files'].items()}}
 (out/'wpcs.json').write_text(json.dumps(sanitized_wpcs,indent=2)+'\n')
@@ -63,12 +67,13 @@ data={
         'wp_7_1_4_php_8_3_wc_11_2_2_hpos':passed_count('integration-hpos.txt',r'Integration assertions: (\d+)'),
         'wp_6_0_3_php_7_4_33_wc_7_0_1_legacy':passed_count('oldest-integration.txt',r'Integration assertions: (\d+)'),
         'wp_7_1_4_php_8_5_wc_11_2_2_legacy':passed_count('php85-integration-legacy.txt',r'Integration assertions: (\d+)'),
-        'wp_7_1_4_php_8_5_wc_11_2_2_hpos':passed_count('php85-integration-hpos.txt',r'Integration assertions: (\d+)')},
-    'browser':{'php83_passed':passed_count('e2e.txt',r'(\d+) passed'),'oldest_passed':passed_count('oldest-e2e.txt',r'(\d+) passed'),'php85_passed':passed_count('php85-e2e.txt',r'(\d+) passed'),'retries':0,'physical_printing':False},
+        'wp_7_1_4_php_8_5_wc_11_2_2_hpos':passed_count('php85-integration-hpos.txt',r'Integration assertions: (\d+)'),
+        'installed_final_zip_clean_wp_7_1_4_php_8_3_wc_11_2_2_legacy':passed_count('package-integration.txt',r'Integration assertions: (\d+)')},
+    'browser':{'php83_passed':passed_count('e2e.txt',r'(\d+) passed'),'oldest_passed':passed_count('oldest-e2e.txt',r'(\d+) passed'),'php85_passed':passed_count('php85-e2e.txt',r'(\d+) passed'),'installed_final_zip_passed':passed_count('package-e2e.txt',r'(\d+) passed'),'retries':0,'physical_printing':False},
     'upgrade':'Genuine archived RC8 process -> RC9 exact saved library equality on PHP 7.4, 8.3 and 8.5 combinations',
-    'lifecycle':'Activation/deactivation exact library preservation; missing WooCommerce no fatal + notice; default uninstall retention',
+    'lifecycle':'Activation/deactivation exact library preservation; missing WooCommerce no fatal + notice; default uninstall retention and explicit single-site purge',
     'pdf':text('pdf.txt').strip().splitlines(),
-    'plugin_check':{'version':'2.1.0','errors':pcp_counts['ERROR'],'warnings':pcp_counts['WARNING'],'scope':'Installed allowlisted production ZIP, independent clean local site'},
+    'plugin_check':{'version':'2.1.0','errors':pcp_counts['ERROR'],'warnings':pcp_counts['WARNING'],'scope':'Installed allowlisted production ZIP, independent clean local site','detail':'plugin-check.json'},
     'wpcs':{'status':'FAIL: release blocking, no suppressed baseline','totals':wpcs['totals'],'detail':'wpcs.json'},
     'phpstan':{'level':5,'errors':0},
     'javascript_standards':'ESLint and Prettier pass',

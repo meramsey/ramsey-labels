@@ -1,5 +1,9 @@
 # Local development
 
+Local verification used Node 22.20.0 and Composer 2.8.12 in Docker. Install locked PHP
+developer dependencies with the documented Composer container even when the target host
+runs PHP 7.4; developer-tool installation requirements differ from the plugin runtime.
+
 Never reuse production credentials, volumes, SQL dumps, media or printers.
 Compose uses its own `ramsey-labels-test` network/volumes, synthetic credentials and a
 loopback-only port 18885. Existing unrelated containers must not be stopped or modified.
