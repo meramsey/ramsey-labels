@@ -15,6 +15,10 @@
 10. Obtain explicit owner approval for branding, licensing, slug/migration, support contact,
     publication, push/tag/release and directory submission. These are separate approvals.
 
+The first recoverable baseline commit inherited the workstation's auto-configured author
+name/email. Review that Git metadata for publication privacy. Preserve it as source history;
+do not rewrite the checkpoint to hide the prior identity.
+
 The initial preservation commit used the workstation's automatically configured author
 identity. Review that commit metadata for privacy before any public push. This engineering
 pass does not rewrite the recoverable baseline history to conceal it.

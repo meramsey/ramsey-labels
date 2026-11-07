@@ -46,4 +46,10 @@ final class SchemaTest extends TestCase {
         self::assertSame(0, $page['start']);
         self::assertEquals(50.8, $page['width']);
     }
+    public function testElementsAcceptOnlyExplicitTextDirections() : void {
+        $element=Schema::defaults()['profiles'][0]['design']['elements'][0];
+        self::assertSame('inherit', Schema::element($element)['direction']);
+        $element['direction']='rtl';self::assertSame('rtl',Schema::element($element)['direction']);
+        $element['direction']='auto';$this->expectException(InvalidArgumentException::class);Schema::element($element);
+    }
 }

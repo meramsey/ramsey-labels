@@ -26,7 +26,7 @@ public redistribution approval.
 Composer lock: PHPUnit (BSD-3-Clause and related BSD/MIT dependencies), WPCS/PHPCS
 (MIT/BSD-family), PHPStan (MIT), WordPress/WooCommerce stubs (GPL-2.0-or-later).
 Exact transitive licenses can be regenerated with `composer licenses --format=json`.
-Node lock: Playwright (Apache-2.0), ESLint (MIT), Prettier (MIT), globals (MIT),
+Node lock: Playwright (Apache-2.0), axe-core and @axe-core/playwright (MPL-2.0, test-only), Espree (BSD-2-Clause), ESLint (MIT), Prettier (MIT), globals (MIT),
 zxing-wasm (MIT; upstream ZXing-C++ Apache-2.0), and zbar-wasm (LGPL-2.1+,
 including its upstream decoder). They are test tools only, not linked into distributed runtime assets.
 See lockfiles and installed package LICENSE/NOTICE files for exact notices and versions.

@@ -210,3 +210,48 @@
     outline: 3px solid #2271b1;
     outline-offset: 2px;
 }
+.rli-input:focus-visible,
+.rli-tabs .button:focus-visible,
+.rli-toolbar .button:focus-visible,
+.rli-queued-product button:focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+}
+.rli-board {
+    direction: ltr;
+}
+.rli-element {
+    unicode-bidi: plaintext;
+}
+.rli-result-details {
+    text-align: start;
+}
+.rli-pages[aria-busy='true'] {
+    cursor: progress;
+}
+.rli-job-dialog {
+    width: min(92vw, 34rem);
+    max-height: 85vh;
+    overflow: auto;
+    border: 2px solid #50575e;
+    border-radius: 8px;
+    padding: 1.25rem;
+    color: #1d2327;
+    background: #fff;
+}
+.rli-job-dialog::backdrop {
+    background: rgb(0 0 0 / 65%);
+}
+.rli-job-dialog .rli-field input[type='text'] {
+    width: 100%;
+    max-width: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+    #rli-app *,
+    #rli-app *::before,
+    #rli-app *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

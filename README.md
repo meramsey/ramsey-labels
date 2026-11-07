@@ -1,9 +1,9 @@
 # Ramsey Labels for WooCommerce
 
-Free, independent WooCommerce label design, SKU barcodes, complete batch previews,
-thermal/sheet browser printing and lossless raster PDF export.
+Free, independent WooCommerce label design, SKU barcodes, complete segmented batch
+previews, thermal/sheet browser printing and lossless raster PDF export.
 
-**Engineering release candidate: not yet approved for publication or production.**
+**Engineering release candidate RC10: not yet approved for publication or production.**
 See [release readiness](docs/release-readiness.md) for actual results and blockers.
 No code has been pushed or submitted to WordPress.org.
 
@@ -12,20 +12,30 @@ No code has been pushed or submitted to WordPress.org.
 - Product/variation name and SKU search, category filtering, paginated results and thumbnails.
 - Product row links and Products > All Products bulk-action queue handoffs.
 - Queue thumbnails, names, SKUs, prices, selection and quantities.
-- Automatic, vertically stacked previews of the entire selected batch.
+- Automatic, vertically stacked previews of every page in each bounded segment, with Previous/Next segment navigation; streamed PDF includes every selected label.
 - Thermal roll and sheet geometry, skipped slots, offsets and saved print profiles.
 - Visual text, barcode, image and shape elements; optional inert HTML layouts.
 - QR-left / SKU-below / price-and-name-right 50.8 × 25.4 mm card.
 - CODE128, CODE39, EAN-13, EAN-8, UPC-A, UPC-E, QR and ECC200 Data Matrix.
+- GS1-128 common-AI validation (including GTIN check digits, dates and variable-field separators); unsupported GS1 AIs are rejected, not guessed.
 - JSON library import/export, CSV import/export, order/item and alternate record adapters.
+- Bounded product/category/API pages, queue pagination, arithmetic label segmentation and incremental PDF streaming.
+- Per-user saved jobs, WordPress personal-data export/erasure callbacks, and a PHP/JavaScript developer API.
+- A separately built `ramsey-labels` directory candidate with a dual-active runtime guard.
 - Read-only legacy configuration discovery with explicit migration preview and backup/restore.
 
 No runtime npm/Composer libraries, fonts, external scripts, telemetry or barcode services.
 This is not an implementation or API clone of any commercial product.
 
-![Synthetic 50.8 × 25.4 mm QR label showing Twinkle Light Earrings, $12.00 and RRA-726474](docs/assets/qr-label.png)
+![Synthetic default 50.8 × 25.4 mm QR label showing Twinkle Light Earrings, $12.00 and RRA-726474](docs/assets/qr-label.png)
 
-*Generated from the tested PDF and independently decoded; not a photograph of a hardware print.*
+*The QR payload was independently decoded from the generated PDF. This is software-rendered artwork, not a hardware print.*
+
+![Synthetic visual designer and accessible element controls](docs/assets/synthetic-designer.png)
+
+![Synthetic product-search result and queued label with thumbnail, SKU and price](docs/assets/synthetic-product-search.png)
+
+![Synthetic vertically stacked batch preview and full-batch PDF controls](docs/assets/synthetic-batch-preview.png)
 
 ## Requirements and installation
 
@@ -33,10 +43,11 @@ Use an isolated staging installation with WooCommerce and a modern browser.
 [Compatibility](docs/compatibility.md) distinguishes tested combinations from inherited,
 unverified environments. The tested floor is WordPress 6.0.3 / PHP 7.4.32 (Apache) / WooCommerce 7.0.1.
 
-Build with `python3 bin/build.py`, then upload the ZIP via Plugins > Add New.
+Build the in-place RC10 ZIP with `python3 bin/build.py`, then upload via Plugins > Add New.
 The package deliberately retains `ramsey-labels-independent/ramsey-labels-independent.php`
-for RC8 update safety. Do not install a second copy under `ramsey-labels`.
-See [migration](docs/migration.md) for the proposed directory slug conflict.
+for RC8/RC9 in-place update safety. The separate candidate directory ZIP is built with
+`python3 bin/build-public.py`. Follow [migration](docs/migration.md); do not leave both
+runtime copies active. The slug was unlisted when checked but is not reserved or approved.
 
 ## Quick start
 
@@ -44,8 +55,8 @@ See [migration](docs/migration.md) for the proposed directory slug conflict.
 2. Use Design to choose a template, edit elements and dimensions, then **Save settings**.
 3. Under **Products & orders**, search by name/SKU and press Enter, or choose a category
    and click Search. Previous/Next paginate; select results and **Add selected to job**.
-4. Set quantities and open **Print preview**. All selected pages render automatically.
-5. Choose **Export PDF**, or **Print** with scale 100%, margins none, headers/footers off.
+4. Set quantities and open **Print preview**. Every page in the active segment renders automatically; navigate segments to inspect the complete job.
+5. Choose **Export full PDF** for the complete selected batch, **Export PDF** for the active segment, or print the active segment at scale 100%, no margins, headers/footers off.
 
 From Products > All Products select rows, choose **Ramsey: print product labels** and Apply.
 Only selected IDs are handed off in a short-lived, current-user-scoped token.
@@ -74,7 +85,8 @@ Set the driver stock size to 50.8 × 25.4 mm for the default roll profile. Disab
 choose actual size, and calibrate gap sensing/feed using your printer's instructions.
 Sheet profiles have independent margins, gaps, rows, columns, flow and X/Y calibration.
 Test one sheet/label before a large batch. PDF labels are lossless RGB rasters at profile
-DPI; vector output and physical printer validation are not claimed.
+DPI. The separate barcode SVG export is vector; complete label artwork is PNG or raster-PDF,
+and physical printer validation is not claimed.
 
 ## Troubleshooting
 
@@ -87,7 +99,7 @@ DPI; vector output and physical printer validation are not claimed.
 - Image failure: use a local WordPress media attachment. External image requests need consent
   and CORS; credentials in image URLs are rejected.
 - Conflicting settings save: another tab updated the revision. Export edits before reloading.
-- Preview limits: split jobs exceeding 2,000 labels, 1,000 records or image memory budgets.
+- Very large jobs are partitioned automatically by bounded decoded-image, encoded-image and page budgets; use segment navigation, or stream all segments into one complete PDF.
 
 ## Security and privacy
 

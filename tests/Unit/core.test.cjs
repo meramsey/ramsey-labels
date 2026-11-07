@@ -2,6 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const C = require('../../assets/core.js');
 const B = require('../../assets/barcodes.js');
+const Batches = require('../../assets/batches.js');
 const fs = require('node:fs');
 const Z = require('zxing-wasm/reader');
 const zbar = require('@undecaf/zbar-wasm');
@@ -36,12 +37,148 @@ test('complete 2000-label roll batch has no three-page limit', () => {
     assert.equal(job.pages.length, 2000);
     assert.equal(job.pages.flat().length, 2000);
     assert.throws(() => C.paginate([{ quantity: 2001, values: {} }], C.defaultProfile()));
+});
+test('large total label quantities segment arithmetically without expanding a queue', () => {
+    const profile = C.defaultProfile(),
+        records = [
+            { key: 'bulk', source: 'manual', quantity: 100000, values: { name: 'Synthetic' } },
+        ];
+    const parts = Array.from({ length: 50 }, (_, i) => Batches.segment(records, profile, i));
+    assert.equal(parts[0].count, 50);
+    assert.equal(parts[0].records[0].quantity, 2000);
+    assert.equal(parts[49].records[0].quantity, 2000);
+    assert.equal(parts[49].end, 100000);
+    assert.deepEqual(Batches.segment(records, profile, 50).records, parts[49].records);
+});
+test('render segments account for decoded-canvas and encoded-cache budgets', () => {
+    const profile = C.defaultProfile(),
+        records = Array.from({ length: 100 }, (_, i) => ({
+            key: 'unique-' + i,
+            source: 'manual',
+            quantity: 1,
+            selected: true,
+            values: { name: 'Unique ' + i, sku: 'S-' + i },
+        }));
+    const first = Batches.segment(records, profile, 0),
+        last = Batches.segment(records, profile, first.count - 1);
+    assert.ok(first.count > 1);
+    assert.equal(first.records.length + last.records.length, 100);
+    assert.ok(first.records.length < 100);
+    assert.equal(last.end, 100);
+});
+test('external integration records are copied, scalar-only and bounded', () => {
+    const clean = Batches.append(
+        [],
+        [
+            {
+                key: 'extern',
+                source: 'manual',
+                quantity: 2,
+                values: { name: 'External', sku: 'RRA-726474' },
+            },
+        ],
+    );
+    assert.equal(clean[0].values.name, 'External');
+    assert.throws(() => Batches.append([], [{ values: { constructor: 'unsafe' } }]));
     assert.throws(() =>
-        C.paginate(
-            Array.from({ length: 1001 }, () => ({ quantity: 1, values: {} })),
-            C.defaultProfile(),
+        Batches.append(
+            [],
+            [
+                {
+                    values: {
+                        name: {
+                            toString() {
+                                return 'x';
+                            },
+                        },
+                    },
+                },
+            ],
         ),
     );
+});
+test('record sorting is stable and queue order survives append/serialization', () => {
+    let records = Batches.append(
+        [],
+        [
+            { key: 'second', values: { name: 'Beta' }, quantity: 1 },
+            { key: 'first', values: { name: 'Alpha' }, quantity: 1 },
+        ],
+    );
+    records = Batches.sort(records, 'alpha-asc');
+    assert.deepEqual(
+        records.map((r) => r.key),
+        ['first', 'second'],
+    );
+    records = Batches.append(records, [{ key: 'third', values: { name: 'Gamma' }, quantity: 1 }]);
+    assert.deepEqual(
+        Batches.sort(records, 'manual').map((r) => r.key),
+        ['second', 'first', 'third'],
+    );
+    Batches.rememberManualOrder(records);
+    assert.deepEqual(
+        Batches.sort(records, 'manual').map((r) => r.key),
+        records.map((r) => r.key),
+    );
+});
+test('GS1-128 validates fixed and variable application identifiers', () => {
+    const value = '(01)09506000134352(17)260101(10)LOT42';
+    const payload = B.gs1Payload(value);
+    assert.equal(payload, '01095060001343521726010110LOT42');
+    assert.equal(B.encode('code128', payload, { gs1: true }).text, payload);
+    assert.throws(() => B.gs1Payload('(01)123(99)BAD'));
+    assert.throws(() => B.gs1Payload('(17)261332'));
+});
+test('common GS1-128 payload independently decodes with separators intact', async () => {
+    const human = '(01)09506000134352(17)260101(10)LOT42(21)SERIAL9';
+    const expected = '01095060001343521726010110LOT42\x1d21SERIAL9';
+    const symbol = B.encode('code128', B.gs1Payload(human), { gs1: true });
+    const decoded = await Z.readBarcodes(pixels(symbol), {
+        formats: ['Code128'],
+        textMode: 'Plain',
+    });
+    assert.equal(decoded[0]?.text, expected);
+});
+test('HTML compatibility aliases collect and resolve custom fields without evaluating input', () => {
+    const design = {
+        mode: 'html',
+        html: '[product-id] [product-sku] [cf name="_color"] [attr=value="size"] [order-item-meta-field value="_batch"] [barcode_img_url]',
+        elements: [],
+        css: '',
+        htmlBarcodeSource: '',
+    };
+    const fields = C.requestedFields(design);
+    for (const field of [
+        'id',
+        'sku',
+        'meta:_color',
+        'attr:size',
+        'item_meta:_batch',
+        'barcode_image',
+    ])
+        assert.ok(fields.includes(field), field);
+    const record = {
+        values: {
+            id: '42',
+            sku: 'RRA-726474',
+            'meta:_color': 'Blue',
+            'attr:size': 'M',
+            'item_meta:_batch': 'A-1',
+            barcode_image: 'https://example.test/no-load',
+        },
+    };
+    assert.equal(
+        C.resolve(design.html, record),
+        '42 RRA-726474 Blue M A-1 https://example.test/no-load',
+    );
+    assert.equal(C.resolve('{{name}}', { values: { name: '{{sku}}' } }), '{{sku}}');
+});
+test('currency-symbol visibility is an explicit validated design preference', () => {
+    const design = C.defaultDesign();
+    design.showCurrency = false;
+    assert.deepEqual(C.validateDesign(design), []);
+    design.showCurrency = 'false';
+    assert.ok(C.validateDesign(design).some((error) => error.includes('currency symbol')));
 });
 test('sheet pagination honors skip, offsets, column flow and boundaries', () => {
     const p = C.defaultLibrary().profiles[1];

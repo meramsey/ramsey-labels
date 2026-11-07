@@ -14,7 +14,7 @@ services:
       retries: 40
   wordpress:
     image: wordpress:7.1.4-php8.3-apache
-    ports: ["127.0.0.1:18887:80"]
+    ports: ["127.0.0.1:${PACKAGE_PORT:-18887}:80"]
     environment: &package_env
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: labels_package

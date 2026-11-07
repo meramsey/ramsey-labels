@@ -31,10 +31,29 @@ async function main() {
     const sheet = execFileSync('pdfinfo', ['build/synthetic-sheet.pdf'], { encoding: 'utf8' });
     assert.match(sheet, /Pages:\s+3\b/);
     assert.match(sheet, /Page size:\s+595\.\d+ x 841\.\d+ pts/);
+    const batch = execFileSync('pdfinfo', ['build/streamed-4500-labels.pdf'], { encoding: 'utf8' });
+    assert.match(batch, /Pages:\s+4500\b/);
+    execFileSync('pdftoppm', [
+        '-r',
+        '300',
+        '-f',
+        '4500',
+        '-singlefile',
+        '-png',
+        'build/streamed-4500-labels.pdf',
+        'build/streamed-last-page',
+    ]);
+    const finalQr = await Z.readBarcodes(fs.readFileSync('build/streamed-last-page.png'), {
+        formats: ['Code128'],
+    });
+    assert.equal(finalQr[0]?.text, 'RRA-726474');
     console.log(
         'PASS: Poppler verifies 5 pages, 50.8 x 25.4 mm media, and independently rasterized PDF QR decodes exact RRA-726474',
     );
     console.log('PASS: Poppler verifies 131 sheet labels occupy 3 A4 pages');
+    console.log(
+        'PASS: streamed PDF has all 4,500 pages and independently decodes exact SKU on final page',
+    );
 }
 main().catch((error) => {
     console.error(error.message);

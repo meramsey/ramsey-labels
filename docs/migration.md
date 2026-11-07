@@ -1,25 +1,33 @@
-# RC8 and public slug migration
+# RC8/RC9 and public slug migration
 
 ## Preserved identifiers
 
-- Installation basename: `ramsey-labels-independent/ramsey-labels-independent.php`.
+- Legacy RC8/RC9 basename: `ramsey-labels-independent/ramsey-labels-independent.php`.
+- Proposed directory basename: `ramsey-labels/ramsey-labels.php` (a separate archive).
 - Namespace `RamseyLabels`; `RLI_FILE`, `RLI_VERSION`, `RLI_PURGE_ON_UNINSTALL`.
 - Options `rli_v1_library`, `rli_v1_migration_backup`; user meta `rli_v1_jobs`.
 - REST namespace `ramsey-labels/v1`; admin page `ramsey-labels`.
 - `rli_field_value`, `rli_records`, list-action keys and user-scoped handoff keys.
 - Library schema 1 and optimistic revision semantics.
 
-Public display name changes to Ramsey Labels for WooCommerce. The RC8 text domain
-`ramsey-labels-independent` remains unchanged, including any external translation overrides.
-The proposed public `ramsey-labels` domain is pending the same tested migration as the
-installation basename. PHP/JS strings still need a complete internationalization sweep
-before publication. The proposed final domain is not claimed as implemented in this candidate.
+The legacy in-place candidate preserves the RC8 text domain. A separate directory build uses
+the public display name, `ramsey-labels` domain and its generated POT. Existing external RC8/RC9
+translation files need a domain/filename rename or PO/POT merge. Both builds preserve the
+`RamseyLabels` namespace, library schema/options, REST namespace and integration hooks; the
+public build uses the new main-file path and `plugin_basename()`.
 
-The proposed WordPress.org slug conflicts with the retained RC8 installation folder.
-This candidate prioritizes safe in-place updates. **Do not upload it under a second name.**
-Owner must choose either an approved old slug/domain or fund/test an explicit basename
-migration (active_plugins, network activation, update transients, duplicate-load protection,
-rollback, translation paths). That migration is not implemented or claimed here.
+The official WordPress.org Plugin Information API returned 404 / “Plugin not found” for
+`ramsey-labels` on 2026-11-06. This is evidence it was unlisted then, not a reservation or
+guarantee of future approval. WordPress.org's current rules require GPL-compatible licensing,
+secure/complete code, accurate readmes, and respect for trademarks; the plugin team makes
+the final approval decision.
+
+The directory archive has its own `ramsey-labels/ramsey-labels.php` entrypoint. A two-copy
+guard was tested: while the old plugin remains active, the public copy loads no runtime classes,
+constants or hooks and shows an administrator notice. After deactivating the old plugin, the
+public copy starts automatically and reads the same options, backup and single-site job key.
+No product/SKU/order data is modified. Rollback is file-level: deactivate public and reactivate
+the retained legacy folder. Back up first. Do not keep both runtimes active.
 
 ## Data preservation
 
@@ -27,6 +35,13 @@ Export the library before updating. Replace files only, retaining the plugin fol
 The new Store guard no longer treats a partially customized original layout as factory defaults.
 The earlier exact QR permalink expression repair is retained; intentionally customized other
 URL expressions remain intact. Role restrictions and per-user job privacy remain enforced.
+
+RC8/RC9 stored one global user-meta jobs key on multisite without a site-owner ID. RC10 scopes
+new jobs to `rli_v1_jobs_site_<blog-id>` to prevent cross-site customer/order-data disclosure.
+Ambiguous old network jobs are retained but not silently exposed on arbitrary sites. A network
+administrator/data controller must decide the correct site mapping before explicit migration;
+the plugin cannot infer that ownership safely. See the remaining approval gates in
+`docs/wordpress-org-submission.md`.
 
 Legacy external settings migration is separate from an RC8 upgrade: only administrators
 may inspect/preview/apply/restore. The preview hash must still match sources. It creates

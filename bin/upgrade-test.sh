@@ -11,3 +11,12 @@ with zipfile.ZipFile(p) as z:
 PY
 docker compose run --rm cli wp --skip-plugins=ramsey-labels-independent eval-file wp-content/plugins/ramsey-labels-independent/tests/Integration/upgrade.php seed
 docker compose run --rm cli wp eval-file wp-content/plugins/ramsey-labels-independent/tests/Integration/upgrade.php verify
+python3 - <<'PY'
+import hashlib,pathlib,zipfile
+p=pathlib.Path('tests/Fixtures/rc9.zip');assert hashlib.sha256(p.read_bytes()).hexdigest()=='8c369220c6a15286ae38ac1b4f5f3097a3f44b70562169b822d7beef7ae7afdd'
+with zipfile.ZipFile(p) as z:
+    for name in z.namelist():assert '..' not in pathlib.PurePosixPath(name).parts and not name.startswith('/')
+    z.extractall('build/rc9')
+PY
+docker compose run --rm cli wp --skip-plugins=ramsey-labels-independent eval-file wp-content/plugins/ramsey-labels-independent/tests/Integration/upgrade.php seed-rc9
+docker compose run --rm cli wp eval-file wp-content/plugins/ramsey-labels-independent/tests/Integration/upgrade.php verify

@@ -17,34 +17,47 @@ This is source review plus specified local tests, not a penetration-test certifi
 
 ## Reviewed controls
 
-All eleven REST method/path combinations have permission callbacks and defensive callback
+All twelve REST method/path combinations have permission callbacks and defensive callback
 checks. Anonymous/subscriber denial tests cover each; browser tests cover missing/forged REST
 nonces. Source-specific capability checks prevent products/orders/users crossover.
-IDs, field names, quantities, enums and collection sizes are validated. UI text uses textContent;
+IDs, field names, quantities, enums and collections are validated. UI text uses textContent;
 URLs and PHP links use context escaping. SQL writes use wpdb update placeholders; migration
-table names come from a fixed suffix list. Remaining WPCS/Plugin Check diagnostics are release
-gates, not waived merely because a reviewer believes a path is safe.
+table names come from fixed suffixes plus identifier validation. Both installed candidate ZIPs
+have zero current Plugin Check findings and the full WPCS gate has zero findings. Narrow inline
+sniff exceptions are explained next to atomic CAS, fixed legacy SQL identifiers and read-only
+legacy serialization; there is no whole-file suppression baseline.
 
-No remote HTTP/image fetches, file uploads, archive extraction, PHP template evaluation or
-telemetry occur in production runtime. Legacy unserialize disables classes but remains an
-audit diagnostic requiring deeper malformed/nesting tests. Image realpaths reject traversal.
+No server-side remote HTTP/image fetches, file uploads, archive extraction, PHP template evaluation or
+telemetry occur in production runtime. The browser can fetch an external raster URL only after
+session consent, with credentials/referrer omitted, redirects rejected, response MIME/bytes/pixels
+bounded and private literal IP/host names blocked. DNS rebinding and adversarial browser/network
+policies are residual risks; remote-store image origins should be trusted. Legacy unserialize is
+only for read-only legacy settings, disables classes, limits bytes/depth/nodes and restores the
+previous error handler; malformed/excessive payload tests pass. Image realpaths reject traversal.
 CSV exporter handles formula prefixes; there is no server-side CSV execution.
 
 ## Residual / pending
 
-- Packaged Plugin Check now has zero errors, but remaining warnings (including slug/domain,
-  SQL/nonce diagnostics) and the full WPCS failures still require resolution before release.
+- Both in-place and public-slug packages are checked separately: each currently has zero
+  Plugin Check errors/warnings. Full WPCS has zero errors/warnings with no blanket suppression;
+  narrowly scoped ignores retain a fixed local image read and atomic
+  compare-and-swap/table-name queries that WordPress exposes no equivalent API for.
 - Generic custom metadata can contain sensitive business data not caught by credential-name
   heuristics. Stronger source allowlists/per-field authorization require a compatibility decision.
 - Role-restricted profiles are workflow restrictions, not an encrypted data boundary; templates
   are shared library content. Restricted-operator/source/profile/migration negative tests pass;
   shop-manager and more custom-role combinations still need expansion.
-- Full order/user privacy export/erasure integration and retention policy remain unimplemented.
-- Legacy migration backup/apply concurrency, hostile serialized depth and large legacy rows
-  require more negative tests; no commercial source package was accessed.
-- Comprehensive SSRF/private-network browser URL policy, redirects and CSS grammar fuzzing
-  have not been verified. No server URL fetch is used; consent is not a network sandbox.
-- Large-batch browser responsiveness, cancellation/race behavior and multisite uninstall need testing.
+- Core privacy export/erasure now pages 25 owners, excludes other customers' records in the same
+  job, locks per-user writes and preserves stable owner rows between pages. 26-owner integration
+  tests prove no skipped records. Deeper concurrent user-deletion/realtime privacy-request races
+  and formal legal/retention policy review remain.
+- Legacy migration backups are now written only after the CAS profile save succeeds. Serialized
+  input is class-disabled, depth/node/byte bounded and malformed input rejected.
+- Literal private-net hosts, credential URLs, response redirects and non-raster content are blocked.
+  DNS rebinding, hostile local browser extensions and full CSS/URI fuzzing are not proven absent.
+- Segmented 4,500-page streaming PDF, 100,000-label arithmetic partitioning, cancellation,
+  queue/saved-job lock races, cross-browser browser budgets and two-site multisite purge pass.
+  Multi-hour/stress hardware load and fleets of WordPress sites need further operator-scale testing.
 - Public vulnerability contact and monitored disclosure process await owner approval.
 
 Do not treat these as accepted production risks. Publication remains blocked until triaged.

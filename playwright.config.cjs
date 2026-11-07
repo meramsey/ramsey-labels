@@ -7,10 +7,14 @@ module.exports = defineConfig({
     use: {
         baseURL: 'http://127.0.0.1:' + (process.env.TEST_PORT || '18885'),
         headless: true,
-        launchOptions: {
-            executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome',
-            args: ['--no-sandbox'],
-        },
+        browserName: process.env.BROWSER || 'chromium',
+        launchOptions:
+            !process.env.BROWSER || process.env.BROWSER === 'chromium'
+                ? {
+                      executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome',
+                      args: ['--no-sandbox'],
+                  }
+                : undefined,
     },
     reporter: [['list'], ['json', { outputFile: 'build/reports/e2e.json' }]],
 });

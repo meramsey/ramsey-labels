@@ -45,7 +45,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-name",
@@ -77,7 +78,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-price",
@@ -109,7 +111,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-sku",
@@ -141,9 +144,11 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     }
-                ]
+                ],
+                "showCurrency": true
             },
             "page": {
                 "mode": "roll",
@@ -209,7 +214,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "barcode",
@@ -241,7 +247,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "sku",
@@ -273,7 +280,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "price",
@@ -305,9 +313,11 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     }
-                ]
+                ],
+                "showCurrency": true
             },
             "page": {
                 "mode": "sheet",
@@ -375,7 +385,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "barcode",
@@ -407,7 +418,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "sku",
@@ -439,7 +451,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "price",
@@ -471,9 +484,11 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     }
-                ]
+                ],
+                "showCurrency": true
             }
         },
         {
@@ -518,7 +533,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-name",
@@ -550,7 +566,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-price",
@@ -582,7 +599,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-sku",
@@ -614,9 +632,11 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     }
-                ]
+                ],
+                "showCurrency": true
             }
         },
         {
@@ -661,7 +681,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "image-name",
@@ -693,7 +714,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "image-price",
@@ -725,7 +747,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "image-code",
@@ -757,9 +780,11 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     }
-                ]
+                ],
+                "showCurrency": true
             }
         },
         {
@@ -804,7 +829,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-name",
@@ -836,7 +862,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-price",
@@ -868,7 +895,8 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     },
                     {
                         "id": "qr-sku",
@@ -900,9 +928,11 @@
                         "transform": "none",
                         "condition": "",
                         "visible": true,
-                        "fit": "contain"
+                        "fit": "contain",
+                        "direction": "inherit"
                     }
-                ]
+                ],
+                "showCurrency": true
             }
         }
     ],

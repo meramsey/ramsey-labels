@@ -1,6 +1,16 @@
 # Changelog
 
-## 1.0.0-rc.9 — engineering candidate
+## 1.0.0-rc.10 — engineering candidate
+
+- Retain separate legacy and public-slug ZIP manifests; add `ramsey-labels` bootstrap with a tested double-runtime guard and RC9 upgrade path.
+- Add generated POT, WordPress JavaScript translations, comprehensive gettext scan, RTL, focus, native privacy dialogs and axe WCAG 2.1 A/AA E2E scans.
+- Add paginated category lookup and bounded source-record transfer; support 100,000-label arithmetic planning and 4,500-page streamed PDF stress fixture.
+- Add current-user private saved-job UI, multisite site-scoped job metadata, core privacy export/eraser and tokenized per-user/per-site operation leases.
+- Add common GS1-128 AI validation/FNC1, queued-label reordering, currency-symbol preference, full-label PNG and barcode SVG export.
+- Add cross-browser, multisite lifecycle, privacy pagination, source pagination and full public-basename migration tests.
+- PHPCS/WPCS: zero errors/warnings; PHPStan level 5: zero errors; packaged Plugin Check: zero errors/warnings. Narrow inline exceptions and unresolved external security/provenance/hardware decisions remain documented.
+
+## 1.0.0-rc.9 — verified engineering checkpoint
 
 - Preserve exact RC8 source/archive baseline before edits.
 - Keep installation basename, namespace, constants, options, REST namespace and hooks.

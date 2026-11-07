@@ -6,7 +6,7 @@ import pathlib
 root=pathlib.Path(__file__).resolve().parent.parent
 approved={'MIT','ISC','BSD-2-Clause','BSD-3-Clause','Apache-2.0','CC0-1.0',
           'GPL-2.0-or-later','GPL-3.0-or-later','LGPL-2.1-or-later',
-          'LGPL-2.1','LGPL-2.1+','LGPL-3.0-or-later','Python-2.0','CC-BY-3.0','BlueOak-1.0.0',
+          'LGPL-2.1','LGPL-2.1+','LGPL-3.0-or-later','MPL-2.0','Python-2.0','CC-BY-3.0','BlueOak-1.0.0',
           '(MIT OR CC0-1.0)','(MIT AND Zlib)','(MIT AND BSD-3-Clause)'}
 findings=[]
 node=json.loads((root/'package-lock.json').read_text())

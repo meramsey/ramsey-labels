@@ -1,9 +1,12 @@
 parameters:
     level: 5
+    # WordPress option/cache calls are stateful; a repeated call may change after CAS deletion.
+    rememberPossiblyImpureFunctionValues: false
     treatPhpDocTypesAsCertain: false
     paths:
         - includes
         - ramsey-labels-independent.php
+        - public/src/ramsey-labels.php
         - uninstall.php
     scanFiles:
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php

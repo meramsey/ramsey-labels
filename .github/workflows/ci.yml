@@ -17,6 +17,11 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run lint
       - run: npm test
+      - name: Regenerate and verify gettext catalog
+        run: |
+          cp languages/ramsey-labels-independent.pot /tmp/ramsey-labels.pot
+          npm run i18n:pot
+          python3 bin/compare-pot.py /tmp/ramsey-labels.pot languages/ramsey-labels-independent.pot
       - run: npm audit --audit-level=low
   php:
     runs-on: ubuntu-latest
@@ -26,7 +31,7 @@ jobs:
       - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 install --no-interaction --prefer-dist
       - name: Syntax, PHPUnit and static analysis
         run: |
-          docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 sh -ec 'for file in includes/*.php ramsey-labels-independent.php uninstall.php; do php -l "$file"; done; vendor/bin/phpunit --do-not-cache-result; vendor/bin/phpstan analyse --memory-limit=1G'
+          docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 sh -ec 'for file in includes/*.php ramsey-labels-independent.php public/src/ramsey-labels.php uninstall.php; do php -l "$file"; done; vendor/bin/phpunit --do-not-cache-result; vendor/bin/phpstan analyse --memory-limit=1G'
       - name: Full WordPress Coding Standards (blocking, no baseline)
         run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 vendor/bin/phpcs
       - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 audit
@@ -51,6 +56,7 @@ jobs:
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
       - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps firefox webkit
       - run: docker compose up -d --wait wordpress
       - run: bash bin/setup-test-site.sh
       - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 install --no-interaction --prefer-dist
@@ -66,7 +72,10 @@ jobs:
           bash bin/integration.sh
       - run: bash bin/upgrade-test.sh
       - run: bash bin/lifecycle-test.sh
+      - run: bash bin/multisite-test.sh
       - run: CHROME_PATH="$(node -e "process.stdout.write(require('@playwright/test').chromium.executablePath())")" npm run test:e2e
+      - run: npm run test:e2e:firefox
+      - run: npm run test:e2e:webkit
       - run: sudo apt-get update
       - run: sudo apt-get install -y poppler-utils
       - run: node bin/check-pdf.cjs
@@ -78,8 +87,19 @@ jobs:
           cmp build/first.sha256 build/*.zip.sha256
       - name: Check packaged production files, not developer tree
         run: bash bin/check-package.sh
+      - name: Build independently branded directory candidate and test RC9 path migration
+        run: |
+          python3 bin/build-public.py
+          cp build/public/*.zip.sha256 build/public-first.sha256
+          python3 bin/build-public.py
+          cmp build/public-first.sha256 build/public/*.zip.sha256
+          bash bin/check-public-migration.sh
       - if: always()
-        run: docker compose stop
+        run: |
+          docker compose stop || true
+          COMPOSE_PROJECT_NAME=ramsey-labels-multisite-test docker compose -f compose.multisite.yaml stop || true
+          COMPOSE_PROJECT_NAME=ramsey-labels-package-test docker compose -f compose.package.yaml stop || true
+          COMPOSE_PROJECT_NAME=ramsey-labels-public-migration docker compose -f compose.package.yaml stop || true
   oldest-supported:
     runs-on: ubuntu-latest
     env:
@@ -102,6 +122,7 @@ jobs:
       - run: docker compose exec -T -w /var/www/html/wp-content/plugins/ramsey-labels-independent wordpress php vendor/bin/phpunit --do-not-cache-result
       - run: bash bin/integration.sh
       - run: bash bin/upgrade-test.sh
+      - run: bash bin/lifecycle-test.sh
       - run: CHROME_PATH="$(node -e "process.stdout.write(require('@playwright/test').chromium.executablePath())")" npm run test:e2e
       - if: always()
         run: docker compose stop
