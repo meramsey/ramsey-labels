@@ -1,12 +1,52 @@
 /** Canvas label rendering, lossless PDF export, and isolated browser printing. */
 (function (root) {
     'use strict';
+    const __ = (message, domain) => globalThis.wp?.i18n?.__(message, domain) ?? message;
+    const sprintf = (format, ...values) => {
+        if (globalThis.wp?.i18n?.sprintf) return globalThis.wp.i18n.sprintf(format, ...values);
+        let index = 0;
+        return format.replace(/%%|%(?:(\d+)\$)?s/g, (token, position) =>
+            token === '%%' ? '%' : String(values[position ? Number(position) - 1 : index++]),
+        );
+    };
+
     const C = root.RLICore,
         B = root.RLIBarcodes;
     const imageCache = new Map(),
         barcodeCache = new Map();
+    const imageWeights = new Map(),
+        symbolWeights = new Map();
+    let imageBytes = 0,
+        symbolBytes = 0;
+    const IMAGE_CACHE_BYTES = 64 * 1024 * 1024,
+        SYMBOL_CACHE_BYTES = 16 * 1024 * 1024;
+    function dropImage(key) {
+        imageBytes -= imageWeights.get(key) || 0;
+        imageWeights.delete(key);
+        imageCache.delete(key);
+    }
+    function clearCaches() {
+        imageCache.clear();
+        barcodeCache.clear();
+        imageWeights.clear();
+        symbolWeights.clear();
+        imageBytes = 0;
+        symbolBytes = 0;
+    }
+    function cacheStats() {
+        return {
+            imageBytes,
+            symbolBytes,
+            imageLimit: IMAGE_CACHE_BYTES,
+            symbolLimit: SYMBOL_CACHE_BYTES,
+            imageEntries: imageCache.size,
+            symbolEntries: barcodeCache.size,
+        };
+    }
     let imageResolver = async (src) => src;
+    let afterRender = null;
     const approvedOrigins = new Set();
+    const trustedBlobs = new Set();
     const mmToPt = (mm) => (Number(mm) * 72) / 25.4;
     const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
     const escapeHTML = (value) =>
@@ -15,74 +55,236 @@
             (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch],
         );
     function configure(options) {
-        if (options.imageResolver) imageResolver = options.imageResolver;
+        if (options.imageResolver) {
+            imageResolver = options.imageResolver;
+            clearCaches();
+        }
+        if (options.afterRender !== undefined)
+            afterRender = typeof options.afterRender === 'function' ? options.afterRender : null;
+    }
+    async function safeImageSource(src) {
+        if (!/^https?:/i.test(src)) return { src, revoke: () => {} };
+        const url = new URL(src, location.href);
+        if (url.username || url.password)
+            throw Error(
+                __('Image URLs must not contain credentials.', 'ramsey-labels-independent'),
+            );
+        if (url.origin !== location.origin) {
+            const host = url.hostname.toLowerCase().replace(/\.$/, '');
+            if (
+                /^(?:localhost$|127\.|0\.|10\.|192\.168\.|169\.254\.|172\.(?:1[6-9]|2\d|3[01])\.|\[)/.test(
+                    host,
+                ) ||
+                /^100\.(?:6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./.test(host) ||
+                /\.(?:localhost|local|internal|lan|home|home\.arpa)$/.test(host)
+            )
+                throw Error(
+                    __(
+                        'Private-network image URLs are not allowed. Select a local media attachment.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            if (!approvedOrigins.has(url.origin)) {
+                /* translators: %s: external image origin. */
+                if (
+                    !confirm(
+                        sprintf(
+                            /* translators: external image origin. */ __(
+                                'This label requests an image from %s. Loading it discloses your IP address to that server. Allow for this session?',
+                                'ramsey-labels-independent',
+                            ),
+                            url.origin,
+                        ),
+                    )
+                )
+                    throw Error(
+                        __(
+                            'External image request declined. Select a local attachment instead.',
+                            'ramsey-labels-independent',
+                        ),
+                    );
+                approvedOrigins.add(url.origin);
+            }
+        }
+        const controller = new AbortController(),
+            timer = setTimeout(() => controller.abort(), 15000);
+        try {
+            const response = await fetch(url, {
+                credentials: 'omit',
+                redirect: 'error',
+                mode: 'cors',
+                referrerPolicy: 'no-referrer',
+                signal: controller.signal,
+            });
+            const type = (response.headers.get('Content-Type') || '').split(';')[0].toLowerCase();
+            if (
+                !response.ok ||
+                !['image/png', 'image/jpeg', 'image/gif', 'image/webp'].includes(type)
+            )
+                throw Error(
+                    __(
+                        'Remote images must be successful PNG, JPEG, GIF or WebP responses.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            const reader = response.body.getReader(),
+                chunks = [];
+            let bytes = 0;
+            while (true) {
+                const part = await reader.read();
+                if (part.done) break;
+                bytes += part.value.byteLength;
+                if (bytes > 8000000) {
+                    controller.abort();
+                    throw Error(
+                        __('Image exceeds the 8 MB transfer budget.', 'ramsey-labels-independent'),
+                    );
+                }
+                chunks.push(part.value);
+            }
+            const object = URL.createObjectURL(new Blob(chunks, { type }));
+            trustedBlobs.add(object);
+            return { src: object, revoke: () => URL.revokeObjectURL(object) };
+        } finally {
+            clearTimeout(timer);
+        }
     }
     function loadImage(source) {
         if (!source) return Promise.resolve(null);
         if (imageCache.has(source)) return imageCache.get(source);
-        const promise = Promise.resolve(imageResolver(source)).then(
-            (src) =>
-                new Promise((resolve, reject) => {
-                    if (/^https?:/i.test(src)) {
-                        const url = new URL(src, location.href);
-                        if (url.username || url.password) {
-                            reject(new Error('Image URLs must not contain credentials.'));
-                            return;
-                        }
-                        if (url.origin !== location.origin && !approvedOrigins.has(url.origin)) {
-                            if (
-                                !confirm(
-                                    'This label requests an image from ' +
-                                        url.origin +
-                                        '. Loading it discloses your IP address to that server. Allow for this session?',
-                                )
-                            ) {
+        const promise = Promise.resolve(imageResolver(source))
+            .then(safeImageSource)
+            .then(
+                ({ src, revoke }) =>
+                    new Promise((resolve, reject) => {
+                        if (/^https?:/i.test(src)) {
+                            const url = new URL(src, location.href);
+                            if (url.username || url.password) {
                                 reject(
                                     new Error(
-                                        'External image request declined. Select a local attachment instead.',
+                                        __(
+                                            'Image URLs must not contain credentials.',
+                                            'ramsey-labels-independent',
+                                        ),
                                     ),
                                 );
                                 return;
                             }
-                            approvedOrigins.add(url.origin);
+                            if (
+                                url.origin !== location.origin &&
+                                !approvedOrigins.has(url.origin)
+                            ) {
+                                if (
+                                    !confirm(
+                                        /* translators: %1$s: url.origin. */
+                                        sprintf(
+                                            /* translators: external image origin. */ __(
+                                                'This label requests an image from %s. Loading it discloses your IP address to that server. Allow for this session?',
+                                                'ramsey-labels-independent',
+                                            ),
+                                            url.origin,
+                                        ),
+                                    )
+                                ) {
+                                    reject(
+                                        new Error(
+                                            __(
+                                                'External image request declined. Select a local attachment instead.',
+                                                'ramsey-labels-independent',
+                                            ),
+                                        ),
+                                    );
+                                    return;
+                                }
+                                approvedOrigins.add(url.origin);
+                            }
                         }
-                    }
-                    if (
-                        !/^(data:image\/(png|jpeg|jpg|gif|webp|svg\+xml);|https?:\/\/|blob:)/i.test(
-                            src,
-                        )
-                    ) {
-                        reject(
-                            new Error(
-                                'Image source must be a media attachment, a data image, or an HTTP(S) image.',
-                            ),
-                        );
-                        return;
-                    }
-                    const image = new Image();
-                    image.crossOrigin = 'anonymous';
-                    const timer = setTimeout(() => {
-                        image.src = '';
-                        reject(new Error('Image did not finish loading within 15 seconds.'));
-                    }, 15000);
-                    image.onload = () => {
-                        clearTimeout(timer);
-                        resolve(image);
-                    };
-                    image.onerror = () => {
-                        clearTimeout(timer);
-                        reject(
-                            new Error(
-                                'Image could not be loaded. For a CDN image, enable its CORS headers or select a local media attachment.',
-                            ),
-                        );
-                    };
-                    image.src = src;
-                }),
-        );
+                        if (
+                            !/^(data:image\/(png|jpeg|jpg|gif|webp);|https?:\/\/|blob:)/i.test(src)
+                        ) {
+                            reject(
+                                new Error(
+                                    __(
+                                        'Image source must be a media attachment, a data image, or an HTTP(S) image.',
+                                        'ramsey-labels-independent',
+                                    ),
+                                ),
+                            );
+                            return;
+                        }
+                        if (src.startsWith('blob:') && !trustedBlobs.has(src)) {
+                            reject(
+                                new Error(
+                                    __(
+                                        'Unverified blob image sources are not allowed.',
+                                        'ramsey-labels-independent',
+                                    ),
+                                ),
+                            );
+                            return;
+                        }
+                        const image = new Image();
+                        image.crossOrigin = 'anonymous';
+                        const timer = setTimeout(() => {
+                            revoke();
+                            image.src = '';
+                            reject(
+                                new Error(
+                                    __(
+                                        'Image did not finish loading within 15 seconds.',
+                                        'ramsey-labels-independent',
+                                    ),
+                                ),
+                            );
+                        }, 15000);
+                        image.onload = () => {
+                            clearTimeout(timer);
+                            revoke();
+                            trustedBlobs.delete(src);
+                            if (image.naturalWidth * image.naturalHeight > 16000000) {
+                                reject(
+                                    Error(
+                                        __(
+                                            'Image exceeds the 16-megapixel decoding budget.',
+                                            'ramsey-labels-independent',
+                                        ),
+                                    ),
+                                );
+                                return;
+                            }
+                            const weight =
+                                image.naturalWidth * image.naturalHeight * 4 +
+                                String(source).length * 2 +
+                                512;
+                            if (imageCache.get(source) === promise) {
+                                imageWeights.set(source, weight);
+                                imageBytes += weight;
+                                while (imageBytes > IMAGE_CACHE_BYTES && imageCache.size)
+                                    dropImage(imageCache.keys().next().value);
+                            }
+                            resolve(image);
+                        };
+                        image.onerror = () => {
+                            clearTimeout(timer);
+                            revoke();
+                            trustedBlobs.delete(src);
+                            reject(
+                                new Error(
+                                    __(
+                                        'Image could not be loaded. For a CDN image, enable its CORS headers or select a local media attachment.',
+                                        'ramsey-labels-independent',
+                                    ),
+                                ),
+                            );
+                        };
+                        image.src = src;
+                    }),
+            );
         imageCache.set(source, promise);
-        promise.catch(() => imageCache.delete(source));
-        if (imageCache.size > 500) imageCache.delete(imageCache.keys().next().value);
+        promise.catch(() => {
+            if (imageCache.get(source) === promise) dropImage(source);
+        });
+        if (imageCache.size > 500) dropImage(imageCache.keys().next().value);
         return promise;
     }
     function wrappedLines(ctx, text, width) {
@@ -132,20 +334,45 @@
         ].includes(e.fontFamily)
             ? e.fontFamily
             : 'Arial';
-        return (e.italic ? 'italic ' : '') + (e.bold ? 'bold ' : '') + size + 'px "' + family + '"';
+        return (
+            (e.italic ? 'italic ' : '') +
+            (e.bold ? 'bold ' : '') +
+            size +
+            'px ' +
+            (['sans-serif', 'serif', 'monospace'].includes(family)
+                ? family
+                : JSON.stringify(family))
+        );
     }
     function drawText(ctx, text, e, width, height, dpi, issues) {
         let size = (e.fontSize * dpi) / 72,
             lines,
             lineHeight;
         const min = Math.min(size, Math.max(1, (e.minFontSize * dpi) / 72));
-        do {
-            ctx.font = fontString(e, size);
+        const fits = (candidate) => {
+            ctx.font = fontString(e, candidate);
             lines = wrappedLines(ctx, text, width);
-            lineHeight = size * 1.16;
-            if (!e.autoFit || lines.length * lineHeight <= height + 0.2 || size <= min) break;
-            size = Math.max(min, size - 0.5);
-        } while (true);
+            lineHeight = candidate * 1.16;
+            return (
+                lines.length * lineHeight <= height + 0.2 &&
+                lines.every((line) => ctx.measureText(line).width <= width + 0.2)
+            );
+        };
+        if (!fits(size) && e.autoFit) {
+            if (fits(min)) {
+                let low = min,
+                    high = size;
+                for (let step = 0; step < 12; step++) {
+                    const mid = (low + high) / 2;
+                    if (fits(mid)) low = mid;
+                    else high = mid;
+                }
+                size = Math.max(min, Math.floor(low * 2) / 2);
+                fits(size);
+            } else {
+                size = min;
+            }
+        }
         if (
             text &&
             (lines.length * lineHeight > height + 0.2 ||
@@ -154,11 +381,15 @@
             issues.push({
                 severity: 'error',
                 element: e.id,
-                message:
+                message: __(
                     'Text does not fit at the minimum font size. Enlarge this element or reduce its minimum font size.',
+                    'ramsey-labels-independent',
+                ),
             });
+            return;
         }
         ctx.fillStyle = e.color;
+        ctx.direction = ['inherit', 'ltr', 'rtl'].includes(e.direction) ? e.direction : 'inherit';
         ctx.textBaseline = 'top';
         ctx.textAlign = ['left', 'center', 'right'].includes(e.align) ? e.align : 'left';
         const x = ctx.textAlign === 'center' ? width / 2 : ctx.textAlign === 'right' ? width : 0;
@@ -182,11 +413,22 @@
     }
     function symbolFor(e, text) {
         const key = JSON.stringify([e.format, text, e.ecc, Boolean(e.gs1)]);
-        if (!barcodeCache.has(key)) {
-            barcodeCache.set(key, B.encode(e.format, text, { ecc: e.ecc, gs1: Boolean(e.gs1) }));
-            if (barcodeCache.size > 1000) barcodeCache.delete(barcodeCache.keys().next().value);
+        if (barcodeCache.has(key)) return barcodeCache.get(key);
+        const symbol = B.encode(e.format, text, { ecc: e.ecc, gs1: Boolean(e.gs1) });
+        const weight = symbol.width * symbol.height * 8 + key.length * 2 + 512;
+        barcodeCache.set(key, symbol);
+        symbolWeights.set(key, weight);
+        symbolBytes += weight;
+        while (
+            (symbolBytes > SYMBOL_CACHE_BYTES || barcodeCache.size > 1000) &&
+            barcodeCache.size
+        ) {
+            const oldest = barcodeCache.keys().next().value;
+            symbolBytes -= symbolWeights.get(oldest) || 0;
+            symbolWeights.delete(oldest);
+            barcodeCache.delete(oldest);
         }
-        return barcodeCache.get(key);
+        return symbol;
     }
     function drawBarcode(ctx, text, e, width, height, dpi, issues) {
         const symbol = symbolFor(e, text),
@@ -200,16 +442,24 @@
         );
         if (module < 1 || areaHeight < 1)
             throw new Error(
-                'Barcode is too dense for this box/resolution. Enlarge it, shorten the value, or increase print DPI.',
+                __(
+                    'Barcode is too dense for this box/resolution. Enlarge it, shorten the value, or increase print DPI.',
+                    'ramsey-labels-independent',
+                ),
             );
         if ((module * 25.4) / dpi < 0.19)
             issues.push({
                 severity: 'warning',
                 element: e.id,
                 message:
-                    'Narrow barcode modules (' +
-                    ((module * 25.4) / dpi).toFixed(3) +
-                    ' mm). Verify scanner readability on the actual printer.',
+                    /* translators: %1$s: ((module * 25.4) / dpi).toFixed(3). */
+                    sprintf(
+                        /* translators: barcode module width in millimeters. */ __(
+                            'Narrow barcode modules (%s mm). Verify scanner readability on the actual printer.',
+                            'ramsey-labels-independent',
+                        ),
+                        ((module * 25.4) / dpi).toFixed(3),
+                    ),
             });
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, width, height);
@@ -361,13 +611,7 @@
             values.barcode_image = small.toDataURL('image/png');
             values.barcode_img_url = values.barcode_image;
         }
-        let html = String(design.html).replace(/\{\{([^{}]+)\}\}/g, (full, key) =>
-            escapeHTML(C.resolve(full, { values })),
-        );
-        html = html.replace(/\[barcode_img_url\]/g, escapeHTML(values.barcode_image || ''));
-        html = html.replace(/\[(name|sku|price|id|line[1-4])\]/g, (_, key) =>
-            escapeHTML(values[key] || ''),
-        );
+        const html = C.resolve(design.html, { values }, { escape: escapeHTML, maxLength: 200000 });
         const holder = document.createElement('template');
         holder.innerHTML = sanitizeHTML(html);
         for (const tag of holder.content.querySelectorAll('img')) {
@@ -378,7 +622,12 @@
             tmp.width = img.naturalWidth;
             tmp.height = img.naturalHeight;
             if (tmp.width * tmp.height > 16000000)
-                throw new Error('An HTML image exceeds the 16-megapixel safety limit.');
+                throw new Error(
+                    __(
+                        'An HTML image exceeds the 16-megapixel safety limit.',
+                        'ramsey-labels-independent',
+                    ),
+                );
             tmp.getContext('2d').drawImage(img, 0, 0);
             tag.setAttribute('src', tmp.toDataURL('image/png'));
         }
@@ -417,7 +666,10 @@
             canvas.getContext('2d').getImageData(0, 0, 1, 1);
         } catch (error) {
             throw new Error(
-                'This browser cannot safely rasterize this HTML design. Use the visual designer or remove external image resources.',
+                __(
+                    'This browser cannot safely rasterize this HTML design. Use the visual designer or remove external image resources.',
+                    'ramsey-labels-independent',
+                ),
             );
         }
     }
@@ -432,11 +684,28 @@
             pixelHeight = Math.max(1, Math.round(design.height * scale));
         if (!Number.isFinite(dpi) || dpi < 72 || dpi > 600 || pixelWidth * pixelHeight > 16000000)
             throw new Error(
-                'Label exceeds 16 megapixels or supported DPI. Reduce the size or print DPI.',
+                __(
+                    'Label exceeds 16 megapixels or supported DPI. Reduce the size or print DPI.',
+                    'ramsey-labels-independent',
+                ),
             );
         canvas.width = pixelWidth;
         canvas.height = pixelHeight;
         const ctx = canvas.getContext('2d');
+        if (design.showCurrency === false && record.values?.currency_symbol) {
+            record = C.clone(record);
+            const symbol = String(record.values.currency_symbol);
+            for (const key of [
+                'price',
+                'regular_price',
+                'sale_price',
+                'price_incl_tax',
+                'price_excl_tax',
+            ]) {
+                if (record.values[key])
+                    record.values[key] = String(record.values[key]).split(symbol).join('').trim();
+            }
+        }
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         if (design.mode === 'html') {
@@ -467,7 +736,10 @@
                     issues.push({
                         severity: 'error',
                         element: e.id,
-                        message: 'Rotated element extends outside the label.',
+                        message: __(
+                            'Rotated element extends outside the label.',
+                            'ramsey-labels-independent',
+                        ),
                     });
             }
             ctx.save();
@@ -538,13 +810,26 @@
         return { canvas, issues };
     }
     async function prepareJob(profile, records, options = {}) {
-        const layout = C.paginate(records, profile),
+        const layout = C.paginate(records, profile, { segmented: true }),
             images = new Map(),
             issues = [];
-        const indices = Array.from(new Set(layout.pages.flat().map((s) => s.recordIndex)));
+        const indices = Array.from(
+            new Set(layout.pages.flatMap((page) => page.map((s) => s.recordIndex))),
+        );
+        const pixels =
+            Math.round((profile.design.width * layout.page.dpi) / 25.4) *
+            Math.round((profile.design.height * layout.page.dpi) / 25.4);
+        if (indices.length * pixels * 4 > 128 * 1024 * 1024)
+            throw Error(
+                __(
+                    'Segment exceeds its decoded-image memory budget. Use fewer distinct records or lower DPI.',
+                    'ramsey-labels-independent',
+                ),
+            );
         let bytes = 0;
         for (let k = 0; k < indices.length; k++) {
-            if (options.cancelled && options.cancelled()) throw new Error('Print job cancelled.');
+            if (options.cancelled && options.cancelled())
+                throw new Error(__('Print job cancelled.', 'ramsey-labels-independent'));
             const index = indices[k],
                 result = await renderLabel(profile.design, records[index], {
                     dpi: layout.page.dpi,
@@ -557,31 +842,74 @@
                     ),
                 ),
             );
+            if (afterRender)
+                await afterRender({
+                    canvas: result.canvas,
+                    record: C.clone(records[index]),
+                    recordIndex: index,
+                    profileId: profile.id,
+                });
+            document.dispatchEvent(
+                new CustomEvent('ramsey-labels:after-render', {
+                    detail: { canvas: result.canvas, recordIndex: index, profileId: profile.id },
+                }),
+            );
+            if (result.canvas.width * result.canvas.height > 16000000)
+                throw Error(
+                    __(
+                        'A render extension exceeded the pixel budget.',
+                        'ramsey-labels-independent',
+                    ),
+                );
             const png = result.canvas.toDataURL('image/png');
             bytes += png.length;
             if (bytes > 120000000)
-                throw new Error('Rendered job exceeds 120 MB. Split this batch or reduce DPI.');
+                throw new Error(
+                    __(
+                        'Rendered job exceeds 120 MB. Split this batch or reduce DPI.',
+                        'ramsey-labels-independent',
+                    ),
+                );
             images.set(index, { png, width: result.canvas.width, height: result.canvas.height });
             result.canvas.width = 1;
             result.canvas.height = 1;
             if (options.progress) options.progress(k + 1, indices.length);
-            if (k % 10 === 0) await nextFrame();
+            if (k % 2 === 0) await nextFrame();
         }
         const errors = issues.filter((i) => i.severity === 'error');
         if (errors.length) {
             const error = new Error(
-                'Printing blocked: ' +
-                    errors.length +
-                    ' rendering error(s). ' +
+                /* translators: %1$s: errors.length; %2$s: errors
+                        .slice(0, 6)
+                        .map((i) => i.name + ' / ' + i.element + ': ' + i.message)
+                        .join('\n'). */
+                sprintf(
+                    /* translators: error count; concise error summaries. */ __(
+                        'Printing blocked: %1$s rendering error(s). %2$s',
+                        'ramsey-labels-independent',
+                    ),
+                    errors.length,
                     errors
                         .slice(0, 6)
                         .map((i) => i.name + ' / ' + i.element + ': ' + i.message)
                         .join('\n'),
+                ),
             );
             error.issues = issues;
             throw error;
         }
-        return { layout, images, issues, profile: C.clone(profile) };
+        return {
+            layout,
+            images,
+            issues,
+            profile: C.clone(profile),
+            descriptions: records.map((record) =>
+                [record.values.name, record.values.sku, record.values.price]
+                    .filter(Boolean)
+                    .join(' — ')
+                    .slice(0, 500),
+            ),
+        };
     }
     function pageElement(job, index) {
         const page = document.createElement('div'),
@@ -598,8 +926,24 @@
         });
         for (const slot of job.layout.pages[index]) {
             const img = document.createElement('img');
-            img.src = job.images.get(slot.recordIndex).png;
-            img.alt = 'Label';
+            const image = job.images.get(slot.recordIndex);
+            if (!image.url) {
+                const binary = atob(image.png.slice(image.png.indexOf(',') + 1)),
+                    bytes = new Uint8Array(binary.length);
+                for (let k = 0; k < binary.length; k++) bytes[k] = binary.charCodeAt(k);
+                image.url = URL.createObjectURL(new Blob([bytes], { type: 'image/png' }));
+            }
+            img.src = image.url;
+            /* translators: %s: printed product name, SKU and price. */
+            img.alt = job.descriptions?.[slot.recordIndex]
+                ? sprintf(
+                      /* translators: product name, SKU and price. */ __(
+                          'Label: %s',
+                          'ramsey-labels-independent',
+                      ),
+                      job.descriptions[slot.recordIndex],
+                  )
+                : __('Label', 'ramsey-labels-independent');
             Object.assign(img.style, {
                 position: 'absolute',
                 left: slot.x + 'mm',
@@ -615,12 +959,12 @@
         }
         return page;
     }
-    async function printJob(job) {
+    async function printJob(job, options = {}) {
         const previous = document.getElementById('rli-print-frame');
         if (previous) previous.remove();
         const frame = document.createElement('iframe');
         frame.id = 'rli-print-frame';
-        frame.title = 'Ramsey Labels print document';
+        frame.title = __('Ramsey Labels print document', 'ramsey-labels-independent');
         Object.assign(frame.style, {
             position: 'fixed',
             left: '-12000px',
@@ -650,6 +994,15 @@
         await Promise.all(Array.from(doc.images).map((image) => image.decode()));
         await nextFrame();
         await nextFrame();
+        if (options.cancelled?.()) {
+            frame.remove();
+            throw Error(
+                __(
+                    'Print cancelled because the queue or profile changed.',
+                    'ramsey-labels-independent',
+                ),
+            );
+        }
         frame.contentWindow.focus();
         frame.contentWindow.print();
         return frame;
@@ -672,23 +1025,50 @@
         canvas.height = image.height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        const rgba = ctx.getImageData(0, 0, canvas.width, canvas.height).data,
-            rgb = new Uint8Array(canvas.width * canvas.height * 3);
-        for (let i = 0, j = 0; i < rgba.length; i += 4) {
-            rgb[j++] = rgba[i];
-            rgb[j++] = rgba[i + 1];
-            rgb[j++] = rgba[i + 2];
+        if (typeof CompressionStream !== 'undefined') {
+            const compressor = new CompressionStream('deflate'),
+                reader = compressor.readable.getReader(),
+                writer = compressor.writable.getWriter(),
+                compressed = [];
+            const draining = (async () => {
+                while (true) {
+                    const item = await reader.read();
+                    if (item.done) break;
+                    compressed.push(item.value);
+                }
+            })();
+            for (let top = 0; top < canvas.height; top += 16) {
+                const height = Math.min(16, canvas.height - top),
+                    rgba = ctx.getImageData(0, top, canvas.width, height).data,
+                    rgb = new Uint8Array(canvas.width * height * 3);
+                for (let i = 0, j = 0; i < rgba.length; i += 4) {
+                    rgb[j++] = rgba[i];
+                    rgb[j++] = rgba[i + 1];
+                    rgb[j++] = rgba[i + 2];
+                }
+                await writer.write(rgb);
+            }
+            await writer.close();
+            await draining;
+            canvas.width = 1;
+            canvas.height = 1;
+            return { data: concatenate(compressed), filter: '/Filter /FlateDecode ' };
+        }
+        const chunks = [];
+        for (let top = 0; top < canvas.height; top += 16) {
+            const height = Math.min(16, canvas.height - top),
+                rgba = ctx.getImageData(0, top, canvas.width, height).data,
+                rgb = new Uint8Array(canvas.width * height * 3);
+            for (let i = 0, j = 0; i < rgba.length; i += 4) {
+                rgb[j++] = rgba[i];
+                rgb[j++] = rgba[i + 1];
+                rgb[j++] = rgba[i + 2];
+            }
+            chunks.push(rgb);
         }
         canvas.width = 1;
         canvas.height = 1;
-        if (typeof CompressionStream !== 'undefined') {
-            const stream = new Blob([rgb]).stream().pipeThrough(new CompressionStream('deflate'));
-            return {
-                data: new Uint8Array(await new Response(stream).arrayBuffer()),
-                filter: '/Filter /FlateDecode ',
-            };
-        }
-        return { data: rgb, filter: '' };
+        return { data: concatenate(chunks), filter: '' };
     }
     /** Minimal PDF 1.4 writer. RGB image streams are losslessly compressed, not JPEG. */
     async function exportPDF(job, options = {}) {
@@ -700,7 +1080,8 @@
         };
         let count = 0;
         for (const [index, image] of job.images) {
-            if (options.cancelled && options.cancelled()) throw new Error('PDF export cancelled.');
+            if (options.cancelled && options.cancelled())
+                throw new Error(__('PDF export cancelled.', 'ramsey-labels-independent'));
             const stream = await imageStream(image);
             imageIds.set(
                 index,
@@ -828,6 +1209,249 @@
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 60000);
     }
+    async function exportPNG(design, record, options = {}) {
+        const rendered = await renderLabel(design, record, options);
+        const errors = rendered.issues.filter((issue) => issue.severity === 'error');
+        if (errors.length) throw Error(errors.map((issue) => issue.message).join('\n'));
+        const blob = await new Promise((resolve) => rendered.canvas.toBlob(resolve, 'image/png'));
+        rendered.canvas.width = 1;
+        rendered.canvas.height = 1;
+        if (!blob) throw Error(__('PNG export failed.', 'ramsey-labels-independent'));
+        return blob;
+    }
+    function exportSVG(design, record) {
+        const errors = C.validateDesign(design);
+        if (errors.length) throw Error(errors.join('\n'));
+        const e =
+            design.mode === 'html'
+                ? C.element('barcode', {
+                      format: design.htmlBarcodeFormat,
+                      content: design.htmlBarcodeSource,
+                  })
+                : design.elements.find(
+                      (element) =>
+                          element.type === 'barcode' &&
+                          element.visible &&
+                          (!element.condition || C.resolve(element.condition, record)),
+                  );
+        if (!e)
+            throw Error(
+                __('This design has no visible barcode to export.', 'ramsey-labels-independent'),
+            );
+        return new Blob([B.toSVG(symbolFor(e, transformedText(e, record)))], {
+            type: 'image/svg+xml',
+        });
+    }
+    function releaseJob(job) {
+        if (!job) return;
+        for (const image of job.images.values()) {
+            if (image.url) {
+                URL.revokeObjectURL(image.url);
+                delete image.url;
+            }
+            dropImage(image.png);
+        }
+    }
+    /** Incremental PDF objects with bounded image buffers and filesystem backpressure. */
+    async function exportPDFStream(profile, records, sink, options = {}) {
+        if (!root.RLIBatches || !sink || typeof sink.write !== 'function')
+            throw Error(
+                __(
+                    'Streaming PDF requires the batch module and a writable sink.',
+                    'ramsey-labels-independent',
+                ),
+            );
+        const first = root.RLIBatches.segment(records, profile, 0),
+            offsets = [0, 0, 0],
+            kids = [],
+            imageIds = new Map();
+        let offset = 0,
+            nextId = 3,
+            pending = [],
+            pendingBytes = 0;
+        const flush = async () => {
+            if (pendingBytes) {
+                await sink.write(concatenate(pending));
+                pending = [];
+                pendingBytes = 0;
+            }
+        };
+        const write = async (bytes) => {
+            offset += bytes.length;
+            if (offset >= 10000000000)
+                throw Error(
+                    __(
+                        'PDF exceeds the offset range of this format. Export separate segments.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            pending.push(bytes);
+            pendingBytes += bytes.length;
+            if (pendingBytes >= 131072) await flush();
+        };
+        const object = async (id, bytes) => {
+            offsets[id] = offset;
+            await write(concatenate([ascii(id + ' 0 obj\n'), bytes, ascii('\nendobj\n')]));
+        };
+        const cancelled = () => {
+            if (options.cancelled?.())
+                throw Error(
+                    __(
+                        'PDF export cancelled because the print data changed.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+        };
+        try {
+            await write(ascii('%PDF-1.4\n%Ramsey Labels incremental PDF\n'));
+            for (let index = 0; index < first.count; index++) {
+                cancelled();
+                const segment = root.RLIBatches.segment(records, profile, index);
+                const job = await prepareJob(segment.profile, segment.records, {
+                    cancelled: options.cancelled,
+                });
+                try {
+                    const localIds = new Map();
+                    for (const [local, image] of job.images) {
+                        // Segment records preserve source order and key/value identity across copies.
+                        const record = segment.records[local];
+                        const identity = JSON.stringify([record.key, record.source, record.values]);
+                        if (!imageIds.has(identity)) {
+                            const id = nextId++,
+                                stream = await imageStream(image);
+                            await object(
+                                id,
+                                concatenate([
+                                    ascii(
+                                        '<< /Type /XObject /Subtype /Image /Width ' +
+                                            image.width +
+                                            ' /Height ' +
+                                            image.height +
+                                            ' /ColorSpace /DeviceRGB /BitsPerComponent 8 ' +
+                                            stream.filter +
+                                            '/Length ' +
+                                            stream.data.length +
+                                            ' >>\nstream\n',
+                                    ),
+                                    stream.data,
+                                    ascii('\nendstream'),
+                                ]),
+                            );
+                            imageIds.set(identity, id);
+                        }
+                        localIds.set(local, imageIds.get(identity));
+                    }
+                    const p = job.layout.page,
+                        d = job.profile.design,
+                        number = (v) => Number(v).toFixed(5);
+                    for (const slots of job.layout.pages) {
+                        cancelled();
+                        let commands = '',
+                            resources = '';
+                        const used = new Set();
+                        for (const slot of slots) {
+                            const id = localIds.get(slot.recordIndex),
+                                name = 'I' + id;
+                            if (!used.has(id)) {
+                                resources += '/' + name + ' ' + id + ' 0 R ';
+                                used.add(id);
+                            }
+                            commands +=
+                                'q ' +
+                                number(mmToPt(d.width)) +
+                                ' 0 0 ' +
+                                number(mmToPt(d.height)) +
+                                ' ' +
+                                number(mmToPt(slot.x)) +
+                                ' ' +
+                                number(mmToPt(p.height - slot.y - d.height)) +
+                                ' cm /' +
+                                name +
+                                ' Do Q\n';
+                            if (p.outlines)
+                                commands +=
+                                    'q 0.5 G 0.3 w ' +
+                                    number(mmToPt(slot.x)) +
+                                    ' ' +
+                                    number(mmToPt(p.height - slot.y - d.height)) +
+                                    ' ' +
+                                    number(mmToPt(d.width)) +
+                                    ' ' +
+                                    number(mmToPt(d.height)) +
+                                    ' re S Q\n';
+                        }
+                        const contents = ascii(commands),
+                            contentId = nextId++,
+                            pageId = nextId++;
+                        await object(
+                            contentId,
+                            concatenate([
+                                ascii('<< /Length ' + contents.length + ' >>\nstream\n'),
+                                contents,
+                                ascii('endstream'),
+                            ]),
+                        );
+                        await object(
+                            pageId,
+                            ascii(
+                                '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' +
+                                    number(mmToPt(p.width)) +
+                                    ' ' +
+                                    number(mmToPt(p.height)) +
+                                    '] /Resources << /XObject << ' +
+                                    resources +
+                                    '>> >> /Contents ' +
+                                    contentId +
+                                    ' 0 R >>',
+                            ),
+                        );
+                        kids.push(pageId);
+                        if (offsets.length * 8 + kids.length * 8 > 33554432)
+                            throw Error(
+                                __(
+                                    'PDF index exceeds its memory budget. Export separate segments.',
+                                    'ramsey-labels-independent',
+                                ),
+                            );
+                    }
+                    options.progress?.(segment.end, first.total);
+                } finally {
+                    releaseJob(job);
+                }
+            }
+            await object(1, ascii('<< /Type /Catalog /Pages 2 0 R >>'));
+            await object(
+                2,
+                ascii(
+                    '<< /Type /Pages /Count ' +
+                        kids.length +
+                        ' /Kids [' +
+                        kids.map((id) => id + ' 0 R').join(' ') +
+                        '] >>',
+                ),
+            );
+            const xref = offset;
+            await write(ascii('xref\n0 ' + nextId + '\n0000000000 65535 f \n'));
+            for (let id = 1; id < nextId; id++)
+                await write(ascii(String(offsets[id]).padStart(10, '0') + ' 00000 n \n'));
+            await write(
+                ascii(
+                    'trailer\n<< /Size ' +
+                        nextId +
+                        ' /Root 1 0 R >>\nstartxref\n' +
+                        xref +
+                        '\n%%EOF\n',
+                ),
+            );
+            cancelled();
+            await flush();
+            await sink.close?.();
+            return { pages: kids.length, labels: first.total, bytes: offset };
+        } catch (error) {
+            await sink.abort?.();
+            throw error;
+        }
+    }
     root.RLIRender = Object.freeze({
         configure,
         renderLabel,
@@ -835,6 +1459,12 @@
         pageElement,
         printJob,
         exportPDF,
+        exportPDFStream,
+        exportPNG,
+        exportSVG,
+        clearCaches,
+        cacheStats,
+        releaseJob,
         download,
         sanitizeHTML,
         sanitizeCSS,

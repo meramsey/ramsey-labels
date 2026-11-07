@@ -6,9 +6,18 @@
     else root.RLICore = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
     'use strict';
+    const __ = (message, domain) => globalThis.wp?.i18n?.__(message, domain) ?? message;
+    const sprintf = (format, ...values) => {
+        if (globalThis.wp?.i18n?.sprintf) return globalThis.wp.i18n.sprintf(format, ...values);
+        let index = 0;
+        return format.replace(/%%|%(?:(\d+)\$)?s/g, (token, position) =>
+            token === '%%' ? '%' : String(values[position ? Number(position) - 1 : index++]),
+        );
+    };
+
     const MAX_LABELS = 2000,
-        MAX_RECORDS = 1000,
-        MAX_ELEMENTS = 80;
+        MAX_RECORDS = 100000,
+        MAX_ELEMENTS = 4096;
     const clone = (value) => JSON.parse(JSON.stringify(value));
     const uid = () =>
         'rli-' +
@@ -136,6 +145,7 @@
                 minFontSize: 5,
                 autoFit: true,
                 align: 'center',
+                direction: 'inherit',
                 vAlign: 'middle',
                 bold: false,
                 italic: false,
@@ -162,6 +172,7 @@
             css: '',
             htmlBarcodeFormat: 'code128',
             htmlBarcodeSource: '{{sku|id}}',
+            showCurrency: true,
             elements: [
                 element('text', {
                     id: 'title',
@@ -366,14 +377,31 @@
             defaultProfile: base.id,
             profiles: [base, sheet],
             templates: [
-                { id: 'basic', name: 'Product barcode', design: clone(base.design) },
-                { id: 'qr', name: 'QR with text', design: qr },
-                { id: 'image', name: 'Product image with barcode', design: image },
-                { id: 'qr-card', name: 'QR left · price/name right · SKU below', design: qrCard },
+                {
+                    id: 'basic',
+                    name: __('Product barcode', 'ramsey-labels-independent'),
+                    design: clone(base.design),
+                },
+                { id: 'qr', name: __('QR with text', 'ramsey-labels-independent'), design: qr },
+                {
+                    id: 'image',
+                    name: __('Product image with barcode', 'ramsey-labels-independent'),
+                    design: image,
+                },
+                {
+                    id: 'qr-card',
+                    name: __('QR left · price/name right · SKU below', 'ramsey-labels-independent'),
+                    design: qrCard,
+                },
             ],
             papers: [
                 { id: 'a4', name: 'A4', width: 210, height: 297 },
-                { id: 'letter', name: 'US Letter', width: 215.9, height: 279.4 },
+                {
+                    id: 'letter',
+                    name: __('US Letter', 'ramsey-labels-independent'),
+                    width: 215.9,
+                    height: 279.4,
+                },
                 { id: 'p4', name: 'P4', width: 215, height: 280 },
             ],
         };
@@ -391,55 +419,84 @@
         }
         return '';
     }
-    function resolve(text, record) {
+    function legacyKey(key, args) {
+        if (['barcode_image', 'barcode_img_url'].includes(key)) return 'barcode_image';
+        if (aliases[key]) return aliases[key];
+        if (/^(billing|shipping)-/.test(key.replace(/^order-/, '')))
+            return key
+                .replace(/^order-/, '')
+                .replace(/-/, '.')
+                .replace(/-/g, '_');
+        if (
+            [
+                'name',
+                'sku',
+                'id',
+                'price',
+                'barcode',
+                'line1',
+                'line2',
+                'line3',
+                'line4',
+                'date',
+                'time',
+            ].includes(key)
+        )
+            return key;
+        const prefixes = {
+            cf: 'meta:',
+            attr: 'attr:',
+            'order-custom-field': 'order_meta:',
+            'order-item-meta-field': 'item_meta:',
+            taxonomy: 'tax:',
+        };
+        const match = String(args || '').match(
+            /(?:value|name)\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s]+))/,
+        );
+        return prefixes[key] && match ? prefixes[key] + (match[1] || match[2] || match[3]) : null;
+    }
+    function legacyArgs(args, direct) {
+        return direct === undefined
+            ? args
+            : /^(?:value|name)=/.test(direct)
+              ? direct
+              : 'value=' + direct;
+    }
+    function resolve(text, record, options = {}) {
         const values = record.values || record;
-        return String(text || '')
-            .replace(/\{\{([^{}]+)\}\}/g, (_, key) => resolveToken(key, values))
-            .replace(/\[([a-zA-Z][\w-]*)(?:\s+([^\]]*))?\]/g, (full, key, args) => {
-                let token = aliases[key];
-                if (!token && /^(billing|shipping)-/.test(key.replace(/^order-/, '')))
-                    token = key
-                        .replace(/^order-/, '')
-                        .replace(/-/, '.')
-                        .replace(/-/g, '_');
-                if (
-                    !token &&
-                    [
-                        'name',
-                        'sku',
-                        'id',
-                        'price',
-                        'barcode',
-                        'line1',
-                        'line2',
-                        'line3',
-                        'line4',
-                    ].includes(key)
-                )
-                    token = key;
-                if (
-                    !token &&
-                    ['cf', 'attr', 'order-custom-field', 'order-item-meta-field'].includes(key)
-                ) {
-                    const match = String(args || '').match(
-                        /(?:value|name)\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s]+))/,
-                    );
-                    if (match)
-                        token =
-                            {
-                                cf: 'meta:',
-                                attr: 'attr:',
-                                'order-custom-field': 'order_meta:',
-                                'order-item-meta-field': 'item_meta:',
-                            }[key] + (match[1] || match[2] || match[3]);
-                }
+        const source = String(text || '');
+        let length = source.length;
+        const bounded = (full, value) => {
+            value = options.escape ? options.escape(value) : value;
+            length += value.length - full.length;
+            if (length > (options.maxLength || 20000))
+                throw Error(
+                    __(
+                        'Resolved label text exceeds its rendering budget.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            return value;
+        };
+        if (length > (options.maxLength || 20000))
+            throw Error(
+                __('Template text exceeds its rendering budget.', 'ramsey-labels-independent'),
+            );
+        // Parse only the original template: product/customer values are data, not nested expressions.
+        return source.replace(
+            /\{\{([^{}]+)\}\}|\[([a-zA-Z][\w-]*)(?:\s+([^\]]*)|=([^\]]*))?\]/g,
+            (full, curly, key, args, direct) => {
+                if (curly) return bounded(full, resolveToken(curly, values));
+                args = legacyArgs(args, direct);
+                const token = legacyKey(key, args);
                 if (!token) return full;
                 let value = resolveToken(token, values);
                 const before = String(args || '').match(/before=['"]([^'"]*)['"]/),
                     after = String(args || '').match(/after=['"]([^'"]*)['"]/);
                 if (value) value = (before ? before[1] : '') + value + (after ? after[1] : '');
-                return value;
-            });
+                return bounded(full, value);
+            },
+        );
     }
     function requestedFields(design) {
         const output = new Set(fields);
@@ -455,28 +512,55 @@
                 return '';
             }),
         );
+        strings.forEach((text) =>
+            String(text || '').replace(
+                /\[([a-zA-Z][\w-]*)(?:\s+([^\]]*)|=([^\]]*))?\]/g,
+                (_, key, args, direct) => {
+                    const field = legacyKey(key, legacyArgs(args, direct));
+                    if (field) output.add(field);
+                    return '';
+                },
+            ),
+        );
         return Array.from(output);
     }
     function validateDesign(design) {
         const errors = [];
-        if (!design || typeof design !== 'object') return ['Missing design.'];
+        if (!design || typeof design !== 'object')
+            return [__('Missing design.', 'ramsey-labels-independent')];
         for (const key of ['width', 'height'])
             if (
                 !Number.isFinite(Number(design[key])) ||
                 Number(design[key]) < 5 ||
                 Number(design[key]) > 500
             )
-                errors.push('Label ' + key + ' must be 5–500 mm.');
+                errors.push(
+                    /* translators: %1$s: key. */
+                    sprintf(__('Label %s must be 5–500 mm.', 'ramsey-labels-independent'), key),
+                );
         if (!['visual', 'html'].includes(design.mode || 'visual'))
-            errors.push('Invalid design mode.');
+            errors.push(__('Invalid design mode.', 'ramsey-labels-independent'));
+        if (design.showCurrency !== undefined && typeof design.showCurrency !== 'boolean')
+            errors.push(
+                __('Invalid currency symbol visibility setting.', 'ramsey-labels-independent'),
+            );
         if (!Array.isArray(design.elements) || design.elements.length > MAX_ELEMENTS)
-            return errors.concat('Use at most ' + MAX_ELEMENTS + ' elements.');
+            return errors.concat(
+                sprintf(
+                    /* translators: %s: maximum design element count. */
+                    __('Use at most %s elements.', 'ramsey-labels-independent'),
+                    MAX_ELEMENTS,
+                ),
+            );
         const ids = new Set();
         for (const e of design.elements) {
-            if (!e.id || ids.has(e.id)) errors.push('Element IDs must be unique.');
+            if (!e.id || ids.has(e.id))
+                errors.push(__('Element IDs must be unique.', 'ramsey-labels-independent'));
             ids.add(e.id);
             if (!['text', 'barcode', 'image', 'rect', 'line', 'ellipse'].includes(e.type))
-                errors.push('Invalid element type.');
+                errors.push(__('Invalid element type.', 'ramsey-labels-independent'));
+            if (!['inherit', 'ltr', 'rtl'].includes(e.direction || 'inherit'))
+                errors.push(__('Invalid text direction.', 'ramsey-labels-independent'));
             for (const key of [
                 'x',
                 'y',
@@ -488,18 +572,43 @@
                 'strokeWidth',
             ])
                 if (!Number.isFinite(Number(e[key])))
-                    errors.push('Element ' + e.id + ' has an invalid ' + key + '.');
+                    errors.push(
+                        /* translators: %1$s: e.id; %2$s: key. */
+                        sprintf(
+                            /* translators: element identifier; invalid field name. */ __(
+                                'Element %1$s has an invalid %2$s.',
+                                'ramsey-labels-independent',
+                            ),
+                            e.id,
+                            key,
+                        ),
+                    );
             if (e.w <= 0 || e.h <= 0)
-                errors.push('Element ' + e.id + ' must have positive dimensions.');
+                errors.push(
+                    /* translators: %1$s: e.id. */
+                    sprintf(
+                        /* translators: element identifier. */ __(
+                            'Element %s must have positive dimensions.',
+                            'ramsey-labels-independent',
+                        ),
+                        e.id,
+                    ),
+                );
             if (
                 e.x < -0.01 ||
                 e.y < -0.01 ||
                 e.x + e.w > design.width + 0.01 ||
                 e.y + e.h > design.height + 0.01
             )
-                errors.push('Element ' + e.id + ' is outside the label.');
+                errors.push(
+                    /* translators: %1$s: e.id. */
+                    sprintf(
+                        __('Element %s is outside the label.', 'ramsey-labels-independent'),
+                        e.id,
+                    ),
+                );
             if (!/^#[0-9a-f]{6}$/i.test(e.color || '#000000'))
-                errors.push('Invalid element color.');
+                errors.push(__('Invalid element color.', 'ramsey-labels-independent'));
         }
         return Array.from(new Set(errors));
     }
@@ -542,9 +651,13 @@
             'start',
             'dpi',
         ])
-            if (!Number.isFinite(Number(p[key]))) errors.push('Invalid page value: ' + key);
+            if (!Number.isFinite(Number(p[key])))
+                errors.push(
+                    /* translators: %1$s: key. */
+                    sprintf(__('Invalid page value: %s', 'ramsey-labels-independent'), key),
+                );
         if (p.width < 5 || p.width > 1000 || p.height < 5 || p.height > 1000)
-            errors.push('Page dimensions must be 5–1,000 mm.');
+            errors.push(__('Page dimensions must be 5–1,000 mm.', 'ramsey-labels-independent'));
         if (
             !Number.isInteger(p.columns) ||
             !Number.isInteger(p.rows) ||
@@ -552,27 +665,60 @@
             p.rows < 1 ||
             p.columns * p.rows > 1000
         )
-            errors.push('Use positive whole rows and columns, at most 1,000 slots.');
+            errors.push(
+                __(
+                    'Use positive whole rows and columns, at most 1,000 slots.',
+                    'ramsey-labels-independent',
+                ),
+            );
         if (!Number.isInteger(p.start) || p.start < 0 || p.start >= p.columns * p.rows)
-            errors.push('Skipped slots must be less than the number of labels per sheet.');
+            errors.push(
+                __(
+                    'Skipped slots must be less than the number of labels per sheet.',
+                    'ramsey-labels-independent',
+                ),
+            );
         if (
             p.columns * d.width + (p.columns - 1) * p.gapX + p.marginLeft + p.marginRight >
             p.width + 0.02
         )
-            errors.push('Labels and horizontal gaps/margins do not fit the page width.');
+            errors.push(
+                __(
+                    'Labels and horizontal gaps/margins do not fit the page width.',
+                    'ramsey-labels-independent',
+                ),
+            );
         if (
             p.rows * d.height + (p.rows - 1) * p.gapY + p.marginTop + p.marginBottom >
             p.height + 0.02
         )
-            errors.push('Labels and vertical gaps/margins do not fit the page height.');
-        if (p.dpi < 72 || p.dpi > 600) errors.push('Resolution must be 72–600 dpi.');
+            errors.push(
+                __(
+                    'Labels and vertical gaps/margins do not fit the page height.',
+                    'ramsey-labels-independent',
+                ),
+            );
+        if (p.dpi < 72 || p.dpi > 600)
+            errors.push(__('Resolution must be 72–600 dpi.', 'ramsey-labels-independent'));
         for (const k of ['marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'gapX', 'gapY'])
-            if (p[k] < 0) errors.push('Margins and gaps cannot be negative.');
+            if (p[k] < 0)
+                errors.push(
+                    __('Margins and gaps cannot be negative.', 'ramsey-labels-independent'),
+                );
         return errors;
     }
-    function paginate(records, profile) {
-        if (!Array.isArray(records) || records.length > MAX_RECORDS)
-            throw new Error('Use at most ' + MAX_RECORDS + ' records per print job.');
+    function paginate(records, profile, options = {}) {
+        if (!Array.isArray(records) || (!options.segmented && records.length > MAX_RECORDS))
+            throw new Error(
+                /* translators: %1$s: MAX_RECORDS. */
+                sprintf(
+                    /* translators: maximum records in this request. */ __(
+                        'Use at most %s records per print job.',
+                        'ramsey-labels-independent',
+                    ),
+                    MAX_RECORDS,
+                ),
+            );
         const errors = validatePage(profile);
         if (errors.length) throw new Error(errors.join('\n'));
         const p = geometry(profile),
@@ -582,17 +728,36 @@
                 (sum, r) => sum + (r.selected === false ? 0 : Number(r.quantity)),
                 0,
             );
-        if (!Number.isInteger(total) || total < 1 || total > MAX_LABELS)
-            throw new Error('Select between 1 and ' + MAX_LABELS + ' labels per print job.');
+        if (!Number.isSafeInteger(total) || total < 1 || (!options.segmented && total > MAX_LABELS))
+            throw new Error(
+                /* translators: %1$s: MAX_LABELS. */
+                sprintf(
+                    /* translators: maximum labels per segment. */ __(
+                        'Select between 1 and %s labels per print job.',
+                        'ramsey-labels-independent',
+                    ),
+                    MAX_LABELS,
+                ),
+            );
         let absolute = p.start;
         records.forEach((record, recordIndex) => {
             if (record.selected === false) return;
             if (
                 !Number.isInteger(Number(record.quantity)) ||
                 Number(record.quantity) < 1 ||
-                Number(record.quantity) > MAX_LABELS
+                !Number.isSafeInteger(Number(record.quantity)) ||
+                (!options.segmented && Number(record.quantity) > MAX_LABELS)
             )
-                throw new Error('Invalid quantity for ' + (record.values.name || record.key));
+                throw new Error(
+                    /* translators: %1$s: record.values.name || record.key. */
+                    sprintf(
+                        /* translators: record name. */ __(
+                            'Invalid quantity for %s',
+                            'ramsey-labels-independent',
+                        ),
+                        record.values.name || record.key,
+                    ),
+                );
             for (let copy = 0; copy < record.quantity; copy++, absolute++) {
                 const page = Math.floor(absolute / slots),
                     slot = absolute % slots;
@@ -602,6 +767,7 @@
                 pages[page].push({
                     recordIndex,
                     copy,
+                    quantity: options.segmented ? Number(record.quantity) : 1,
                     x: p.marginLeft + p.offsetX + column * (profile.design.width + p.gapX),
                     y: p.marginTop + p.offsetY + row * (profile.design.height + p.gapY),
                 });
@@ -612,8 +778,12 @@
     /** RFC4180-style parser. Leading zeros are preserved; malformed quotes are rejected. */
     function parseCSV(text, delimiter = ',') {
         text = String(text).replace(/^\uFEFF/, '');
-        if (text.length > 2000000) throw new Error('CSV exceeds the 2 MB limit.');
-        if (![',', ';', '\t'].includes(delimiter)) throw new Error('Unsupported delimiter.');
+        if (text.length > 8000000)
+            throw new Error(
+                __('CSV exceeds the 8 MB transfer budget.', 'ramsey-labels-independent'),
+            );
+        if (![',', ';', '\t'].includes(delimiter))
+            throw new Error(__('Unsupported delimiter.', 'ramsey-labels-independent'));
         const rows = [];
         let row = [],
             field = '',
@@ -622,7 +792,8 @@
         for (let i = 0; i <= text.length; i++) {
             const c = i === text.length ? null : text[i];
             if (quoted) {
-                if (c === null) throw new Error('Unclosed quoted CSV field.');
+                if (c === null)
+                    throw new Error(__('Unclosed quoted CSV field.', 'ramsey-labels-independent'));
                 if (c === '"') {
                     if (text[i + 1] === '"') {
                         field += '"';
@@ -642,10 +813,17 @@
                     if (c === '\r' && text[i + 1] === '\n') i++;
                 }
             } else if (c === '"') {
-                if (field || closed) throw new Error('Unexpected quote in CSV.');
+                if (field || closed)
+                    throw new Error(__('Unexpected quote in CSV.', 'ramsey-labels-independent'));
                 quoted = true;
             } else {
-                if (closed) throw new Error('Unexpected text after a closing CSV quote.');
+                if (closed)
+                    throw new Error(
+                        __(
+                            'Unexpected text after a closing CSV quote.',
+                            'ramsey-labels-independent',
+                        ),
+                    );
                 field += c;
             }
         }
@@ -660,11 +838,22 @@
             )
         )
             throw new Error(
-                'Headers must be non-empty field names (letters, digits, dots, colons, underscores or hyphens).',
+                __(
+                    'Headers must be non-empty field names (letters, digits, dots, colons, underscores or hyphens).',
+                    'ramsey-labels-independent',
+                ),
             );
-        if (new Set(headers).size !== headers.length) throw new Error('Duplicate CSV column name.');
-        if (rows.length > MAX_RECORDS)
-            throw new Error('At most ' + MAX_RECORDS + ' CSV records are allowed.');
+        if (new Set(headers).size !== headers.length)
+            throw new Error(__('Duplicate CSV column name.', 'ramsey-labels-independent'));
+        if (rows.length > 100000)
+            throw new Error(
+                /* translators: %1$s: MAX_RECORDS. */
+                sprintf(
+                    /* translators: %s: CSV rows allowed per import. */
+                    __('At most %s CSV records are allowed.', 'ramsey-labels-independent'),
+                    100000,
+                ),
+            );
         return rows.map((r, index) => {
             if (r.length !== headers.length)
                 throw new Error(
@@ -687,16 +876,39 @@
             return result;
         });
     }
-    function csvRecords(text, delimiter = ',') {
+    function csvRecords(text, delimiter = ',', options = {}) {
         return parseCSV(text, delimiter).map((values, i) => {
             const raw =
                 values.quantity === undefined || values.quantity === '' ? '1' : values.quantity;
-            if (!/^\d+$/.test(raw) || Number(raw) < 1 || Number(raw) > MAX_LABELS)
-                throw new Error('Invalid quantity in CSV row ' + (i + 2) + '.');
+            if (
+                !/^\d+$/.test(raw) ||
+                !Number.isSafeInteger(Number(raw)) ||
+                Number(raw) < 1 ||
+                Number(raw) > (options.segmented ? Number.MAX_SAFE_INTEGER : MAX_LABELS)
+            )
+                throw new Error(
+                    /* translators: %1$s: i + 2. */
+                    sprintf(
+                        /* translators: CSV row number. */ __(
+                            'Invalid quantity in CSV row %s.',
+                            'ramsey-labels-independent',
+                        ),
+                        i + 2,
+                    ),
+                );
             const quantity = Number(raw);
             delete values.quantity;
             if (!values.name)
-                values.name = values.sku || values.barcode || 'Manual label ' + (i + 1);
+                values.name =
+                    values.sku ||
+                    values.barcode /* translators: %1$s: i + 1. */ ||
+                    sprintf(
+                        /* translators: CSV row number. */ __(
+                            'Manual label %s',
+                            'ramsey-labels-independent',
+                        ),
+                        i + 1,
+                    );
             return { key: uid(), source: 'manual', values, quantity, selected: true };
         });
     }
@@ -730,18 +942,26 @@
             library.schema !== 1 ||
             !Array.isArray(library.profiles) ||
             !library.profiles.length ||
-            library.profiles.length > 100 ||
             !Array.isArray(library.templates) ||
-            library.templates.length > 100 ||
-            !Array.isArray(library.papers) ||
-            library.papers.length > 100
+            !Array.isArray(library.papers)
         )
             throw new Error(
-                'Invalid Ramsey Labels library (schema 1 required; maximum 100 of each item).',
+                __(
+                    'Invalid Ramsey Labels library (schema 1 and valid collections required).',
+                    'ramsey-labels-independent',
+                ),
             );
         const ids = new Set();
+        if (new TextEncoder().encode(JSON.stringify(library)).byteLength > 2200000)
+            throw Error(
+                __(
+                    'Library exceeds the 2.2 MB document budget. Export or split the document before saving.',
+                    'ramsey-labels-independent',
+                ),
+            );
         library.profiles.forEach((p) => {
-            if (!p.id || ids.has(p.id)) throw new Error('Duplicate/missing profile ID.');
+            if (!p.id || ids.has(p.id))
+                throw new Error(__('Duplicate/missing profile ID.', 'ramsey-labels-independent'));
             ids.add(p.id);
             const errors = validateDesign(p.design).concat(validatePage(p));
             if (errors.length) throw new Error(p.name + ': ' + errors.join(' '));
@@ -750,7 +970,8 @@
             const errors = validateDesign(t.design);
             if (errors.length) throw new Error(t.name + ': ' + errors.join(' '));
         });
-        if (!ids.has(library.defaultProfile)) throw new Error('Default profile does not exist.');
+        if (!ids.has(library.defaultProfile))
+            throw new Error(__('Default profile does not exist.', 'ramsey-labels-independent'));
         return library;
     }
     return Object.freeze({

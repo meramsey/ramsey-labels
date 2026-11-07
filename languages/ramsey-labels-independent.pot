@@ -1,0 +1,1925 @@
+# Copyright (C) 2026 Ramsey Resin Art
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ramsey Labels for WooCommerce 1.0.0-rc.10\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ramsey-labels-independent\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-07T04:16:01+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: ramsey-labels-independent\n"
+
+#. Plugin Name of the plugin
+#: ramsey-labels-independent.php
+msgid "Ramsey Labels for WooCommerce"
+msgstr ""
+
+#. Description of the plugin
+#: ramsey-labels-independent.php
+msgid "Independent WooCommerce label designer, barcodes, order/product batches, thermal/sheet printing and PDF export."
+msgstr ""
+
+#. Author of the plugin
+#: ramsey-labels-independent.php
+msgid "Ramsey Resin Art"
+msgstr ""
+
+#: includes/class-privacy.php:31
+#: includes/class-privacy.php:45
+#: includes/class-privacy.php:153
+#: includes/class-privacy.php:171
+msgid "Saved label jobs"
+msgstr ""
+
+#: includes/class-privacy.php:84
+msgid "Saved jobs are being updated. Retry the privacy operation."
+msgstr ""
+
+#: includes/class-privacy.php:92
+msgid "Saved jobs are being edited. Retry the privacy operation; no owners will be skipped."
+msgstr ""
+
+#: includes/class-privacy.php:96
+msgid "Saved-job ownership changed during the privacy operation. Retry it."
+msgstr ""
+
+#: includes/class-privacy.php:157
+#: assets.js:1068
+msgid "Job name"
+msgstr ""
+
+#: includes/class-privacy.php:161
+msgid "Created"
+msgstr ""
+
+#: includes/class-privacy.php:175
+msgid "Print record"
+msgstr ""
+
+#: includes/Data.php:27
+msgid "You do not have permission to read this data source."
+msgstr ""
+
+#. translators: %s: IDs per transport request.
+#: includes/Data.php:45
+#, php-format
+msgid "Supply at most %s IDs per request."
+msgstr ""
+
+#: includes/Data.php:63
+msgid "Invalid field list."
+msgstr ""
+
+#: includes/Data.php:69
+msgid "Sensitive metadata cannot be printed."
+msgstr ""
+
+#: includes/Data.php:72
+msgid "Invalid requested field."
+msgstr ""
+
+#. translators: %s: product ID.
+#: includes/Data.php:153
+#, php-format
+msgid "Product %s is missing or deleted."
+msgstr ""
+
+#. translators: %s: product ID.
+#: includes/Data.php:157
+#, php-format
+msgid "Product %s is not readable by this account."
+msgstr ""
+
+#: includes/Data.php:210
+msgid "More than 2,000 matches. Refine the product search."
+msgstr ""
+
+#: includes/Data.php:384
+msgid "Unknown order status."
+msgstr ""
+
+#: includes/Data.php:396
+msgid "More than 1,000 orders matched. Refine the search before loading records."
+msgstr ""
+
+#: includes/Data.php:408
+msgid "Search orders by numeric ID or billing email on this WooCommerce version."
+msgstr ""
+
+#: includes/Data.php:443
+msgid "Order was not found."
+msgstr ""
+
+#: includes/Data.php:616
+msgid "A quantity is fractional or negative. Choose one label per item or set an explicit whole quantity."
+msgstr ""
+
+#: includes/Data.php:633
+msgid "Select at least one record."
+msgstr ""
+
+#: includes/Data.php:660
+msgid "Variation expansion exceeds the 1,000-record limit. Select a smaller batch."
+msgstr ""
+
+#. translators: %s: product name.
+#: includes/Data.php:669
+#, php-format
+msgid "%s: stock is not managed; using one label × copies."
+msgstr ""
+
+#. translators: %s: product name.
+#: includes/Data.php:676
+#, php-format
+msgid "%s: zero stock, skipped."
+msgstr ""
+
+#. translators: %s: order ID.
+#: includes/Data.php:695
+#, php-format
+msgid "Order %s was not found."
+msgstr ""
+
+#. translators: %s: order item ID.
+#: includes/Data.php:753
+#, php-format
+msgid "Order item %s: original product is deleted; only historical order data is available."
+msgstr ""
+
+#. translators: %s: coupon ID.
+#: includes/Data.php:771
+#, php-format
+msgid "Coupon %s was not found."
+msgstr ""
+
+#. translators: %s: user ID.
+#: includes/Data.php:810
+#, php-format
+msgid "User %s was not found."
+msgstr ""
+
+#: includes/Data.php:831
+msgid "Custom user metadata requires permission to edit that user."
+msgstr ""
+
+#: includes/Data.php:834
+msgid "Sensitive user metadata cannot be printed."
+msgstr ""
+
+#. translators: %s: post ID.
+#: includes/Data.php:852
+#, php-format
+msgid "Post %s cannot be read."
+msgstr ""
+
+#: includes/Data.php:855
+msgid "Use the dedicated product/order source for this record."
+msgstr ""
+
+#: includes/Data.php:889
+msgid "Developer API records exceed the 2 MB response budget. Return fewer records per request."
+msgstr ""
+
+#: includes/Data.php:911
+msgid "The selected label total exceeds the exact browser integer range; split or refine the selection."
+msgstr ""
+
+#: includes/Data.php:915
+msgid "Response exceeds its rendering or byte budget. Use paginated requests and segmented printing."
+msgstr ""
+
+#: includes/Data.php:930
+msgid "This attachment is not readable."
+msgstr ""
+
+#: includes/Data.php:941
+msgid "Attachment must be a readable image inside the local uploads directory."
+msgstr ""
+
+#: includes/Data.php:944
+msgid "Attachment exceeds the 8 MB image limit."
+msgstr ""
+
+#: includes/Data.php:948
+msgid "Select a PNG, JPEG, GIF, or WebP image."
+msgstr ""
+
+#: includes/Data.php:952
+msgid "Attachment exceeds the 16-megapixel image budget."
+msgstr ""
+
+#: includes/Migration.php:28
+msgid "Invalid legacy table."
+msgstr ""
+
+#: includes/Migration.php:32
+msgid "Invalid legacy table identifier."
+msgstr ""
+
+#: includes/Migration.php:103
+msgid "Malformed legacy serialized settings."
+msgstr ""
+
+#: includes/Migration.php:124
+msgid "Unsafe or excessive legacy settings graph."
+msgstr ""
+
+#. translators: %s: legacy field name.
+#: includes/Migration.php:326
+#, php-format
+msgid "Unmapped legacy field: %s. It remains visible for manual correction."
+msgstr ""
+
+#. translators: 1: profile name, 2: validation error.
+#: includes/Migration.php:365
+#, php-format
+msgid "%1$s was not imported: %2$s"
+msgstr ""
+
+#: includes/Migration.php:370
+msgid "Previous Ramsey configuration"
+msgstr ""
+
+#. translators: %s: imported profile name.
+#: includes/Migration.php:375
+#, php-format
+msgid "Previous: %s"
+msgstr ""
+
+#. translators: %s: imported profile name.
+#: includes/Migration.php:396
+#, php-format
+msgid "Imported: %s"
+msgstr ""
+
+#: includes/Migration.php:461
+msgid "Legacy HTML/CSS/JavaScript templates and bundled artwork are not copied. Imported field bindings use an independently constructed layout; verify dimensions and positions."
+msgstr ""
+
+#: includes/Migration.php:464
+msgid "Imported profiles are new copies. The original plugin and its database tables are unchanged. Check every imported profile before printing."
+msgstr ""
+
+#: includes/Migration.php:503
+msgid "Migration sources changed. Preview migration again before applying it."
+msgstr ""
+
+#: includes/Migration.php:506
+msgid "There are no new valid profiles to import."
+msgstr ""
+
+#: includes/Migration.php:550
+msgid "No migration backup exists."
+msgstr ""
+
+#: includes/Plugin.php:69
+#: includes/Plugin.php:262
+msgid "You do not have permission for this action."
+msgstr ""
+
+#: includes/Plugin.php:72
+#: includes/Plugin.php:265
+msgid "Request exceeds the 2.2 MB limit."
+msgstr ""
+
+#: includes/Plugin.php:96
+#: includes/Plugin.php:501
+msgid "Ramsey Labels"
+msgstr ""
+
+#: includes/Plugin.php:125
+msgid "Design / Print"
+msgstr ""
+
+#: includes/Plugin.php:132
+msgid "Permission denied."
+msgstr ""
+
+#: includes/Plugin.php:134
+msgid "Loading Ramsey Labels…"
+msgstr ""
+
+#: includes/Plugin.php:134
+msgid "Enable JavaScript to use the visual designer and print engine."
+msgstr ""
+
+#: includes/Plugin.php:143
+msgid "WooCommerce is inactive. Product and order integrations require WooCommerce."
+msgstr ""
+
+#: includes/Plugin.php:277
+msgid "The request failed. No product or order was changed. Contact your administrator."
+msgstr ""
+
+#: includes/Plugin.php:387
+msgid "Invalid migration action."
+msgstr ""
+
+#: includes/Plugin.php:420
+msgid "Print labels"
+msgstr ""
+
+#: includes/Plugin.php:434
+msgid "Print user label"
+msgstr ""
+
+#: includes/Plugin.php:448
+msgid "Product labels"
+msgstr ""
+
+#: includes/Plugin.php:464
+msgid "Print product labels"
+msgstr ""
+
+#: includes/Plugin.php:478
+msgid "Ramsey Labels: print product label"
+msgstr ""
+
+#: includes/Plugin.php:491
+msgid "Print variation label"
+msgstr ""
+
+#: includes/Plugin.php:515
+msgid "Purchased product labels"
+msgstr ""
+
+#: includes/Plugin.php:515
+msgid "Order / shipping label"
+msgstr ""
+
+#: includes/Plugin.php:521
+#: assets/render.js:946
+msgid "Label"
+msgstr ""
+
+#: includes/Plugin.php:538
+msgid "Select item for label printing"
+msgstr ""
+
+#: includes/Plugin.php:550
+msgid "Print selected product labels"
+msgstr ""
+
+#: includes/Plugin.php:566
+msgid "Ramsey: print product labels"
+msgstr ""
+
+#: includes/Plugin.php:568
+msgid "Ramsey: print coupon labels"
+msgstr ""
+
+#: includes/Plugin.php:570
+msgid "Ramsey: print user labels"
+msgstr ""
+
+#: includes/Plugin.php:572
+msgid "Ramsey: purchased product labels"
+msgstr ""
+
+#: includes/Plugin.php:573
+msgid "Ramsey: order / shipping labels"
+msgstr ""
+
+#: includes/Plugin.php:600
+msgid "This bulk selection exceeds the safe handoff size. Split the selection into smaller pages."
+msgstr ""
+
+#: includes/Schema.php:31
+msgid "The installed defaults document is invalid."
+msgstr ""
+
+#: includes/Schema.php:46
+msgid "Expected a text value."
+msgstr ""
+
+#. translators: %s: maximum byte length.
+#: includes/Schema.php:51
+#, php-format
+msgid "Text exceeds the allowed length (%s bytes)."
+msgstr ""
+
+#: includes/Schema.php:54
+msgid "NUL bytes are not allowed."
+msgstr ""
+
+#: includes/Schema.php:75
+msgid "Expected a finite number."
+msgstr ""
+
+#. translators: 1: lower numeric bound, 2: upper numeric bound.
+#: includes/Schema.php:80
+#, php-format
+msgid "Number must be %1$s–%2$s (whole numbers only)."
+msgstr ""
+
+#. translators: 1: lower numeric bound, 2: upper numeric bound.
+#: includes/Schema.php:80
+#, php-format
+msgid "Number must be %1$s–%2$s."
+msgstr ""
+
+#: includes/Schema.php:84
+msgid "Integer is outside the safely representable range."
+msgstr ""
+
+#: includes/Schema.php:99
+msgid "Unsupported setting value."
+msgstr ""
+
+#: includes/Schema.php:114
+msgid "Invalid identifier."
+msgstr ""
+
+#: includes/Schema.php:128
+msgid "Expected a boolean."
+msgstr ""
+
+#: includes/Schema.php:146
+msgid "Invalid color."
+msgstr ""
+
+#: includes/Schema.php:266
+msgid "A design exceeds its element-count resource budget."
+msgstr ""
+
+#: includes/Schema.php:271
+msgid "Invalid design element."
+msgstr ""
+
+#: includes/Schema.php:275
+msgid "Duplicate element identifier."
+msgstr ""
+
+#. translators: %s: visual element identifier.
+#: includes/Schema.php:280
+#: assets/core.js:606
+#, php-format,js-format
+msgid "Element %s is outside the label."
+msgstr ""
+
+#: includes/Schema.php:335
+msgid "Invalid sheet capacity or skipped slots."
+msgstr ""
+
+#: includes/Schema.php:338
+msgid "Labels do not fit the page width."
+msgstr ""
+
+#: includes/Schema.php:341
+msgid "Labels do not fit the page height."
+msgstr ""
+
+#: includes/Schema.php:355
+msgid "Unsupported library schema."
+msgstr ""
+
+#. translators: %s: library collection name.
+#: includes/Schema.php:360
+#, php-format
+msgid "Invalid %s collection."
+msgstr ""
+
+#: includes/Schema.php:364
+#: assets/core.js:957
+msgid "Library exceeds the 2.2 MB document budget. Export or split the document before saving."
+msgstr ""
+
+#: includes/Schema.php:367
+msgid "At least one profile is required."
+msgstr ""
+
+#: includes/Schema.php:380
+msgid "Invalid profile."
+msgstr ""
+
+#: includes/Schema.php:384
+msgid "Duplicate profile identifier."
+msgstr ""
+
+#: includes/Schema.php:389
+msgid "Invalid role restrictions."
+msgstr ""
+
+#: includes/Schema.php:401
+#: assets/core.js:974
+msgid "Default profile does not exist."
+msgstr ""
+
+#: includes/Schema.php:407
+msgid "Duplicate template identifier."
+msgstr ""
+
+#: includes/Schema.php:419
+msgid "Duplicate paper identifier."
+msgstr ""
+
+#: includes/Schema.php:442
+msgid "Too many records in the saved job."
+msgstr ""
+
+#: includes/Schema.php:448
+msgid "Invalid job record."
+msgstr ""
+
+#: includes/Schema.php:453
+msgid "Invalid field key."
+msgstr ""
+
+#. translators: %s: labels per rendering segment.
+#: includes/Schema.php:470
+#, php-format
+msgid "The job exceeds %s labels."
+msgstr ""
+
+#: includes/Store.php:101
+msgid "Personal print profile"
+msgstr ""
+
+#: includes/Store.php:125
+msgid "Settings changed in another browser tab. Export your edits, reload, then reapply them."
+msgstr ""
+
+#: includes/Store.php:134
+msgid "A restricted profile cannot be edited."
+msgstr ""
+
+#: includes/Store.php:165
+msgid "The save conflicted with another update or the database rejected it. Reload before saving again."
+msgstr ""
+
+#: includes/Store.php:314
+msgid "Another saved-data operation is in progress. Retry after it completes."
+msgstr ""
+
+#: includes/Store.php:364
+msgid "Acknowledge that saved jobs may contain customer data."
+msgstr ""
+
+#: includes/Store.php:374
+msgid "You cannot save a data source you cannot read."
+msgstr ""
+
+#: includes/Store.php:378
+msgid "Saved jobs exceed the 2 MB per-user limit. Export CSV locally instead."
+msgstr ""
+
+#: assets.js:92
+#: assets.js:1773
+#: assets.js:1846
+msgid "Cancel current operation"
+msgstr ""
+
+#: assets.js:132
+msgid "Thermal 2 × 1 inches"
+msgstr ""
+
+#: assets.js:134
+msgid "A4 · 65 labels · 38.1 × 21.2 mm"
+msgstr ""
+
+#: assets.js:139
+#: assets/core.js:382
+msgid "Product barcode"
+msgstr ""
+
+#: assets.js:140
+#: assets/core.js:385
+msgid "QR with text"
+msgstr ""
+
+#: assets.js:141
+#: assets/core.js:388
+msgid "Product image with barcode"
+msgstr ""
+
+#: assets.js:142
+#: assets/core.js:393
+msgid "QR left · price/name right · SKU below"
+msgstr ""
+
+#. translators: HTTP status code.
+#: assets.js:179
+#, js-format
+msgid "Request failed (%s)"
+msgstr ""
+
+#: assets.js:198
+msgid "Finish or cancel the PDF export before changing the queue."
+msgstr ""
+
+#: assets.js:221
+#: assets.js:369
+msgid "Unsaved changes"
+msgstr ""
+
+#: assets.js:249
+msgid "Profile missing"
+msgstr ""
+
+#: assets.js:259
+msgid "Saved to WordPress."
+msgstr ""
+
+#: assets.js:271
+msgid "Print profile"
+msgstr ""
+
+#: assets.js:278
+msgid "Save settings"
+msgstr ""
+
+#: assets.js:279
+msgid "Duplicate profile"
+msgstr ""
+
+#. translators: %s: existing profile name.
+#: assets.js:284
+#, js-format
+msgid "%s copy"
+msgstr ""
+
+#: assets.js:290
+msgid "Delete profile"
+msgstr ""
+
+#: assets.js:292
+msgid "Keep at least one profile"
+msgstr ""
+
+#: assets.js:295
+msgid "Delete this profile? Save settings to persist."
+msgstr ""
+
+#: assets.js:310
+msgid "Export library"
+msgstr ""
+
+#: assets.js:313
+msgid "Import library"
+msgstr ""
+
+#: assets.js:320
+msgid "Select a JSON library smaller than 2.2 MB."
+msgstr ""
+
+#: assets.js:333
+msgid "Replace all current profiles and templates in this editor? Save to persist."
+msgstr ""
+
+#: assets.js:355
+msgid "Ramsey Labels — Designer & Print"
+msgstr ""
+
+#: assets.js:357
+msgid "Independent WooCommerce label printing. Save settings before leaving. Test print alignment and barcode scanning before production."
+msgstr ""
+
+#: assets.js:374
+msgid "Label workflows"
+msgstr ""
+
+#: assets.js:377
+#: assets.js:420
+msgid "Design"
+msgstr ""
+
+#: assets.js:378
+#: assets.js:421
+msgid "Products & orders"
+msgstr ""
+
+#: assets.js:379
+#: assets.js:422
+msgid "Preview / print"
+msgstr ""
+
+#: assets.js:380
+#: assets.js:423
+msgid "Migration"
+msgstr ""
+
+#: assets.js:455
+msgid "Profile name"
+msgstr ""
+
+#: assets.js:462
+msgid "Label width (mm)"
+msgstr ""
+
+#: assets.js:476
+msgid "Label height (mm)"
+msgstr ""
+
+#: assets.js:490
+msgid "Layout mode"
+msgstr ""
+
+#: assets.js:494
+msgid "Visual"
+msgstr ""
+
+#: assets.js:495
+#: assets.js:670
+msgid "HTML template"
+msgstr ""
+
+#: assets.js:504
+msgid "Page type"
+msgstr ""
+
+#: assets.js:508
+msgid "Thermal / roll"
+msgstr ""
+
+#: assets.js:509
+msgid "Sheet"
+msgstr ""
+
+#: assets.js:532
+msgid "Resolution (DPI)"
+msgstr ""
+
+#: assets.js:545
+msgid "Show currency symbol"
+msgstr ""
+
+#: assets.js:560
+msgid "Paper width"
+msgstr ""
+
+#: assets.js:561
+msgid "Paper height"
+msgstr ""
+
+#: assets.js:562
+msgid "Columns"
+msgstr ""
+
+#: assets.js:563
+msgid "Rows"
+msgstr ""
+
+#: assets.js:564
+msgid "Top margin"
+msgstr ""
+
+#: assets.js:565
+msgid "Left margin"
+msgstr ""
+
+#: assets.js:566
+msgid "Right margin"
+msgstr ""
+
+#: assets.js:567
+msgid "Bottom margin"
+msgstr ""
+
+#: assets.js:568
+msgid "Horizontal gap"
+msgstr ""
+
+#: assets.js:569
+msgid "Vertical gap"
+msgstr ""
+
+#: assets.js:570
+msgid "Skip first slots"
+msgstr ""
+
+#: assets.js:571
+msgid "X calibration offset"
+msgstr ""
+
+#: assets.js:572
+msgid "Y calibration offset"
+msgstr ""
+
+#: assets.js:593
+msgid "Quantity mode"
+msgstr ""
+
+#: assets.js:597
+msgid "One per product"
+msgstr ""
+
+#: assets.js:598
+msgid "Stock quantity"
+msgstr ""
+
+#: assets.js:599
+msgid "Order quantity"
+msgstr ""
+
+#: assets.js:611
+msgid "Text element"
+msgstr ""
+
+#: assets.js:612
+msgid "Barcode element"
+msgstr ""
+
+#: assets.js:613
+msgid "Image element"
+msgstr ""
+
+#: assets.js:614
+msgid "Rectangle element"
+msgstr ""
+
+#: assets.js:615
+msgid "Line element"
+msgstr ""
+
+#: assets.js:616
+msgid "Ellipse element"
+msgstr ""
+
+#. translators: element type.
+#: assets.js:621
+#, js-format
+msgid "Add %s"
+msgstr ""
+
+#: assets.js:638
+msgid "Save as template"
+msgstr ""
+
+#: assets.js:639
+msgid "Template name"
+msgstr ""
+
+#: assets.js:645
+msgid "Load template"
+msgstr ""
+
+#: assets.js:649
+msgid "Choose template"
+msgstr ""
+
+#: assets.js:656
+msgid "Replace current design?"
+msgstr ""
+
+#: assets.js:674
+msgid "CSS"
+msgstr ""
+
+#: assets.js:692
+msgid "Drag elements to reposition. Click to edit. Dimensions and coordinates are in millimeters."
+msgstr ""
+
+#. translators: element type; element identifier.
+#: assets.js:736
+#, js-format
+msgid "Edit %1$s element %2$s"
+msgstr ""
+
+#: assets.js:792
+msgid "Select an element to edit its properties."
+msgstr ""
+
+#: assets.js:800
+msgid "Element properties"
+msgstr ""
+
+#: assets.js:802
+msgid "Type"
+msgstr ""
+
+#: assets.js:803
+msgid "Text / field expression"
+msgstr ""
+
+#: assets.js:804
+msgid "X position (mm)"
+msgstr ""
+
+#: assets.js:805
+msgid "Y position (mm)"
+msgstr ""
+
+#: assets.js:806
+msgid "Width"
+msgstr ""
+
+#: assets.js:807
+msgid "Height"
+msgstr ""
+
+#: assets.js:808
+msgid "Font size (pt)"
+msgstr ""
+
+#: assets.js:809
+msgid "Minimum font size"
+msgstr ""
+
+#: assets.js:810
+msgid "Rotation (degrees)"
+msgstr ""
+
+#: assets.js:811
+msgid "Color"
+msgstr ""
+
+#: assets.js:812
+msgid "Background"
+msgstr ""
+
+#: assets.js:813
+msgid "Barcode format"
+msgstr ""
+
+#: assets.js:814
+msgid "QR error correction"
+msgstr ""
+
+#: assets.js:815
+msgid "Horizontal alignment"
+msgstr ""
+
+#: assets.js:816
+msgid "Text direction"
+msgstr ""
+
+#: assets.js:817
+msgid "Vertical alignment"
+msgstr ""
+
+#: assets.js:818
+msgid "Image fit"
+msgstr ""
+
+#: assets.js:819
+msgid "Visibility condition"
+msgstr ""
+
+#: assets.js:867
+msgid "Bold"
+msgstr ""
+
+#: assets.js:868
+msgid "Italic"
+msgstr ""
+
+#: assets.js:869
+msgid "Underline"
+msgstr ""
+
+#: assets.js:870
+msgid "Fit text automatically"
+msgstr ""
+
+#: assets.js:871
+msgid "Show barcode text"
+msgstr ""
+
+#: assets.js:872
+msgid "Visible"
+msgstr ""
+
+#: assets.js:873
+msgid "GS1-128 (CODE128 only)"
+msgstr ""
+
+#: assets.js:883
+msgid "Delete element"
+msgstr ""
+
+#: assets.js:902
+msgid "For this source, enter IDs using the direct-ID field below."
+msgstr ""
+
+#. translators: %1$s: item.name.
+#: assets.js:921
+#: assets.js:1522
+#, js-format
+msgid "Product photo: %s"
+msgstr ""
+
+#: assets.js:926
+#: assets.js:1529
+msgid "No photo"
+msgstr ""
+
+#. translators: 1: product SKU, 2: formatted product price.
+#: assets.js:934
+#: assets.js:1543
+#, js-format
+msgid "SKU: %1$s · %2$s"
+msgstr ""
+
+#: assets.js:935
+#: assets.js:1544
+msgid "No SKU"
+msgstr ""
+
+#: assets.js:936
+#: assets.js:1545
+msgid "No price"
+msgstr ""
+
+#. translators: matching result count; current page; total pages.
+#: assets.js:950
+#, js-format
+msgid "%1$s matching records; page %2$s of %3$s"
+msgstr ""
+
+#: assets.js:980
+#: assets.js:1244
+msgid "All categories"
+msgstr ""
+
+#. translators: %s: current category page number.
+#: assets.js:990
+#: assets.js:1259
+#, js-format
+msgid "Category page %s"
+msgstr ""
+
+#: assets.js:1002
+msgid "#rli-results input:checked"
+msgstr ""
+
+#: assets.js:1005
+msgid "Select at least one item."
+msgstr ""
+
+#: assets.js:1011
+msgid "Select valid positive numeric IDs."
+msgstr ""
+
+#. translators: 1: loaded product count, 2: total selected product IDs.
+#: assets.js:1031
+#, js-format
+msgid "Loading %1$s of %2$s product IDs…"
+msgstr ""
+
+#. translators: record count; source warnings.
+#: assets.js:1041
+#, js-format
+msgid "Added %1$s records. %2$s"
+msgstr ""
+
+#: assets.js:1066
+msgid "Save private print job"
+msgstr ""
+
+#: assets.js:1070
+msgid "I understand this job may contain customer/order information and is private to my WordPress account."
+msgstr ""
+
+#: assets.js:1078
+#: assets.js:1089
+#: assets.js:1376
+msgid "Save print job"
+msgstr ""
+
+#: assets.js:1085
+#: assets.js:1145
+msgid "Cancel"
+msgstr ""
+
+#: assets.js:1120
+msgid "Choose a saved job"
+msgstr ""
+
+#: assets.js:1136
+msgid "Load private print job"
+msgstr ""
+
+#: assets.js:1138
+msgid "Saved print job"
+msgstr ""
+
+#: assets.js:1141
+#: assets.js:1150
+#: assets.js:1398
+msgid "Load saved print job"
+msgstr ""
+
+#: assets.js:1178
+msgid "Source"
+msgstr ""
+
+#: assets.js:1182
+msgid "Products"
+msgstr ""
+
+#: assets.js:1183
+msgid "Purchased order items"
+msgstr ""
+
+#: assets.js:1184
+msgid "Orders / shipping"
+msgstr ""
+
+#: assets.js:1185
+msgid "Coupons"
+msgstr ""
+
+#: assets.js:1186
+msgid "Customers / users"
+msgstr ""
+
+#: assets.js:1187
+msgid "Posts"
+msgstr ""
+
+#: assets.js:1197
+msgid "Copies"
+msgstr ""
+
+#: assets.js:1201
+msgid "Variation expansion"
+msgstr ""
+
+#: assets.js:1205
+msgid "Parent"
+msgstr ""
+
+#: assets.js:1206
+msgid "Variations"
+msgstr ""
+
+#: assets.js:1207
+msgid "Both"
+msgstr ""
+
+#: assets.js:1218
+msgid "Search name / SKU / order ID"
+msgstr ""
+
+#: assets.js:1222
+msgid "Search WooCommerce"
+msgstr ""
+
+#: assets.js:1225
+msgid "Search"
+msgstr ""
+
+#: assets.js:1229
+msgid "Previous"
+msgstr ""
+
+#: assets.js:1233
+msgid "Next"
+msgstr ""
+
+#: assets.js:1241
+msgid "Category"
+msgstr ""
+
+#: assets.js:1251
+msgid "Previous category page"
+msgstr ""
+
+#: assets.js:1264
+msgid "Next category page"
+msgstr ""
+
+#: assets.js:1295
+msgid "Add selected to job"
+msgstr ""
+
+#: assets.js:1297
+msgid "Direct IDs (comma-separated)"
+msgstr ""
+
+#: assets.js:1307
+msgid "Enter IDs from the selected source. Large selections are loaded in bounded pages."
+msgstr ""
+
+#: assets.js:1312
+msgid "Add IDs"
+msgstr ""
+
+#: assets.js:1317
+msgid "Enter positive numeric IDs separated by commas."
+msgstr ""
+
+#. translators: number of records.
+#: assets.js:1327
+#, js-format
+msgid "Print job (%s records)"
+msgstr ""
+
+#: assets.js:1336
+msgid "Clear job"
+msgstr ""
+
+#: assets.js:1337
+msgid "Clear job?"
+msgstr ""
+
+#: assets.js:1346
+msgid "Export CSV"
+msgstr ""
+
+#: assets.js:1352
+msgid "Import CSV"
+msgstr ""
+
+#: assets.js:1359
+#: assets/core.js:783
+msgid "CSV exceeds the 8 MB transfer budget."
+msgstr ""
+
+#: assets.js:1375
+msgid "Print preview"
+msgstr ""
+
+#: assets.js:1379
+msgid "Add records before saving a print job."
+msgstr ""
+
+#: assets.js:1392
+msgid "Print job saved to your private WordPress account."
+msgstr ""
+
+#: assets.js:1403
+msgid "No saved print jobs are available to this account."
+msgstr ""
+
+#: assets.js:1414
+msgid "The saved job references a profile unavailable to this account."
+msgstr ""
+
+#: assets.js:1424
+msgid "Clear all saved print jobs"
+msgstr ""
+
+#: assets.js:1427
+msgid "Delete every saved label job belonging to your WordPress account on this site?"
+msgstr ""
+
+#: assets.js:1436
+msgid "All private saved print jobs have been deleted."
+msgstr ""
+
+#: assets.js:1442
+msgid "Save queue in this browser"
+msgstr ""
+
+#: assets.js:1445
+msgid "Restore browser draft"
+msgstr ""
+
+#. translators: current queue page; total queue pages.
+#: assets.js:1457
+#, js-format
+msgid "Queue page %1$s of %2$s; all records remain selected independently of the visible page."
+msgstr ""
+
+#: assets.js:1466
+msgid "Previous queue page"
+msgstr ""
+
+#: assets.js:1474
+msgid "Next queue page"
+msgstr ""
+
+#. translators: record display name.
+#: assets.js:1493
+#, js-format
+msgid "Include %s in print job"
+msgstr ""
+
+#: assets.js:1523
+msgid "Product"
+msgstr ""
+
+#: assets.js:1537
+msgid "Record"
+msgstr ""
+
+#: assets.js:1554
+msgid "Quantity"
+msgstr ""
+
+#: assets.js:1555
+msgid "Remove"
+msgstr ""
+
+#: assets.js:1561
+msgid "Move up"
+msgstr ""
+
+#: assets.js:1576
+msgid "Move down"
+msgstr ""
+
+#: assets.js:1606
+msgid "Rendering job…"
+msgstr ""
+
+#. translators: completed records; total unique records.
+#: assets.js:1614
+#, js-format
+msgid "Rendering %1$s / %2$s"
+msgstr ""
+
+#: assets.js:1626
+msgid "Queue or profile changed while rendering. Generate a new preview."
+msgstr ""
+
+#: assets.js:1634
+#: assets/render.js:832
+msgid "Print job cancelled."
+msgstr ""
+
+#. translators: label count; page count; warning count.
+#: assets.js:1642
+#, js-format
+msgid "Ready: %1$s labels, %2$s pages. %3$s warnings."
+msgstr ""
+
+#. translators: current segment; total segments; total labels.
+#: assets.js:1663
+#, js-format
+msgid "Segment %1$s of %2$s; %3$s total labels. Every segment is available; no labels are truncated."
+msgstr ""
+
+#: assets.js:1676
+#: assets.js:1710
+#: assets.js:1728
+#: assets.js:1852
+#: assets.js:1877
+msgid "Preview is still rendering. Please wait."
+msgstr ""
+
+#: assets.js:1685
+msgid "Previous segment"
+msgstr ""
+
+#: assets.js:1690
+msgid "Next segment"
+msgstr ""
+
+#: assets.js:1698
+msgid "Browser print: set scale to 100%, margins to none, and disable headers/footers. For PDF use the export button."
+msgstr ""
+
+#: assets.js:1706
+msgid "Generate preview"
+msgstr ""
+
+#: assets.js:1707
+msgid "Print"
+msgstr ""
+
+#: assets.js:1723
+msgid "Export segment PDF"
+msgstr ""
+
+#: assets.js:1724
+msgid "Export PDF"
+msgstr ""
+
+#: assets.js:1739
+#: assets.js:1867
+msgid "Export cancelled because the queue or profile changed."
+msgstr ""
+
+#: assets.js:1758
+msgid "Export full PDF"
+msgstr ""
+
+#: assets.js:1761
+msgid "A print operation is already in progress."
+msgstr ""
+
+#: assets.js:1785
+msgid "PDF document"
+msgstr ""
+
+#: assets.js:1800
+msgid "This browser needs segment downloads for a PDF this large, or a browser with file streaming support."
+msgstr ""
+
+#. translators: labels exported; total labels.
+#: assets.js:1818
+#, js-format
+msgid "Exporting %1$s of %2$s labels"
+msgstr ""
+
+#: assets.js:1844
+msgid "Complete PDF exported."
+msgstr ""
+
+#: assets.js:1849
+msgid "Export label PNG"
+msgstr ""
+
+#: assets.js:1874
+msgid "Export barcode SVG"
+msgstr ""
+
+#: assets.js:1906
+msgid "Read-only inspection first. Importing creates a backup of Ramsey Labels settings and never modifies the original plugin."
+msgstr ""
+
+#: assets.js:1913
+msgid "Inspect installed plugin"
+msgstr ""
+
+#: assets.js:1917
+msgid "Preview migration"
+msgstr ""
+
+#: assets.js:1923
+msgid "Apply previewed migration"
+msgstr ""
+
+#: assets.js:1927
+msgid "Apply this migration to Ramsey Labels settings?"
+msgstr ""
+
+#: assets.js:1939
+msgid "Migration completed. Reload to see changes."
+msgstr ""
+
+#: assets.js:1948
+msgid "Restore migration backup"
+msgstr ""
+
+#: assets.js:1951
+msgid "Restore saved Ramsey Labels settings from before migration?"
+msgstr ""
+
+#: assets.js:1976
+msgid "Cancel the export before clearing the queue."
+msgstr ""
+
+#: assets.js:2013
+msgid "Save this queue in this browser? The draft may contain customer data and is not sent to WordPress."
+msgstr ""
+
+#: assets.js:2032
+msgid "Select a local media attachment."
+msgstr ""
+
+#: assets/barcodes.js:83
+msgid "A retail barcode must contain digits only."
+msgstr ""
+
+#. translators: expected numeric input lengths.
+#: assets/barcodes.js:95
+#, js-format
+msgid "Expected %1$s digits, or %2$s digits including the check digit."
+msgstr ""
+
+#. translators: expected numeric input lengths.
+#: assets/barcodes.js:110
+#, js-format
+msgid "Incorrect check digit; expected %s."
+msgstr ""
+
+#: assets/barcodes.js:140
+msgid "UPC-E needs six compressed digits, optionally a number system and check digit."
+msgstr ""
+
+#: assets/barcodes.js:147
+msgid "UPC-E number system must be 0 or 1."
+msgstr ""
+
+#. translators: expected numeric input lengths.
+#: assets/barcodes.js:160
+#, js-format
+msgid "Incorrect UPC-E check digit; expected %s."
+msgstr ""
+
+#: assets/barcodes.js:189
+msgid "CODE39 accepts uppercase letters, digits, space and - . $ / + %."
+msgstr ""
+
+#: assets/barcodes.js:200
+msgid "CODE128 requires ASCII. Use QR or Data Matrix for Unicode."
+msgstr ""
+
+#: assets/barcodes.js:296
+msgid "Invalid QR error-correction level."
+msgstr ""
+
+#: assets/barcodes.js:301
+msgid "QR version must be 1–40."
+msgstr ""
+
+#: assets/barcodes.js:309
+msgid "Data does not fit the selected QR version and correction level."
+msgstr ""
+
+#: assets/barcodes.js:318
+msgid "Text exceeds QR capacity at this error-correction level."
+msgstr ""
+
+#: assets/barcodes.js:355
+msgid "Invalid QR mask."
+msgstr ""
+
+#: assets/barcodes.js:549
+msgid "Data does not fit a supported square Data Matrix ECC200 symbol."
+msgstr ""
+
+#: assets/barcodes.js:727
+#: assets/barcodes.js:734
+msgid "Malformed GS1 application identifiers."
+msgstr ""
+
+#: assets/barcodes.js:744
+#: assets/barcodes.js:757
+msgid "Unsupported GS1 application identifier."
+msgstr ""
+
+#: assets/barcodes.js:764
+msgid "Invalid GS1 field length."
+msgstr ""
+
+#: assets/barcodes.js:771
+msgid "Unsupported characters in this GS1 field."
+msgstr ""
+
+#: assets/barcodes.js:774
+msgid "Incorrect GS1 check digit."
+msgstr ""
+
+#: assets/barcodes.js:782
+msgid "Invalid GS1 date."
+msgstr ""
+
+#: assets/barcodes.js:797
+msgid "Barcode data is empty. Choose another source field or supply a value."
+msgstr ""
+
+#: assets/barcodes.js:804
+msgid "Barcode input is too long (maximum 6,000 characters)."
+msgstr ""
+
+#. translators: %1$s: format.
+#: assets/barcodes.js:812
+#, js-format
+msgid "Unsupported barcode format: %s"
+msgstr ""
+
+#: assets/barcodes.js:817
+msgid "GS1 mode is supported only for GS1-128; other GS1 families are not advertised."
+msgstr ""
+
+#: assets/barcodes.js:838
+msgid "SVG dimensions must be positive finite numbers."
+msgstr ""
+
+#: assets/batches.js:16
+msgid "Supply an array of print records."
+msgstr ""
+
+#: assets/batches.js:25
+msgid "Each print record needs a values object."
+msgstr ""
+
+#: assets/batches.js:34
+msgid "Invalid printable field."
+msgstr ""
+
+#: assets/batches.js:38
+msgid "Printable field exceeds its text budget."
+msgstr ""
+
+#: assets/batches.js:54
+msgid "Invalid print record identity, selection or quantity."
+msgstr ""
+
+#: assets/batches.js:79
+msgid "Live queue exceeds its 8 MB data budget. Print or export it before adding more records."
+msgstr ""
+
+#: assets/batches.js:130
+msgid "Use positive safe whole quantities."
+msgstr ""
+
+#: assets/batches.js:134
+msgid "Total quantity is outside the safely representable range."
+msgstr ""
+
+#: assets/batches.js:140
+msgid "Select at least one label."
+msgstr ""
+
+#: assets/batches.js:143
+msgid "Print position is outside the safely representable range."
+msgstr ""
+
+#: assets/core.js:401
+msgid "US Letter"
+msgstr ""
+
+#: assets/core.js:474
+msgid "Resolved label text exceeds its rendering budget."
+msgstr ""
+
+#: assets/core.js:483
+msgid "Template text exceeds its rendering budget."
+msgstr ""
+
+#: assets/core.js:530
+msgid "Missing design."
+msgstr ""
+
+#. translators: %1$s: key.
+#: assets/core.js:539
+#, js-format
+msgid "Label %s must be 5–500 mm."
+msgstr ""
+
+#: assets/core.js:542
+msgid "Invalid design mode."
+msgstr ""
+
+#: assets/core.js:545
+msgid "Invalid currency symbol visibility setting."
+msgstr ""
+
+#. translators: %s: maximum design element count.
+#: assets/core.js:551
+#, js-format
+msgid "Use at most %s elements."
+msgstr ""
+
+#: assets/core.js:558
+msgid "Element IDs must be unique."
+msgstr ""
+
+#: assets/core.js:561
+msgid "Invalid element type."
+msgstr ""
+
+#: assets/core.js:563
+msgid "Invalid text direction."
+msgstr ""
+
+#. translators: element identifier; invalid field name.
+#: assets/core.js:578
+#, js-format
+msgid "Element %1$s has an invalid %2$s."
+msgstr ""
+
+#. translators: element identifier.
+#: assets/core.js:590
+#, js-format
+msgid "Element %s must have positive dimensions."
+msgstr ""
+
+#: assets/core.js:611
+msgid "Invalid element color."
+msgstr ""
+
+#. translators: %1$s: key.
+#: assets/core.js:657
+#, js-format
+msgid "Invalid page value: %s"
+msgstr ""
+
+#: assets/core.js:660
+msgid "Page dimensions must be 5–1,000 mm."
+msgstr ""
+
+#: assets/core.js:669
+msgid "Use positive whole rows and columns, at most 1,000 slots."
+msgstr ""
+
+#: assets/core.js:676
+msgid "Skipped slots must be less than the number of labels per sheet."
+msgstr ""
+
+#: assets/core.js:686
+msgid "Labels and horizontal gaps/margins do not fit the page width."
+msgstr ""
+
+#: assets/core.js:696
+msgid "Labels and vertical gaps/margins do not fit the page height."
+msgstr ""
+
+#: assets/core.js:702
+msgid "Resolution must be 72–600 dpi."
+msgstr ""
+
+#: assets/core.js:706
+msgid "Margins and gaps cannot be negative."
+msgstr ""
+
+#. translators: maximum records in this request.
+#: assets/core.js:715
+#, js-format
+msgid "Use at most %s records per print job."
+msgstr ""
+
+#. translators: maximum labels per segment.
+#: assets/core.js:735
+#, js-format
+msgid "Select between 1 and %s labels per print job."
+msgstr ""
+
+#. translators: record name.
+#: assets/core.js:754
+#, js-format
+msgid "Invalid quantity for %s"
+msgstr ""
+
+#: assets/core.js:786
+msgid "Unsupported delimiter."
+msgstr ""
+
+#: assets/core.js:796
+msgid "Unclosed quoted CSV field."
+msgstr ""
+
+#: assets/core.js:817
+msgid "Unexpected quote in CSV."
+msgstr ""
+
+#: assets/core.js:822
+msgid "Unexpected text after a closing CSV quote."
+msgstr ""
+
+#: assets/core.js:841
+msgid "Headers must be non-empty field names (letters, digits, dots, colons, underscores or hyphens)."
+msgstr ""
+
+#: assets/core.js:847
+msgid "Duplicate CSV column name."
+msgstr ""
+
+#. translators: %s: CSV rows allowed per import.
+#: assets/core.js:853
+#, js-format
+msgid "At most %s CSV records are allowed."
+msgstr ""
+
+#. translators: CSV row number.
+#: assets/core.js:892
+#, js-format
+msgid "Invalid quantity in CSV row %s."
+msgstr ""
+
+#. translators: CSV row number.
+#: assets/core.js:906
+#, js-format
+msgid "Manual label %s"
+msgstr ""
+
+#: assets/core.js:949
+msgid "Invalid Ramsey Labels library (schema 1 and valid collections required)."
+msgstr ""
+
+#: assets/core.js:964
+msgid "Duplicate/missing profile ID."
+msgstr ""
+
+#: assets/integrations.js:13
+msgid "Select at least one order item using the Label checkboxes."
+msgstr ""
+
+#: assets/render.js:70
+#: assets/render.js:165
+msgid "Image URLs must not contain credentials."
+msgstr ""
+
+#: assets/render.js:82
+msgid "Private-network image URLs are not allowed. Select a local media attachment."
+msgstr ""
+
+#. translators: external image origin.
+#: assets/render.js:92
+#: assets/render.js:181
+#, js-format
+msgid "This label requests an image from %s. Loading it discloses your IP address to that server. Allow for this session?"
+msgstr ""
+
+#: assets/render.js:101
+#: assets/render.js:191
+msgid "External image request declined. Select a local attachment instead."
+msgstr ""
+
+#: assets/render.js:125
+msgid "Remote images must be successful PNG, JPEG, GIF or WebP responses."
+msgstr ""
+
+#: assets/render.js:140
+msgid "Image exceeds the 8 MB transfer budget."
+msgstr ""
+
+#: assets/render.js:207
+msgid "Image source must be a media attachment, a data image, or an HTTP(S) image."
+msgstr ""
+
+#: assets/render.js:218
+msgid "Unverified blob image sources are not allowed."
+msgstr ""
+
+#: assets/render.js:233
+msgid "Image did not finish loading within 15 seconds."
+msgstr ""
+
+#: assets/render.js:247
+msgid "Image exceeds the 16-megapixel decoding budget."
+msgstr ""
+
+#: assets/render.js:273
+msgid "Image could not be loaded. For a CDN image, enable its CORS headers or select a local media attachment."
+msgstr ""
+
+#: assets/render.js:384
+msgid "Text does not fit at the minimum font size. Enlarge this element or reduce its minimum font size."
+msgstr ""
+
+#: assets/render.js:445
+msgid "Barcode is too dense for this box/resolution. Enlarge it, shorten the value, or increase print DPI."
+msgstr ""
+
+#. translators: barcode module width in millimeters.
+#: assets/render.js:457
+#, js-format
+msgid "Narrow barcode modules (%s mm). Verify scanner readability on the actual printer."
+msgstr ""
+
+#: assets/render.js:626
+msgid "An HTML image exceeds the 16-megapixel safety limit."
+msgstr ""
+
+#: assets/render.js:669
+msgid "This browser cannot safely rasterize this HTML design. Use the visual designer or remove external image resources."
+msgstr ""
+
+#: assets/render.js:687
+msgid "Label exceeds 16 megapixels or supported DPI. Reduce the size or print DPI."
+msgstr ""
+
+#: assets/render.js:739
+msgid "Rotated element extends outside the label."
+msgstr ""
+
+#: assets/render.js:824
+msgid "Segment exceeds its decoded-image memory budget. Use fewer distinct records or lower DPI."
+msgstr ""
+
+#: assets/render.js:859
+msgid "A render extension exceeded the pixel budget."
+msgstr ""
+
+#: assets/render.js:868
+msgid "Rendered job exceeds 120 MB. Split this batch or reduce DPI."
+msgstr ""
+
+#. translators: error count; concise error summaries.
+#: assets/render.js:887
+#, js-format
+msgid "Printing blocked: %1$s rendering error(s). %2$s"
+msgstr ""
+
+#. translators: product name, SKU and price.
+#: assets/render.js:940
+#, js-format
+msgid "Label: %s"
+msgstr ""
+
+#: assets/render.js:967
+msgid "Ramsey Labels print document"
+msgstr ""
+
+#: assets/render.js:1000
+msgid "Print cancelled because the queue or profile changed."
+msgstr ""
+
+#: assets/render.js:1084
+msgid "PDF export cancelled."
+msgstr ""
+
+#: assets/render.js:1219
+msgid "PNG export failed."
+msgstr ""
+
+#: assets/render.js:1239
+msgid "This design has no visible barcode to export."
+msgstr ""
+
+#: assets/render.js:1259
+msgid "Streaming PDF requires the batch module and a writable sink."
+msgstr ""
+
+#: assets/render.js:1283
+msgid "PDF exceeds the offset range of this format. Export separate segments."
+msgstr ""
+
+#: assets/render.js:1299
+msgid "PDF export cancelled because the print data changed."
+msgstr ""
+
+#: assets/render.js:1411
+msgid "PDF index exceeds its memory budget. Export separate segments."
+msgstr ""

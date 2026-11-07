@@ -1,0 +1,22 @@
+{
+  "checked_utc": "2026-11-06T20:50:00Z",
+  "wordpress_core": {
+    "url": "https://api.wordpress.org/core/version-check/1.7/",
+    "http_status": 200,
+    "latest_offer": "7.1.4"
+  },
+  "woocommerce": {
+    "url": "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce",
+    "http_status": 200,
+    "directory_version": "11.2.2",
+    "download_url": "https://downloads.wordpress.org/plugin/woocommerce.11.2.2.zip"
+  },
+  "ramsey_labels_slug": {
+    "url": "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=ramsey-labels",
+    "http_status": 404,
+    "directory_response": "Plugin not found.",
+    "meaning": "Not listed at this point in time; neither reservation nor pre-approval."
+  },
+  "official_submission_rules": "https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/",
+  "plugin_check": "https://wordpress.org/plugins/plugin-check/"
+}

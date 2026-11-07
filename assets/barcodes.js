@@ -16,6 +16,15 @@
     else root.RLIBarcodes = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (tables) {
     'use strict';
+    const __ = (message, domain) => globalThis.wp?.i18n?.__(message, domain) ?? message;
+    const sprintf = (format, ...values) => {
+        if (globalThis.wp?.i18n?.sprintf) return globalThis.wp.i18n.sprintf(format, ...values);
+        let index = 0;
+        return format.replace(/%%|%(?:(\d+)\$)?s/g, (token, position) =>
+            token === '%%' ? '%' : String(values[position ? Number(position) - 1 : index++]),
+        );
+    };
+
     const formats = ['code128', 'code39', 'ean13', 'ean8', 'upca', 'upce', 'qrcode', 'datamatrix'];
     const left = [
         '0001101',
@@ -69,7 +78,10 @@
         return Array.from(widths, (w, i) => (i % 2 ? '0' : '1').repeat(Number(w))).join('');
     }
     function checkDigit(body) {
-        if (!/^\d+$/.test(body)) throw new Error('A retail barcode must contain digits only.');
+        if (!/^\d+$/.test(body))
+            throw new Error(
+                __('A retail barcode must contain digits only.', 'ramsey-labels-independent'),
+            );
         let sum = 0;
         for (let i = body.length - 1, weight = 3; i >= 0; i--, weight = 4 - weight)
             sum += Number(body[i]) * weight;
@@ -78,17 +90,30 @@
     function checkedDigits(value, length) {
         if (!/^\d+$/.test(value) || ![length - 1, length].includes(value.length)) {
             throw new Error(
-                'Expected ' +
-                    (length - 1) +
-                    ' digits, or ' +
-                    length +
-                    ' digits including the check digit.',
+                /* translators: %1$s: length - 1; %2$s: length. */
+                sprintf(
+                    /* translators: expected numeric input lengths. */ __(
+                        'Expected %1$s digits, or %2$s digits including the check digit.',
+                        'ramsey-labels-independent',
+                    ),
+                    length - 1,
+                    length,
+                ),
             );
         }
         const body = value.slice(0, length - 1),
             check = checkDigit(body);
         if (value.length === length && value[length - 1] !== check)
-            throw new Error('Incorrect check digit; expected ' + check + '.');
+            throw new Error(
+                /* translators: %1$s: check. */
+                sprintf(
+                    /* translators: expected numeric input lengths. */ __(
+                        'Incorrect check digit; expected %s.',
+                        'ramsey-labels-independent',
+                    ),
+                    check,
+                ),
+            );
         return body + check;
     }
     function retail(value, format) {
@@ -112,10 +137,14 @@
     function upce(value) {
         if (!/^\d{6,8}$/.test(value))
             throw new Error(
-                'UPC-E needs six compressed digits, optionally a number system and check digit.',
+                __(
+                    'UPC-E needs six compressed digits, optionally a number system and check digit.',
+                    'ramsey-labels-independent',
+                ),
             );
         const ns = value.length === 6 ? '0' : value[0];
-        if (!['0', '1'].includes(ns)) throw new Error('UPC-E number system must be 0 or 1.');
+        if (!['0', '1'].includes(ns))
+            throw new Error(__('UPC-E number system must be 0 or 1.', 'ramsey-labels-independent'));
         const d = value.length === 6 ? value : value.slice(1, 7),
             last = d[5];
         let body;
@@ -125,7 +154,16 @@
         else body = ns + d.slice(0, 5) + '0000' + last;
         const check = checkDigit(body);
         if (value.length === 8 && value[7] !== check)
-            throw new Error('Incorrect UPC-E check digit; expected ' + check + '.');
+            throw new Error(
+                /* translators: %1$s: check. */
+                sprintf(
+                    /* translators: expected numeric input lengths. */ __(
+                        'Incorrect UPC-E check digit; expected %s.',
+                        'ramsey-labels-independent',
+                    ),
+                    check,
+                ),
+            );
         let p = [
             'GGGLLL',
             'GGLGLL',
@@ -147,13 +185,23 @@
     }
     function code39(value) {
         if (!/^[0-9A-Z .\-$/+%]+$/.test(value))
-            throw new Error('CODE39 accepts uppercase letters, digits, space and - . $ / + %.');
+            throw new Error(
+                __(
+                    'CODE39 accepts uppercase letters, digits, space and - . $ / + %.',
+                    'ramsey-labels-independent',
+                ),
+            );
         const bits = Array.from('*' + value + '*', (c) => widthsToBits(tables.code39[c])).join('0');
         return oneDimensional(bits, value);
     }
     function code128(value, options) {
         if (!/^[\x00-\x7f]+$/.test(value))
-            throw new Error('CODE128 requires ASCII. Use QR or Data Matrix for Unicode.');
+            throw new Error(
+                __(
+                    'CODE128 requires ASCII. Use QR or Data Matrix for Unicode.',
+                    'ramsey-labels-independent',
+                ),
+            );
         const runAt = (i) => (value.slice(i).match(/^\d+/) || [''])[0].length;
         let set = runAt(0) >= 4 ? 'C' : value.charCodeAt(0) < 32 ? 'A' : 'B';
         const words = [{ A: 103, B: 104, C: 105 }[set]];
@@ -245,23 +293,33 @@
             unicode = /[^\x00-\x7f]/.test(value);
         const level = String(options.ecc || 'M').toUpperCase();
         if (!['L', 'M', 'Q', 'H'].includes(level))
-            throw new Error('Invalid QR error-correction level.');
+            throw new Error(__('Invalid QR error-correction level.', 'ramsey-labels-independent'));
         let version = Number(options.version || 1),
             blocks,
             capacity;
         if (!Number.isInteger(version) || version < 1 || version > 40)
-            throw new Error('QR version must be 1–40.');
+            throw new Error(__('QR version must be 1–40.', 'ramsey-labels-independent'));
         while (version <= 40) {
             blocks = qrBlocks(version, level);
             capacity = blocks.reduce((s, b) => s + b.data, 0);
             const needed = (unicode ? 12 : 0) + 4 + (version < 10 ? 8 : 16) + bytes.length * 8;
             if (needed <= capacity * 8 && (version >= 10 || bytes.length <= 255)) break;
             if (options.version)
-                throw new Error('Data does not fit the selected QR version and correction level.');
+                throw new Error(
+                    __(
+                        'Data does not fit the selected QR version and correction level.',
+                        'ramsey-labels-independent',
+                    ),
+                );
             version++;
         }
         if (version > 40)
-            throw new Error('Text exceeds QR capacity at this error-correction level.');
+            throw new Error(
+                __(
+                    'Text exceeds QR capacity at this error-correction level.',
+                    'ramsey-labels-independent',
+                ),
+            );
         const bits = [],
             push = (n, size) => {
                 for (let i = size - 1; i >= 0; i--) bits.push((n >>> i) & 1);
@@ -294,7 +352,7 @@
         const masks =
             options.mask === undefined ? [0, 1, 2, 3, 4, 5, 6, 7] : [Number(options.mask)];
         if (masks.some((n) => !Number.isInteger(n) || n < 0 || n > 7))
-            throw new Error('Invalid QR mask.');
+            throw new Error(__('Invalid QR mask.', 'ramsey-labels-independent'));
         for (const mask of masks) {
             const matrix = qrMatrix(version, level, words, mask),
                 p = qrPenalty(matrix);
@@ -487,7 +545,12 @@
             (s) => s[1] >= words.length && (!options.size || s[0] === Number(options.size)),
         );
         if (!spec)
-            throw new Error('Data does not fit a supported square Data Matrix ECC200 symbol.');
+            throw new Error(
+                __(
+                    'Data does not fit a supported square Data Matrix ECC200 symbol.',
+                    'ramsey-labels-independent',
+                ),
+            );
         const [side, capacity, ecc, regions, count] = spec;
         if (words.length < capacity) words.push(129);
         while (words.length < capacity) {
@@ -638,16 +701,126 @@
         }
         return grid.map((line) => line.map((v) => (v === null ? 0 : v)));
     }
+    /** GS1-128 element strings: common verified AIs, not every GS1 family. */
+    function gs1Payload(input) {
+        const specs = {
+            '00': { length: 18, check: true },
+            '01': { length: 14, check: true },
+            '02': { length: 14, check: true },
+            10: { max: 20 },
+            11: { length: 6, date: true },
+            15: { length: 6, date: true },
+            17: { length: 6, date: true },
+            21: { max: 20 },
+            30: { max: 8, numeric: true },
+            37: { max: 8, numeric: true },
+        };
+        const text = String(input),
+            parts = [];
+        if (text.startsWith('(')) {
+            const expression = /\((\d{2})\)([^()]*)/g;
+            let match,
+                end = 0;
+            while ((match = expression.exec(text))) {
+                if (match.index !== end)
+                    throw Error(
+                        __('Malformed GS1 application identifiers.', 'ramsey-labels-independent'),
+                    );
+                parts.push([match[1], match[2]]);
+                end = expression.lastIndex;
+            }
+            if (end !== text.length || !parts.length)
+                throw Error(
+                    __('Malformed GS1 application identifiers.', 'ramsey-labels-independent'),
+                );
+        } else {
+            let cursor = 0;
+            while (cursor < text.length) {
+                const ai = text.slice(cursor, cursor + 2),
+                    spec = specs[ai];
+                cursor += 2;
+                if (!spec)
+                    throw Error(
+                        __('Unsupported GS1 application identifier.', 'ramsey-labels-independent'),
+                    );
+                let end = spec.length ? cursor + spec.length : text.indexOf('\x1d', cursor);
+                if (end < 0) end = text.length;
+                parts.push([ai, text.slice(cursor, end)]);
+                cursor = end;
+                if (text[cursor] === '\x1d') cursor++;
+            }
+        }
+        for (const [ai, value] of parts) {
+            const spec = specs[ai];
+            if (!spec)
+                throw Error(
+                    __('Unsupported GS1 application identifier.', 'ramsey-labels-independent'),
+                );
+            if (
+                !value ||
+                (spec.length && value.length !== spec.length) ||
+                (spec.max && value.length > spec.max)
+            )
+                throw Error(__('Invalid GS1 field length.', 'ramsey-labels-independent'));
+            if (
+                spec.length || spec.numeric
+                    ? !/^\d+$/.test(value)
+                    : !/^[A-Za-z0-9 .\/-]+$/.test(value)
+            )
+                throw Error(
+                    __('Unsupported characters in this GS1 field.', 'ramsey-labels-independent'),
+                );
+            if (spec.check && checkDigit(value.slice(0, -1)) !== value.slice(-1))
+                throw Error(__('Incorrect GS1 check digit.', 'ramsey-labels-independent'));
+            if (spec.date) {
+                const month = Number(value.slice(2, 4)),
+                    day = Number(value.slice(4, 6));
+                const date = new Date(
+                    Date.UTC(2000 + Number(value.slice(0, 2)), month - 1, day || 1),
+                );
+                if (month < 1 || month > 12 || day > 31 || date.getUTCMonth() !== month - 1)
+                    throw Error(__('Invalid GS1 date.', 'ramsey-labels-independent'));
+            }
+        }
+        return parts
+            .map(
+                ([ai, value], index) =>
+                    ai + value + (specs[ai].max && index + 1 < parts.length ? '\x1d' : ''),
+            )
+            .join('');
+    }
     function encode(format, value, options = {}) {
         format = String(format).toLowerCase();
         value = String(value);
         if (!value.length)
             throw new Error(
-                'Barcode data is empty. Choose another source field or supply a value.',
+                __(
+                    'Barcode data is empty. Choose another source field or supply a value.',
+                    'ramsey-labels-independent',
+                ),
             );
         if (value.length > 6000)
-            throw new Error('Barcode input is too long (maximum 6,000 characters).');
-        if (!formats.includes(format)) throw new Error('Unsupported barcode format: ' + format);
+            throw new Error(
+                __(
+                    'Barcode input is too long (maximum 6,000 characters).',
+                    'ramsey-labels-independent',
+                ),
+            );
+        if (!formats.includes(format))
+            throw new Error(
+                /* translators: %1$s: format. */
+                sprintf(__('Unsupported barcode format: %s', 'ramsey-labels-independent'), format),
+            );
+        if (options.gs1) {
+            if (format !== 'code128')
+                throw Error(
+                    __(
+                        'GS1 mode is supported only for GS1-128; other GS1 families are not advertised.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            value = gs1Payload(value);
+        }
         if (format === 'code128') return code128(value, options);
         if (format === 'code39') return code39(value);
         if (format === 'qrcode') return qr(value, options);
@@ -655,6 +828,15 @@
         return retail(value, format);
     }
     function toSVG(symbol, moduleSize = 3, barHeight = 100) {
+        if (
+            !Number.isFinite(moduleSize) ||
+            moduleSize <= 0 ||
+            !Number.isFinite(barHeight) ||
+            barHeight <= 0
+        )
+            throw Error(
+                __('SVG dimensions must be positive finite numbers.', 'ramsey-labels-independent'),
+            );
         const q = symbol.quiet,
             matrix = symbol.matrix,
             width = (symbol.width + 2 * q) * moduleSize;
@@ -689,5 +871,5 @@
             '</g></svg>'
         );
     }
-    return Object.freeze({ formats, encode, checkDigit, toSVG, reedSolomon });
+    return Object.freeze({ formats, encode, checkDigit, toSVG, reedSolomon, gs1Payload });
 });

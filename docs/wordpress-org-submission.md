@@ -10,27 +10,29 @@ Authoritative guidance reviewed during engineering:
 
 - [ ] Owner confirms authorship/GPL rights for all RC8 code, symbol tables and assets.
 - [ ] Approve author credit, meramsey contributor identity and public display name.
-- [ ] Resolve `ramsey-labels` slug versus preserved RC8 installation basename and text domain.
+- [x] Prepare and verify a separate `ramsey-labels` directory/text-domain candidate with RC9 dual-active guard; API slug lookup was 404 (not reserved).
 - [x] Test oldest/current combinations and both current order stores; derive minimum headers from passing tests.
-- [ ] Clear WPCS and packaged Plugin Check blockers; review remaining warnings individually.
-- [ ] Complete internationalization, accessibility/RTL and supported-feature test coverage.
+- [x] Full WPCS, installed legacy Plugin Check and installed public-slug Plugin Check pass with zero findings.
+- [x] Generate POT/JS catalogs, check translations extraction, automated axe WCAG 2.1 A/AA, keyboard alternatives and RTL layout.
+- [ ] Owner/translator review actual localized `.po/.mo/.json` catalogs; no language-specific translator is assigned.
 - [x] Verify genuine RC8 upgrade, custom templates/DPI preservation, synthetic legacy migration backup/restore and clean ZIP installation/activation.
-- [ ] Expand malformed legacy migration and multisite/upgrade/rollback coverage.
+- [x] Add malformed serialized object, hash/CAS and two-site purge tests; genuine RC8/RC9 single-site and clean/public-dir migration passes.
+- [ ] Network-global RC8/RC9 saved jobs have no site owner; network administrator must decide and perform explicit per-site assignment before those jobs become visible.
 - [ ] Establish private security contact, support expectations and conduct enforcement contact.
-- [ ] Review privacy/export/erasure implications for per-user saved jobs.
+- [x] Add core paged personal-data export/erasure and verify 26-owner paging; approve retention wording/privacy notice with the owner.
 - [ ] Obtain hardware and real WCPOS acceptance; remove any unverified advertised claims.
 - [ ] Owner explicitly approves repository publication and WordPress.org submission.
 
-## Assets plan (not included in plugin runtime ZIP)
+## Directory artwork (not included in plugin runtime ZIP)
 
-- Screenshot 1: synthetic product search/queue with generated purple product image.
-- Screenshot 2: 50.8 × 25.4 mm QR card design with exact synthetic SKU.
-- Screenshot 3: complete vertically stacked five-label preview and sheet profile settings.
+- [x] Synthetic product search/queue with generated purple product image: `docs/assets/synthetic-product-search.png`, `synthetic-product-queue.png`.
+- [x] 50.8 × 25.4 mm QR card design with exact synthetic SKU: `docs/assets/qr-label.png`, `synthetic-designer.png`.
+- [x] Complete vertically stacked synthetic batch preview: `docs/assets/synthetic-batch-preview.png`.
+- [ ] Owner reviews screenshots, transfers approved `screenshot-1.png`, `screenshot-2.png`, etc. to WordPress.org SVN assets, and confirms readme indices.
 - Optional banner: original neutral Ramsey Labels artwork, 772 × 250 and 1544 × 500 PNG.
 - Optional icons: original 128 × 128 and 256 × 256 PNG. No commercial logos, printer brands
   or copyrighted product photos without explicit compatible rights.
 - Place approved directory artwork in WordPress.org SVN assets, not production plugin files.
-- Replace planned screenshot descriptions with actual captions/files before submission.
 
 No fees, tracking, upsells, remote code or commercial compatibility claims are needed.
 Passing Plugin Check is necessary evidence, not automatic directory approval.
