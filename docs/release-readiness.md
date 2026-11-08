@@ -1,7 +1,7 @@
 # RC11 release readiness — READY FOR OWNER REVIEW, NOT APPROVED OR PUBLISHED
 
 RC11 is a locally verified engineering candidate. The exact verified repository head is
-`ca63bd0be2461f7e8c5cae0d750e6d1e6353fe27` (rewritten identity-corrected source commit); artifact and evidence commits on this branch contain
+`2a4c1ad3dc35d7e0b62668c529047923022576b2` (rewritten identity-corrected source commit); artifact and evidence commits on this branch contain
 documentation, evidence and test-stability changes only. It is not approved for public redistribution,
 WordPress.org submission, a GitHub release, or production installation. No push, merge, tag,
 submission or deployment was made. The repository remains on the dedicated engineering branch.
@@ -61,8 +61,7 @@ ports. Current-stack PHP 7.4/8.5 integration uses WP-CLI PHP runtimes against th
 WordPress/WooCommerce test database; it does **not** claim Apache/web execution on those PHP
 versions. Apache/browser execution passed on PHP 7.4 at the oldest declared stack, PHP 8.3 current
 stack, and PHP 8.5 current stack (Chromium only). HPOS runtime assertions passed on all three PHP
-CLI versions. Hosted GitHub Actions were not run against this exact commit; actionlint is local
-workflow lint only.
+CLI versions. Hosted GitHub Actions [Quality and release gates run 42514052293](https://github.com/meramsey/ramsey-labels/actions/runs/42514052293) passed for the exact source commit; actionlint also validates workflow syntax locally.
 
 ## Candidate artifacts
 

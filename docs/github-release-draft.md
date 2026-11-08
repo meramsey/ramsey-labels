@@ -5,8 +5,8 @@
 ## Candidate commit and checks
 
 - Engineering branch: `engineering/wordpress-org-readiness`
-- Candidate source commit: `ca63bd0be2461f7e8c5cae0d750e6d1e6353fe27`
-- Hosted required workflow: Quality and release gates run `42508133867` (verify final status before creating any release).
+- Candidate source commit: `2a4c1ad3dc35d7e0b62668c529047923022576b2`
+- Hosted required workflow: Quality and release gates [run 42514052293](https://github.com/meramsey/ramsey-labels/actions/runs/42514052293) passed for this exact source commit.
 - Local evidence and checksums: `docs/evidence/rc11-verification.json` and
   `docs/evidence/rc11-checksums.sha256`.
 

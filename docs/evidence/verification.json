@@ -1,7 +1,7 @@
 {
   "status": "READY FOR OWNER REVIEW; NOT OWNER-APPROVED OR PUBLISHED",
   "version": "1.0.0-rc.11",
-  "source_commit": "ca63bd0be2461f7e8c5cae0d750e6d1e6353fe27",
+  "source_commit": "2a4c1ad3dc35d7e0b62668c529047923022576b2",
   "branch": "engineering/wordpress-org-readiness",
   "tests": {
     "javascript_unit": {
@@ -268,14 +268,14 @@
       "sha256": "096666d908b494c4aa7310e3fe9cc348fa59e49521417535a08117c440edb6b2",
       "manifest": "rc11-legacy-manifest.json",
       "file_count": 21,
-      "manifest_commit": "ca63bd0be2461f7e8c5cae0d750e6d1e6353fe27"
+      "manifest_commit": "2a4c1ad3dc35d7e0b62668c529047923022576b2"
     },
     "public": {
       "archive": "ramsey-labels-1.0.0-rc.11.zip",
       "sha256": "e48c93667efb23e8705a17b7465253881ee159bb59410a657c17f6155ea0d0df",
       "manifest": "rc11-public-manifest.json",
       "file_count": 21,
-      "manifest_commit": "ca63bd0be2461f7e8c5cae0d750e6d1e6353fe27"
+      "manifest_commit": "2a4c1ad3dc35d7e0b62668c529047923022576b2"
     }
   },
   "remaining_gates": [
@@ -293,8 +293,8 @@
     "RC11_additions": "listed separately in docs/provenance/rc8-file-audit.md; third-party competitor source was not used",
     "owner_attestation": "Owner (Michael Ramsey / Ramsey Resin Art) states all code was generated fresh during a ChatGPT-assisted conversation as an independent functional alternative; no competitor source was copied; all rights are cleared. Recorded as owner-provided attestation, not a signed legal instrument. Owner should retain original conversation export as supporting evidence."
   },
-  "verified_head": "ca63bd0be2461f7e8c5cae0d750e6d1e6353fe27",
-  "generated_utc": "2026-11-08T18:40:00Z",
+  "verified_head": "2a4c1ad3dc35d7e0b62668c529047923022576b2",
+  "generated_utc": "2026-11-08T19:20:00Z",
   "history_rewrite": {
     "owner_authorized": true,
     "rewritten_owner_project_commits": 20,
@@ -303,6 +303,28 @@
     "source_tree_preserved": true,
     "messages_and_dates_preserved": true,
     "recovery_bundle_verified": true,
-    "note": "Rewritten commits have new object IDs; original signatures cannot survive unchanged."
+    "note": "Rewritten commits have new object IDs; original signatures cannot survive unchanged.",
+    "remote_force_with_lease": true,
+    "remote_original_sha": "0661abf0991ea2eda729d59eb35446e26c7540f5",
+    "remote_corrected_sha": "2a4c1ad3dc35d7e0b62668c529047923022576b2"
+  },
+  "hosted_ci": {
+    "workflow": "Quality and release gates",
+    "run_id": 42514052293,
+    "url": "https://github.com/meramsey/ramsey-labels/actions/runs/42514052293",
+    "head_sha": "2a4c1ad3dc35d7e0b62668c529047923022576b2",
+    "conclusion": "success",
+    "jobs": {
+      "javascript": "success",
+      "php": "success",
+      "security-license": "success",
+      "oldest-supported": "success",
+      "integration-browser-package-php83": "success",
+      "integration-browser-package-php85": "success"
+    },
+    "warnings": [
+      "Pinned checkout/setup-node actions currently run on Node 24 due upstream Node 20 deprecation notice.",
+      "ubuntu-latest migration notice to Ubuntu 26."
+    ]
   }
 }
