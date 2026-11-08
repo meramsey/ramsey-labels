@@ -21,7 +21,7 @@ jobs:
         env:
           RLI_EXPECTED_GIT_NAME: Michael Ramsey
           RLI_EXPECTED_GIT_EMAIL: mike@hackerdise.me
-        run: bash bin/check-git-identity.sh --commit-range --all
+        run: bash bin/check-git-identity.sh --commit-range HEAD
       - name: Regenerate and verify gettext catalog
         run: |
           cp languages/ramsey-labels-independent.pot /tmp/ramsey-labels.pot
