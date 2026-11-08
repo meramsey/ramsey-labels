@@ -1,7 +1,7 @@
 {
   "status": "READY FOR OWNER REVIEW; NOT OWNER-APPROVED OR PUBLISHED",
   "version": "1.0.0-rc.11",
-  "source_commit": "85736a5e11280309fd83dd55c336ec1970964d5e",
+  "source_commit": "482746ee90114e2a9ce7db7e89723f3d75172ede",
   "branch": "engineering/wordpress-org-readiness",
   "tests": {
     "javascript_unit": {
@@ -293,6 +293,6 @@
     "redistribution": "BLOCKED pending attestation or clean-room replacement",
     "RC11_additions": "listed separately in docs/provenance/rc8-file-audit.md; third-party competitor source was not used"
   },
-  "verified_head": "378aa653330e17c0a2f8102e6e1c6ddd0ec186b2",
+  "verified_head": "482746ee90114e2a9ce7db7e89723f3d75172ede",
   "generated_utc": "2026-11-08T15:55:00Z"
 }
