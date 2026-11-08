@@ -7,7 +7,7 @@
     "phpunit/phpunit": "^9.6",
     "wp-coding-standards/wpcs": "^3.3",
     "phpstan/phpstan": "^2.1",
-    "php-stubs/wordpress-stubs": "^6.8",
+    "php-stubs/wordpress-stubs": "^7.1",
     "php-stubs/woocommerce-stubs": "^10.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.1"
   },
