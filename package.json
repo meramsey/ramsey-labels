@@ -15,7 +15,7 @@
         "build": "python3 bin/build.py"
     },
     "devDependencies": {
-        "@axe-core/playwright": "4.11.0",
+        "@axe-core/playwright": "4.14.0",
         "@playwright/test": "1.65.0",
         "@undecaf/zbar-wasm": "0.11.0",
         "eslint": "10.14.0",
