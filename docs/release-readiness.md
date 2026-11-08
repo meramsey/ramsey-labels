@@ -42,12 +42,12 @@ Both RC10 checkpoints remain available as local branches, and RC10's original ZI
 | Current-stack WooCommerce integration | WordPress 7.1.4 / WooCommerce 11.2.2: 99 assertions each for legacy and HPOS via PHP CLI 7.4.33, 8.3.35 and 8.5.12; PHP 8.3.35 web stack also tested |
 | Oldest declared stack | WordPress 6.0.3 / WooCommerce 7.0.1 / PHP 7.4.33: 98 integration assertions and 27 Chromium scenarios, legacy storage |
 | Installed public-directory package integration | 99 assertions pass; 27 Chromium scenarios; RC9 public folder transition and option/job/SKU retention pass |
-| Browser | Current PHP 8.3.35 stack: 27 scenarios each on Chromium/Firefox/WebKit; PHP 8.5.12 web stack: 27 Chromium; oldest PHP 7.4.33 stack: 27 Chromium |
+| Browser | Current PHP 8.3.35 stack: 28 scenarios each on Chromium/Firefox/WebKit; PHP 8.5.12 web stack: 27 Chromium; oldest PHP 7.4.33 stack: 27 Chromium |
 | Installed legacy ZIP | All installed file hashes match manifest; 99 integration assertions, 27 Chromium E2E, streamed PDF checks; Plugin Check 2.1.0: 0 errors / 0 warnings |
 | Installed public ZIP | Guarded legacy-to-public directory transition, 99 integration assertions, 27 Chromium E2E, streamed PDF checks; Plugin Check 2.1.0: 0 errors / 0 warnings |
 | Multisite | 29 isolated integration assertions plus network-admin browser dry-run/assign/rollback |
 | Upgrade | Genuine RC8, RC9 and RC10 saved-library equality passes under PHP 7.4.33 (oldest stack), 8.3.35 and 8.5.12 CLI environments |
-| Queue/catalog | 301 product records across 11 bounded pages; all 301 selected IDs transferred with no duplicates |
+| Queue/catalog/thumbnails | 301 product records across 11 bounded pages; all 301 selected IDs transferred with no duplicates; browser assertions cover actual WooCommerce attachment images through search/category/bulk/queue/persistence/sort, own variation images, parent fallback and missing-image placeholder |
 | Calibration/PDF | Six A4 manufacturer layouts, generic requested counts, all-label counts, first/last positions, offsets/start slots, PDF physical media checked |
 | PDF/resource stress | 100,000-label arithmetic unit fixture; 4,500-page streamed PDF Poppler/page count and final-page barcode decode; cancellation and retry E2E pass |
 | JavaScript quality | ESLint and Prettier pass; WordPress POT regenerated without extraction warnings and matches a second deterministic generation |

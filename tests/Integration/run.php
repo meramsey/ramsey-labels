@@ -18,6 +18,14 @@ function rejects($fn, $message) {
     check(false, $message);
 }
 function rest_status($response) { if(is_wp_error($response)){$data=$response->get_error_data();return isset($data['status'])?(int)$data['status']:401;}return $response->get_status(); }
+function thumbnail_attachment($slug,$red,$green,$blue){
+    $existing=get_posts(['post_type'=>'attachment','name'=>'rli-thumbnail-'.$slug,'posts_per_page'=>1,'post_status'=>'inherit','fields'=>'ids']);
+    if($existing)return (int)$existing[0];
+    $uploads=wp_upload_dir();$path=$uploads['path'].'/rli-thumbnail-'.$slug.'.png';
+    $image=imagecreatetruecolor(96,96);imagefill($image,0,0,imagecolorallocate($image,$red,$green,$blue));imagepng($image,$path);imagedestroy($image);
+    $attachment=wp_insert_attachment(['post_title'=>'RLI thumbnail '.$slug,'post_name'=>'rli-thumbnail-'.$slug,'post_mime_type'=>'image/png','post_status'=>'inherit'],$path);
+    require_once ABSPATH.'wp-admin/includes/image.php';wp_update_attachment_metadata($attachment,wp_generate_attachment_metadata($attachment,$path));return (int)$attachment;
+}
 $admin = get_user_by('login', 'labels_admin');
 wp_set_current_user($admin->ID);
 require_once ABSPATH.'wp-admin/includes/plugin.php';
@@ -34,15 +42,8 @@ $term = term_exists('Synthetic Earrings', 'product_cat');
 if (!$term) { $term = wp_insert_term('Synthetic Earrings', 'product_cat'); }
 $term_id = (int) $term['term_id'];
 wp_set_object_terms($id, [$term_id], 'product_cat');
-if (!$product->get_image_id()) {
-    $uploads=wp_upload_dir();
-    $path=$uploads['path'].'/synthetic-label.png';
-    $image=imagecreatetruecolor(64,64); imagefill($image,0,0,imagecolorallocate($image,90,40,160)); imagepng($image,$path); imagedestroy($image);
-    $attachment=wp_insert_attachment(['post_title'=>'Synthetic purple fixture', 'post_mime_type'=>'image/png', 'post_status'=>'inherit'],$path);
-    require_once ABSPATH.'wp-admin/includes/image.php';
-    wp_update_attachment_metadata($attachment,wp_generate_attachment_metadata($attachment,$path));
-    $product->set_image_id($attachment); $product->save();
-}
+$simple_thumbnail=thumbnail_attachment('simple',90,40,160);
+$product->set_image_id($simple_thumbnail);$product->save();
 $result=Data::searchProducts(['search'=>'RRA-726474']);
 check(count($result['items'])===1 && $result['items'][0]['id']===$id,'exact SKU search');
 check($result['items'][0]['image_url']!=='','product thumbnail');
@@ -130,10 +131,25 @@ $handoff=get_transient('rli_handoff_'.$admin->ID.'_'.$query['rli_job']);check($h
 check(isset(Plugin::rowActions([],get_post($id))['rli_labels']),'product row action');
 
 $variable_id=wc_get_product_id_by_sku('SYNTHETIC-PARENT');
-if(!$variable_id){$parent=new WC_Product_Variable();$parent->set_name('Synthetic variable');$parent->set_sku('SYNTHETIC-PARENT');$variable_id=$parent->save();$variation=new WC_Product_Variation();$variation->set_parent_id($variable_id);$variation->set_sku('SYNTHETIC-VAR-1');$variation->set_regular_price('12');$variation->set_status('publish');$variation->save();WC_Product_Variable::sync($variable_id);}
+if(!$variable_id){$parent=new WC_Product_Variable();$parent->set_name('Synthetic variable');$parent->set_sku('SYNTHETIC-PARENT');$parent->set_status('publish');$variable_id=$parent->save();}
+$parent=wc_get_product($variable_id);$parent_thumbnail=thumbnail_attachment('variation-parent',30,110,190);$parent->set_image_id($parent_thumbnail);$parent->save();
+$fallback_id=wc_get_product_id_by_sku('SYNTHETIC-VAR-1');
+if(!$fallback_id){$variation=new WC_Product_Variation();$variation->set_parent_id($variable_id);$variation->set_sku('SYNTHETIC-VAR-1');$variation->set_regular_price('12');$variation->set_status('publish');$fallback_id=$variation->save();}
+$fallback=wc_get_product($fallback_id);$fallback->set_image_id(0);$fallback->save();
+$own_id=wc_get_product_id_by_sku('SYNTHETIC-VAR-IMAGE');
+if(!$own_id){$variation=new WC_Product_Variation();$variation->set_parent_id($variable_id);$variation->set_sku('SYNTHETIC-VAR-IMAGE');$variation->set_regular_price('13');$variation->set_status('publish');$own_id=$variation->save();}
+$own=wc_get_product($own_id);$own_thumbnail=thumbnail_attachment('variation-own',200,70,50);$own->set_image_id($own_thumbnail);$own->save();WC_Product_Variable::sync($variable_id);
+$no_image_id=wc_get_product_id_by_sku('SYNTHETIC-NO-IMAGE');
+if(!$no_image_id){$no_image=new WC_Product_Simple();$no_image->set_name('Synthetic no-image product');$no_image->set_sku('SYNTHETIC-NO-IMAGE');$no_image->set_regular_price('2');$no_image->set_status('publish');$no_image_id=$no_image->save();}
+$expected_parent_image=(string)wp_get_attachment_image_url($parent_thumbnail,'medium');$expected_own_image=(string)wp_get_attachment_image_url($own_thumbnail,'medium');
 $variation_results=Data::searchProducts(['search'=>'SYNTHETIC-VAR-1']);
-check(in_array(wc_get_product_id_by_sku('SYNTHETIC-VAR-1'),array_column($variation_results['items'],'id'),true),'variation SKU search includes exact variation');
-check(count(Data::records(['ids'=>[$variable_id],'variations'=>'variations'])['records'])>=1,'variation expansion');
+check(in_array($fallback_id,array_column($variation_results['items'],'id'),true),'variation SKU search includes exact variation');
+$fallback_item=current(array_filter($variation_results['items'],function($item)use($fallback_id){return (int)$item['id']===$fallback_id;}));check($fallback_item['image_url']===$expected_parent_image,'variation without image returns parent thumbnail URL');
+$own_results=Data::searchProducts(['search'=>'SYNTHETIC-VAR-IMAGE']);$own_item=current(array_filter($own_results['items'],function($item)use($own_id){return (int)$item['id']===$own_id;}));check($own_item['image_url']===$expected_own_image,'variation own thumbnail URL is retained in SKU search');
+$no_image_results=Data::searchProducts(['search'=>'SYNTHETIC-NO-IMAGE']);check(current($no_image_results['items'])['image_url']==='','product without image returns an explicit empty thumbnail URL');
+$thumbnail_records=Data::records(['ids'=>[$own_id,$fallback_id,$no_image_id]])['records'];$thumbnail_values=[];foreach($thumbnail_records as $thumbnail_record)$thumbnail_values[$thumbnail_record['values']['sku']]=$thumbnail_record['values']['image_url'];
+check($thumbnail_values['SYNTHETIC-VAR-IMAGE']===$expected_own_image && $thumbnail_values['SYNTHETIC-VAR-1']===$expected_parent_image && $thumbnail_values['SYNTHETIC-NO-IMAGE']==='','bulk record projection preserves own, parent-fallback and missing thumbnail states');
+check(count(Data::records(['ids'=>[$variable_id],'variations'=>'variations'])['records'])>=2,'variation expansion preserves thumbnail-capable records');
 $order=wc_create_order();$order->add_product($product,2);$order->set_billing_first_name('Synthetic');$order->set_billing_last_name('Customer');$order->calculate_totals();$order->save();
 if(version_compare(WC_VERSION,'8.2','>='))check(Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()===(get_option('woocommerce_custom_orders_table_enabled')==='yes'),'actual order datastore mode matches requested mode');
 check(count(Data::orderItems($order->get_id())['items'])===1,'order CRUD items');

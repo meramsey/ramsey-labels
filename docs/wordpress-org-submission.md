@@ -25,7 +25,7 @@ Authoritative guidance reviewed during engineering:
 
 ## Directory artwork (not included in plugin runtime ZIP)
 
-- [x] Synthetic product search/queue with generated purple product image: `docs/assets/synthetic-product-search.png`, `synthetic-product-queue.png`.
+- [x] Browser-rendered WooCommerce attachment thumbnails: `docs/assets/synthetic-product-search.png`, `synthetic-product-queue.png`, `synthetic-category-selection.png`, and `synthetic-thumbnail-queue.png` (own variation image, parent fallback, and explicit missing-image placeholder).
 - [x] 50.8 × 25.4 mm QR card design with exact synthetic SKU: `docs/assets/qr-label.png`, `synthetic-designer.png`.
 - [x] Complete vertically stacked synthetic batch preview: `docs/assets/synthetic-batch-preview.png`.
 - [ ] Owner reviews screenshots, transfers approved `screenshot-1.png`, `screenshot-2.png`, etc. to WordPress.org SVN assets, and confirms readme indices.

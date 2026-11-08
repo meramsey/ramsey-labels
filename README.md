@@ -14,7 +14,7 @@ third-party code.
 
 - Product/variation name and SKU search, category filtering, paginated results and thumbnails.
 - Product row links and Products > All Products bulk-action queue handoffs.
-- Queue thumbnails, names, SKUs, prices, selection and quantities.
+- Queue thumbnails, names, SKUs, prices, selection and quantities; variation image or parent-image fallback, with a clear missing-image placeholder.
 - Automatic, vertically stacked previews of every page in each bounded segment, with Previous/Next segment navigation; streamed PDF includes every selected label.
 - Thermal roll and sheet geometry, skipped slots, offsets and saved print profiles.
 - Visual text, barcode, image and shape elements; optional inert HTML layouts.
@@ -46,6 +46,8 @@ pass. The origin of inherited RC8 code is separately audited and remains unverif
 ![Synthetic product-search result and queued label with thumbnail, SKU and price](docs/assets/synthetic-product-search.png)
 
 ![Synthetic vertically stacked batch preview and full-batch PDF controls](docs/assets/synthetic-batch-preview.png)
+
+![Rendered WooCommerce variation thumbnail queue: own image, parent fallback, and missing-image placeholder](docs/assets/synthetic-thumbnail-queue.png)
 
 ## Requirements and installation
 

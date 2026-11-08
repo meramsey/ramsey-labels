@@ -17,6 +17,50 @@ async function logIn(page) {
     }
     throw lastError;
 }
+async function productBySku(page, sku) {
+    return page.evaluate(async (value) => {
+        const url = new URL(window.RLI_BOOT.rest);
+        if (url.searchParams.has('rest_route')) {
+            url.searchParams.set('rest_route', url.searchParams.get('rest_route') + 'products');
+            url.searchParams.set('search', value);
+        } else {
+            url.pathname += 'products';
+            url.search = new URLSearchParams({ search: value }).toString();
+        }
+        const response = await fetch(url, { headers: { 'X-WP-Nonce': window.RLI_BOOT.nonce } });
+        const data = await response.json();
+        if (!response.ok) throw Error(data.message || 'Product lookup failed.');
+        return data.items.find((item) => item.sku === value);
+    }, sku);
+}
+function productResult(page, productId) {
+    return page.locator('.rli-product-result').filter({
+        has: page.locator(`input[value="${productId}"]`),
+    });
+}
+async function expectLoadedProductImage(image, expectedUrl) {
+    await expect(image).toBeVisible();
+    await expect(image).toHaveAttribute('src', expectedUrl);
+    await expect(image).toHaveJSProperty('complete', true);
+    await expect
+        .poll(() => image.evaluate((node) => node.naturalWidth > 0 && node.naturalHeight > 0))
+        .toBe(true);
+    await expect
+        .poll(() =>
+            image.evaluate((node) => {
+                const box = node.getBoundingClientRect();
+                const style = getComputedStyle(node);
+                return (
+                    box.width >= 70 &&
+                    box.height >= 70 &&
+                    style.display !== 'none' &&
+                    style.visibility !== 'hidden'
+                );
+            }),
+        )
+        .toBe(true);
+}
+
 test.beforeEach(async ({ page }) => {
     await logIn(page);
     await page.goto('/wp-admin/admin.php?page=ramsey-labels');
@@ -35,14 +79,16 @@ test('Enter search, thumbnails, queue, automatic complete preview, PDF and print
         .locator('.rli-product-result')
         .filter({ hasText: 'Twinkle Light Earrings' });
     await expect(result).toHaveCount(1);
-    await expect(result.locator('img')).toBeVisible();
+    const simple = await productBySku(page, 'RRA-726474');
+    expect(simple.image_url).toBeTruthy();
+    await expectLoadedProductImage(result.locator('img'), simple.image_url);
     await page.locator('#rli-app').screenshot({ path: 'build/synthetic-product-search.png' });
     await result.locator('input').check();
     await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
     const row = page.locator('.rli-queued-product');
     await expect(row).toContainText('RRA-726474');
     await expect(row).toContainText('12.00');
-    await expect(row.locator('img')).toBeVisible();
+    await expectLoadedProductImage(row.locator('img'), simple.image_url);
     await page.locator('#rli-app').screenshot({ path: 'build/synthetic-product-queue.png' });
     await row.getByLabel('Quantity').fill('5');
     await row.getByLabel('Quantity').press('Tab');
@@ -129,6 +175,11 @@ test('category selection, row action and bulk-action handoff', async ({ page }) 
     await page.locator('#rli-category').selectOption({ label: 'Synthetic Earrings' });
     await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.locator('.rli-product-result')).toHaveCount(1);
+    const categorySimple = await productBySku(page, 'RRA-726474');
+    await expectLoadedProductImage(
+        page.locator('.rli-product-result img'),
+        categorySimple.image_url,
+    );
     await page.locator('#rli-app').screenshot({ path: 'build/synthetic-category-selection.png' });
     await page.goto('/wp-admin/edit.php?post_type=product&s=Twinkle%20Light');
     const row = page
@@ -138,7 +189,80 @@ test('category selection, row action and bulk-action handoff', async ({ page }) 
     await row.locator('input[type=checkbox]').check();
     await page.locator('#bulk-action-selector-top').selectOption('rli_products');
     await page.locator('#doaction').click();
-    await expect(page.locator('.rli-queued-product')).toContainText('RRA-726474');
+    const bulkQueue = page.locator('.rli-queued-product').filter({ hasText: 'RRA-726474' });
+    await expect(bulkQueue).toHaveCount(1);
+    const bulkSimple = await productBySku(page, 'RRA-726474');
+    await expectLoadedProductImage(bulkQueue.locator('img'), bulkSimple.image_url);
+});
+test('WooCommerce attachment thumbnails survive variation fallback, queue sorting and missing-image states', async ({
+    page,
+}) => {
+    await page.getByRole('button', { name: 'Products & orders', exact: true }).click();
+    const own = await productBySku(page, 'SYNTHETIC-VAR-IMAGE');
+    const fallback = await productBySku(page, 'SYNTHETIC-VAR-1');
+    const missing = await productBySku(page, 'SYNTHETIC-NO-IMAGE');
+    expect(own.image_url).toBeTruthy();
+    expect(fallback.image_url).toBeTruthy();
+    expect(own.image_url).not.toBe(fallback.image_url);
+    expect(missing.image_url).toBe('');
+
+    await page.locator('#rli-search').fill('SYNTHETIC-VAR-IMAGE');
+    await page.locator('#rli-search').press('Enter');
+    const ownResult = productResult(page, own.id);
+    await expect(ownResult).toHaveCount(1);
+    await expectLoadedProductImage(ownResult.locator('img'), own.image_url);
+    await ownResult.locator('input').check();
+    await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
+
+    await page.locator('#rli-search').fill('SYNTHETIC-VAR-1');
+    await page.locator('#rli-search').press('Enter');
+    const fallbackResult = productResult(page, fallback.id);
+    await expect(fallbackResult).toHaveCount(1);
+    await expectLoadedProductImage(fallbackResult.locator('img'), fallback.image_url);
+    await fallbackResult.locator('input').check();
+    await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
+
+    await page.locator('#rli-search').fill('SYNTHETIC-NO-IMAGE');
+    await page.locator('#rli-search').press('Enter');
+    const missingResult = productResult(page, missing.id);
+    await expect(missingResult).toHaveCount(1);
+    await expect(missingResult.locator('img')).toHaveCount(0);
+    await expect(missingResult.locator('.rli-no-image')).toHaveText('No photo');
+    await missingResult.locator('input').check();
+    await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
+
+    const ownQueue = page.locator('.rli-queued-product').filter({ hasText: 'SYNTHETIC-VAR-IMAGE' });
+    const fallbackQueue = page
+        .locator('.rli-queued-product')
+        .filter({ hasText: 'SYNTHETIC-VAR-1' });
+    const missingQueue = page
+        .locator('.rli-queued-product')
+        .filter({ hasText: 'SYNTHETIC-NO-IMAGE' });
+    await expectLoadedProductImage(ownQueue.locator('img'), own.image_url);
+    await expectLoadedProductImage(fallbackQueue.locator('img'), fallback.image_url);
+    await expect(missingQueue.locator('img')).toHaveCount(0);
+    await expect(missingQueue.locator('.rli-no-image')).toHaveText('No photo');
+    await ownQueue.getByLabel('Quantity').fill('3');
+    await ownQueue.getByLabel('Quantity').press('Tab');
+    await page.getByLabel('Sort print queue', { exact: true }).selectOption('sku-desc');
+    await expectLoadedProductImage(
+        page
+            .locator('.rli-queued-product')
+            .filter({ hasText: 'SYNTHETIC-VAR-IMAGE' })
+            .locator('img'),
+        own.image_url,
+    );
+    await expectLoadedProductImage(
+        page.locator('.rli-queued-product').filter({ hasText: 'SYNTHETIC-VAR-1' }).locator('img'),
+        fallback.image_url,
+    );
+    await expect(
+        page
+            .locator('.rli-queued-product')
+            .filter({ hasText: 'SYNTHETIC-VAR-IMAGE' })
+            .getByLabel('Quantity'),
+    ).toHaveValue('3');
+    await page.locator('#rli-app').screenshot({ path: 'build/synthetic-thumbnail-queue.png' });
 });
 test('REST cookie authentication rejects missing and forged nonce', async ({ page }) => {
     const statuses = await page.evaluate(async () => {
@@ -204,6 +328,8 @@ test('save and restore private saved print jobs', async ({ page }) => {
     await page.locator('.rli-product-result input').check();
     await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
     await expect(page.locator('.rli-queued-product')).toHaveCount(1);
+    const savedSimple = await productBySku(page, 'RRA-726474');
+    await expectLoadedProductImage(page.locator('.rli-queued-product img'), savedSimple.image_url);
     await page.getByRole('button', { name: 'Save print job', exact: true }).click();
     const saveDialog = page.getByRole('dialog');
     await expect(saveDialog).toBeVisible();
@@ -243,6 +369,7 @@ test('save and restore private saved print jobs', async ({ page }) => {
         .selectOption({ label: 'Synthetic saved label job' });
     await loadDialog.getByRole('button', { name: 'Load saved print job', exact: true }).click();
     await expect(page.locator('.rli-queued-product')).toContainText('RRA-726474');
+    await expectLoadedProductImage(page.locator('.rli-queued-product img'), savedSimple.image_url);
 });
 test('public JavaScript API appends scalar synthetic records and keyboard-sort controls reorder output', async ({
     page,
