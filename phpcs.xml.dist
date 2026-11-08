@@ -5,7 +5,7 @@
     <arg name="extensions" value="php"/>
     <rule ref="WordPress"/>
     <rule ref="WordPress.Files.FileName">
-        <exclude-pattern>includes/(Data|Migration|Plugin|Schema|Store)\.php$</exclude-pattern>
+        <exclude-pattern>includes/(Data|Migration|NetworkJobs|Plugin|Schema|Store)\.php$</exclude-pattern>
     </rule>
     <rule ref="WordPress.WP.Capabilities">
         <properties><property name="custom_capabilities" type="array">

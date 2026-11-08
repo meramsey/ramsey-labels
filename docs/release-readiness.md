@@ -1,94 +1,90 @@
-# RC10 release readiness — READY FOR OWNER REVIEW, NOT PUBLISHED
+# RC11 release readiness — READY FOR OWNER REVIEW, NOT APPROVED OR PUBLISHED
 
-This RC10 code candidate has passed the local release gates below. It is not a stable release,
-WordPress.org submission, public GitHub release, or production deployment. Nothing was pushed,
-submitted, tagged or installed on a production site. Physical printer/scanner/POS behavior was
-not tested. Synthetic WordPress/WooCommerce instances use isolated Docker volumes and loopback ports.
+RC11 is a locally verified engineering candidate. It is not approved for public redistribution,
+WordPress.org submission, a GitHub release, or production installation. No push, merge, tag,
+submission or deployment was made. The repository remains on the dedicated engineering branch.
+Both RC10 checkpoints remain available as local branches, and RC10's original ZIP is pinned as
+`tests/Fixtures/rc10.zip` for upgrade tests.
 
-## Verified compatibility matrix
+## Verified RC11 functionality
 
-Exact core/plugin versions were confirmed against the WordPress Core Version Check and Plugin
-Information APIs on 2026-11-06/07. Current stable at that check: WordPress 7.1.4, WooCommerce
-11.2.2 and PHP 8.5.12. These values may age; check upstream again at submission time.
+- Full-label SVG export: vector text, shapes and multiple barcode elements; bounded product images
+  embedded as raster PNG/data raster; XML escaping, clip/rotation behavior and physical mm units.
+  Python XML safety checks, ImageMagick rasterization, Chromium SVG rasterization, independent
+  Code 128/QR/Data Matrix decode and browser-preview/PDF geometry comparisons pass. It is a mixed
+  vector/raster document when imagery is present, not an all-vector export. HTML designs remain
+  available as PNG/PDF, not full-label SVG.
+- Sheet geometry: source-verified Avery A4 L7164 (12-up), L7163 (14), L7162 (16), L7160 (21),
+  L7159 (24), L7651 (65). Official manufacturer product pages and blank Word grid files are
+  cited and hashed in `docs/evidence/rc11-sheet-source-inventory.json`. Requested counts 40/44/56/
+  120/189/230/324 and generic alternatives remain unbranded configurable row/column starters;
+  count alone does not imply stock compatibility. Calibration SVG includes page/label geometry,
+  margins, offsets, pitches and skipped slots.
+- Queue sorting: stable Unicode-aware product name ascending/descending and SKU ascending/descending;
+  selection-order restore; quantity, IDs and selected state remain attached; browser tests confirm
+  preview order matches queue order.
+- GS1: the implemented GS1-128 AI subset and exact limits are in `docs/gs1-support-matrix.md`.
+  It does not claim complete GS1 or GS1 Data Matrix/QR compatibility.
+- Multisite: old global jobs remain quarantined. The network-admin-only workflow displays redacted
+  metadata, dry-runs, requires explicit destination/member/profile access, records decisions,
+  retains the source, blocks conflicting/partial assignment and fingerprint-checks rollback.
 
-| WP | PHP | WooCommerce | Store | Integration assertions | Browser tests | Upgrade |
-|---|---|---|---|---:|---:|---|
-| 6.0.3 | 7.4.33 CLI / 7.4.32 Apache | 7.0.1 | Legacy | 94 | 21 Chromium | RC8 + RC9 |
-| 7.1.4 | 8.3.35 | 11.2.2 | Legacy | 95 | 21 Chromium, 21 Firefox, 21 Playwright WebKit | RC8 + RC9 |
-| 7.1.4 | 8.3.35 | 11.2.2 | HPOS | 95 | same browser run | RC8 + RC9 |
-| 7.1.4 | 8.5.12 | 11.2.2 | Legacy | 95 | 21 Chromium | RC8 + RC9 |
-| 7.1.4 | 8.5.12 | 11.2.2 | HPOS | 95 | same browser run | RC8 + RC9 |
-| 7.1.4 | 8.3.35 | 11.2.2 | Legacy, installed legacy ZIP | 95 | 21 Chromium | Public slug package tested separately |
-| 7.1.4 | 8.3.35 | 11.2.2 | Legacy, public-slug ZIP | 95 | 21 Chromium | RC9 public-folder transition |
-| 7.1.4 | 8.3.35 | 11.2.2 | Two-site multisite | 6 lifecycle/isolation checks | Not claimed | Site settings and jobs isolated |
+## RC11 local verification results
 
-Minimum headers reflect tested values: WordPress 6.0.3, PHP 7.4.32, WooCommerce 7.0.1.
-PHP 7.4 is end-of-life and is tested for inherited compatibility only; new installations should
-use a supported PHP release. PHP 8.0/8.1/8.2/8.4 and intermediate WooCommerce versions were not
-exercised. Firefox/WebKit were tested on Linux; Safari/macOS/Windows are not claimed.
-
-## Final gates and evidence
-
-| Gate | Verified result |
+| Gate | Result |
 |---|---|
-| PHPUnit | 16 tests / 23 assertions pass on PHP 7.4.32, 8.3.36 and 8.5.12 |
-| JS unit/barcode | 26 tests pass; all 8 advertised formats independently decoded; GS1-128 subset round-trips with group separator |
-| WooCommerce integration | 95 assertions per current order-store configuration, 94 on the oldest stack, plus 95 each against both installed ZIPs |
-| Multisite | 6 assertions: per-site option/job isolation, retain-by-default and paginated explicit network purge |
-| Browser | 21 scenarios each on Chromium, Firefox, Playwright WebKit on current stack, oldest Chromium, PHP 8.5 Chromium, installed legacy ZIP and installed public ZIP |
-| Accessibility | Axe WCAG 2.1 A/AA has zero violations in designer/data/preview and saved-job native dialogs; keyboard element editing, reorder and RTL automated checks pass |
-| RC upgrades | Archived RC8 and RC9 full custom library/profile/template/DPI equality on PHP 7.4/8.3/8.5; public directory folder transition additionally preserves single-site RC9 jobs |
-| Large batches/PDF | Arithmetic planning for 100,000 labels; streamed 4,500-page PDF verified by Poppler; final page independently decodes exact RRA-726474 |
-| Print geometry | Thermal media 144 × 72 pt (50.8 × 25.4 mm); 131 labels occupy three A4 sheets; printer calibration is not hardware validation |
-| PHP style/static | PHPCS/WPCS zero errors and warnings, no baseline; PHPStan level 5 zero errors; PHP syntax verified on 7.4, 8.3 and 8.5 containers |
-| JS style/i18n | ESLint and Prettier pass; `wp i18n make-pot` has zero extraction warnings; committed POT matches regenerated catalog (timestamp normalized); public domain transformed to `ramsey-labels` |
-| Plugin Check 2.1.0 | 0 errors / 0 warnings on the installed legacy ZIP and public-slug ZIP |
-| Dependencies/provenance | npm 0, Composer 0 advisories/abandoned packages; 90 npm and 36 Composer dev dependency license metadata entries accepted; inherited RC8 ownership still needs owner attestation |
-| Secret scan / workflows | Gitleaks scans full committed history; actionlint validates workflows locally; GitHub Actions were not run and no push was made |
+| JavaScript unit/barcode/GS1/preset suite | 29 passed, 0 failed |
+| WPCS / PHPCS | Pass, zero errors/warnings |
+| PHPStan | Level 5 pass, zero errors |
+| PHPUnit | 16 tests / 23 assertions pass |
+| WooCommerce integration | 99 assertions pass on WordPress 7.1.4 / WooCommerce 11.2.2 / PHP 8.3.35, legacy order storage |
+| Installed public-directory package integration | 99 assertions pass; RC9 public folder transition and option/job/SKU retention pass |
+| Browser | 27 scenarios pass each on Chromium, Firefox and Playwright WebKit (Linux) |
+| Installed legacy ZIP | All installed file hashes match manifest; 99 integration assertions, 27 Chromium E2E, streamed PDF checks; Plugin Check 2.1.0: 0 errors / 0 warnings |
+| Installed public ZIP | Guarded legacy-to-public directory transition, 99 integration assertions, 27 Chromium E2E, streamed PDF checks; Plugin Check 2.1.0: 0 errors / 0 warnings |
+| Multisite | 29 isolated integration assertions plus network-admin browser dry-run/assign/rollback |
+| Upgrade | Genuine archived RC8, RC9 and RC10 saved-library equality passes |
+| Queue/catalog | 301 product records across 11 bounded pages; all 301 selected IDs transferred with no duplicates |
+| Calibration/PDF | Six A4 manufacturer layouts, generic requested counts, all-label counts, first/last positions, offsets/start slots, PDF physical media checked |
+| PDF/resource stress | 100,000-label arithmetic unit fixture; 4,500-page streamed PDF Poppler/page count and final-page barcode decode; cancellation and retry E2E pass |
+| JavaScript quality | ESLint and Prettier pass; WordPress POT regenerated without extraction warnings and matches a second deterministic generation |
+| Dependencies | npm/Composer lockfile audits and package license metadata checks recorded; development dependencies are not bundled |
+| Hardware/manual | Not tested; see `docs/owner-acceptance.md` |
 
-Integration evidence includes 101-product category pagination, category-list pagination, 101 selected
-IDs without truncation, variation CRUD/search, orders through legacy and HPOS CRUD, coupons/users,
-bulk handoff, customer privacy paging over 26 owners, unauthorized route/nonce denials, oversized
-body rejection, lock recovery, hostile templates, PHP serialized-object rejection, and extension hooks.
-
-Both packages use sorted, fixed-timestamp allowlists and were built twice byte-identically. Each
-ZIP's installed files were SHA-256 checked against its manifest before its integration/browser suite.
-Tests, `vendor`, `node_modules`, original archives and local reports are not shipped.
+The full command outputs are retained locally under `build/rc11-reports/` and summarized in
+`docs/evidence/rc11-verification.json` after the release source commit. Tests use synthetic,
+isolated WordPress/WooCommerce instances and loopback ports. The full historical matrix for PHP
+7.4/8.5, oldest WordPress/WooCommerce, HPOS, and Windows/macOS was verified for RC10, but was not
+re-run in this RC11 iteration; RC11-specific changes were fully tested on the current Linux PHP
+8.3/legacy-order stack. Do not extrapolate a newly verified RC11 matrix beyond that coverage.
 
 ## Candidate artifacts
 
-Legacy in-place RC8/RC9 update package:
+- Legacy in-place update: `build/ramsey-labels-independent-1.0.0-rc.11.zip`
+- Public-directory candidate: `build/public/ramsey-labels-1.0.0-rc.11.zip`
+- Exact SHA-256 values and sorted runtime file manifests: `docs/evidence/rc11-verification.json`
+- Manufacturer source references/checksums: `docs/evidence/rc11-sheet-source-inventory.json`
 
-`build/ramsey-labels-independent-1.0.0-rc.10.zip`
+Both ZIPs are built from deterministic fixed-timestamp allowlists, install separately, exclude
+tests/development dependencies/archives, and pass installed-package checks. WordPress.org slug
+lookup/reservation is not approval, and no WordPress.org acceptance is claimed.
 
-The prospective directory candidate is a separate package and is not a directory reservation:
+## Blocking owner gates and residual limits
 
-`build/public/ramsey-labels-1.0.0-rc.10.zip`
+- **Provenance blocks public redistribution.** Every inherited RC8 source component—including
+  barcode encoders/tables and default templates—needs rights-holder attestation; see
+  `docs/provenance/rc8-file-audit.md` and `docs/owner-attestation-checklist.md`. No attestation is
+  fabricated or inferred from a GPL header/test pass.
+- Owner approval is required for brand, author credit, GPL distribution, public slug, support and
+  security contacts, directory art/screenshots, migration policy and any actual submission.
+- Physical thermal printing (2 × 1 inch), QR/SKU scan into WCPOS, scanners/POS, A4 stock alignment,
+  printer scaling/feed, screen-reader operator acceptance, macOS Safari and Windows remain untested.
+- Generic sheet counts have no manufacturer fit claim; only the six named Avery geometries are
+  source-backed. Manufacturer/feed calibration still requires a physical plain-paper test.
+- GS1 support is a documented subset, not complete standards conformance or verifier certification.
+- Full-label SVG can contain raster images; HTML-template designs are not exported as full-label SVG.
+- Production-scale database/load, long-duration browser memory, and live cross-plugin adoption are
+  not certified by the synthetic local fixtures.
 
-Exact checksums are in the adjacent `.zip.sha256` files and committed verification JSON. Rebuild
-from the recorded source commit to verify checksums. The public slug lookup returned 404 at the
-recorded check; WordPress.org can grant the slug to another submitter at any time.
-
-## Audits and remaining decisions
-
-Security implementation/tests are in `docs/security-audit.md`; licensing/source provenance in
-`docs/provenance.md`; competitor-source comparison and honest feature gaps in
-`docs/competitive-feature-matrix.md`. Known competitive gaps are explicitly acknowledged:
-not all competitor sheet-stock presets, not every GS1 application-identifier family, no full-label
-vector SVG (barcode SVG is vector; label PNG and lossless raster PDF are provided), no one-click
-alphabetic sorting, and no scanner/mobile inventory application. The manual queue can be reordered.
-
-Owner decisions still required:
-- Attest rights/authorship/derivation for every inherited RC8 file, encoder and symbol table; approve GPL distribution and author credit.
-- Approve the public name, contributor account, directory slug/domain, release version and that the separate public package is appropriate.
-- Approve conversion of legacy global multisite jobs only after assigning each job to the intended site; automatic reassignment would risk cross-site PII disclosure.
-- Provide monitored private vulnerability, support and conduct-enforcement contacts; review privacy/retention language and file author metadata before publishing history.
-- Approve directory screenshots/artwork and actual submission/publishing.
-
-Manual acceptance still pending: real label stocks, printer drivers, offsets/feed, barcode scanner,
-live WCPOS/POS lookup, screen reader/assistive technology, macOS Safari and Windows browsers.
-No vendor printer or POS compatibility is claimed.
-
-**Status recommendation:** READY FOR OWNER REVIEW, NOT PUBLISHED. Owner may accept these documented
-competitive gaps or authorize another engineering iteration before approving release. Do not
-promote RC10 to stable 1.0.0 merely by changing metadata.
+**Recommendation: READY FOR OWNER REVIEW, NOT APPROVED/PUBLISHED.** Acceptance, licensing
+attestation, hardware checks, publication and deployment remain owner decisions.

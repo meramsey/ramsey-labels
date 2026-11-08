@@ -124,6 +124,140 @@
         'main-product-image-url': 'image',
         permalink: 'product_url',
     };
+    const sheetPaperFormats = Object.freeze({
+        a4: Object.freeze({ width: 210, height: 297 }),
+        letter: Object.freeze({ width: 215.9, height: 279.4 }),
+        p4: Object.freeze({ width: 250, height: 353 }),
+    });
+    const verifiedSheetPresets = Object.freeze(
+        [
+            {
+                id: 'avery-l7164',
+                maker: 'Avery',
+                code: 'L7164',
+                count: 12,
+                page: 'a4',
+                width: 63.5,
+                height: 71.9667,
+                pitchX: 66.04,
+                pitchY: 71.9667,
+                columns: 3,
+                rows: 4,
+                marginLeft: 7.2141,
+                marginTop: 4.6031,
+                source: 'https://www.avery.co.uk/template-l7164',
+                template:
+                    'https://www.avery.co.uk/sites/avery.co.uk/files/avery_importer/template/files/Avery_L7164_Word_Template.doc',
+            },
+            {
+                id: 'avery-l7163',
+                maker: 'Avery',
+                code: 'L7163',
+                count: 14,
+                page: 'a4',
+                width: 99.06,
+                height: 38.1,
+                pitchX: 101.6,
+                pitchY: 38.1,
+                columns: 2,
+                rows: 7,
+                marginLeft: 4.6743,
+                marginTop: 15.1875,
+                source: 'https://www.avery.co.uk/template-l7163',
+                template:
+                    'https://www.avery.co.uk/sites/avery.co.uk/files/avery_importer/template/files/Avery_L7163_WordTemplate.doc',
+            },
+            {
+                id: 'avery-l7162',
+                maker: 'Avery',
+                code: 'L7162',
+                count: 16,
+                page: 'a4',
+                width: 99.06,
+                height: 33.8667,
+                pitchX: 101.6,
+                pitchY: 33.8667,
+                columns: 2,
+                rows: 8,
+                marginLeft: 4.6743,
+                marginTop: 13.0528,
+                source: 'https://www.avery.co.uk/template-l7162',
+                template:
+                    'https://www.avery.co.uk/sites/avery.co.uk/files/avery_importer/template/files/Avery_L7162_WordTemplate.doc',
+            },
+            {
+                id: 'avery-l7160',
+                maker: 'Avery',
+                code: 'L7160',
+                count: 21,
+                page: 'a4',
+                width: 63.5,
+                height: 38.1,
+                pitchX: 66.04,
+                pitchY: 38.1,
+                columns: 3,
+                rows: 7,
+                marginLeft: 7.1967,
+                marginTop: 15.1875,
+                source: 'https://www.avery.co.uk/template-l7160',
+                template:
+                    'https://www.avery.co.uk/sites/avery.co.uk/files/avery_importer/template/files/Avery_L7160_WordTemplate.doc',
+            },
+            {
+                id: 'avery-l7159',
+                maker: 'Avery',
+                code: 'L7159',
+                count: 24,
+                page: 'a4',
+                width: 63.5,
+                height: 33.86,
+                pitchX: 66.04,
+                pitchY: 33.8667,
+                columns: 3,
+                rows: 8,
+                marginLeft: 7.1967,
+                marginTop: 13.0886,
+                source: 'https://www.avery.co.uk/template-l7159',
+                template:
+                    'https://www.avery.co.uk/sites/avery.co.uk/files/avery_importer/template/files/Avery_L7159_WordTemplate.doc',
+            },
+            {
+                id: 'avery-l7651',
+                maker: 'Avery',
+                code: 'L7651',
+                count: 65,
+                page: 'a4',
+                width: 38.1,
+                height: 21.1667,
+                pitchX: 40.64,
+                pitchY: 21.1667,
+                columns: 5,
+                rows: 13,
+                marginLeft: 4.6743,
+                marginTop: 10.9361,
+                source: 'https://www.avery.co.uk/template-l7651',
+                template:
+                    'https://www.avery.co.uk/sites/avery.co.uk/files/avery_importer/template/files/Avery_L7651_WordTemplate.doc',
+            },
+        ].map((preset) => Object.freeze(preset)),
+    );
+    const genericSheetLayouts = Object.freeze(
+        [
+            [12, 3, 4],
+            [14, 2, 7],
+            [16, 4, 4],
+            [21, 3, 7],
+            [24, 3, 8],
+            [40, 4, 10],
+            [44, 4, 11],
+            [56, 4, 14],
+            [65, 5, 13],
+            [120, 8, 15],
+            [189, 9, 21],
+            [230, 10, 23],
+            [324, 18, 18],
+        ].map(([count, columns, rows]) => Object.freeze({ count, columns, rows })),
+    );
     function element(type = 'text', overrides = {}) {
         return Object.assign(
             {
@@ -216,6 +350,7 @@
     }
     function defaultPage() {
         return {
+            preset: 'custom',
             mode: 'roll',
             width: 50.8,
             height: 25.4,
@@ -234,6 +369,93 @@
             dpi: 300,
             outlines: false,
         };
+    }
+    function resizeDesign(design, width, height) {
+        const result = clone(design),
+            sx = width / Number(design.width),
+            sy = height / Number(design.height);
+        for (const e of result.elements || []) {
+            e.x *= sx;
+            e.w *= sx;
+            e.y *= sy;
+            e.h *= sy;
+        }
+        result.width = width;
+        result.height = height;
+        return result;
+    }
+    function applySheetPreset(profile, presetId) {
+        const preset = verifiedSheetPresets.find((item) => item.id === presetId);
+        if (!preset)
+            throw Error(__('Unknown verified stock-sheet preset.', 'ramsey-labels-independent'));
+        const result = clone(profile),
+            paper = sheetPaperFormats[preset.page];
+        result.design = resizeDesign(profile.design, preset.width, preset.height);
+        Object.assign(result.page, {
+            preset: preset.id,
+            mode: 'sheet',
+            flow: 'row',
+            width: paper.width,
+            height: paper.height,
+            columns: preset.columns,
+            rows: preset.rows,
+            marginLeft: preset.marginLeft,
+            marginTop: preset.marginTop,
+            marginRight:
+                paper.width -
+                preset.marginLeft -
+                preset.columns * preset.width -
+                (preset.columns - 1) * (preset.pitchX - preset.width),
+            marginBottom:
+                paper.height -
+                preset.marginTop -
+                preset.rows * preset.height -
+                (preset.rows - 1) * (preset.pitchY - preset.height),
+            gapX: preset.pitchX - preset.width,
+            gapY: preset.pitchY - preset.height,
+            start: 0,
+            offsetX: 0,
+            offsetY: 0,
+        });
+        const errors = validatePage(result);
+        if (errors.length) throw Error(errors.join('\n'));
+        return result;
+    }
+    function applyGenericGrid(profile, count, paperId = 'a4', orientation = 'portrait') {
+        const layout = genericSheetLayouts.find((item) => item.count === Number(count));
+        if (!layout)
+            throw Error(
+                __('Choose one of the listed generic label counts.', 'ramsey-labels-independent'),
+            );
+        const paper = sheetPaperFormats[paperId];
+        if (!paper && paperId !== 'custom')
+            throw Error(
+                __('Choose A4, Letter, P4, or custom sheet geometry.', 'ramsey-labels-independent'),
+            );
+        const result = clone(profile),
+            size = paper ? clone(paper) : { width: result.page.width, height: result.page.height };
+        if (orientation === 'landscape') [size.width, size.height] = [size.height, size.width];
+        if (!['portrait', 'landscape'].includes(orientation))
+            throw Error(__('Invalid sheet orientation.', 'ramsey-labels-independent'));
+        Object.assign(result.page, {
+            preset: `generic-${layout.count}-${paperId}-${orientation}`,
+            mode: 'sheet',
+            flow: 'row',
+            width: size.width,
+            height: size.height,
+            columns: layout.columns,
+            rows: layout.rows,
+            marginLeft: 0,
+            marginRight: 0,
+            marginTop: 0,
+            marginBottom: 0,
+            gapX: 0,
+            gapY: 0,
+            start: 0,
+            offsetX: 0,
+            offsetY: 0,
+        });
+        return result;
     }
     function defaultProfile() {
         return {
@@ -988,6 +1210,11 @@
         defaultPage,
         defaultProfile,
         defaultLibrary,
+        sheetPaperFormats,
+        verifiedSheetPresets,
+        genericSheetLayouts,
+        applySheetPreset,
+        applyGenericGrid,
         resolve,
         requestedFields,
         validateDesign,

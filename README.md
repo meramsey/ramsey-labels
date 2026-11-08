@@ -3,7 +3,7 @@
 Free, independent WooCommerce label design, SKU barcodes, complete segmented batch
 previews, thermal/sheet browser printing and lossless raster PDF export.
 
-**Engineering release candidate RC10: not yet approved for publication or production.**
+**Engineering release candidate RC11: not approved for publication or production.**
 See [release readiness](docs/release-readiness.md) for actual results and blockers.
 No code has been pushed or submitted to WordPress.org.
 
@@ -22,6 +22,12 @@ No code has been pushed or submitted to WordPress.org.
 - Bounded product/category/API pages, queue pagination, arithmetic label segmentation and incremental PDF streaming.
 - Per-user saved jobs, WordPress personal-data export/erasure callbacks, and a PHP/JavaScript developer API.
 - A separately built `ramsey-labels` directory candidate with a dual-active runtime guard.
+- Full-label SVG (vector text/shapes/barcodes with embedded raster images), independently parsed/rasterized and decoded.
+- Six manufacturer-source A4 sheet presets plus generic, clearly unbranded N-up starters (12/14/16/21/24/40/44/56/65/120/189/230/324); print calibration SVG.
+- Stable product-name/SKU sorting and original selection-order restoration.
+- Explicit multisite legacy-job quarantine and network-admin-only dry-run/assign/rollback workflow.
+- GS1-128 support is limited to the AIs in [the support matrix](docs/gs1-support-matrix.md); other GS1 families are explicitly unsupported.
+- Saved RC8/RC9 multisite jobs remain quarantined until a network administrator confirms an owning site; no assignment is automatic.
 - Read-only legacy configuration discovery with explicit migration preview and backup/restore.
 
 No runtime npm/Composer libraries, fonts, external scripts, telemetry or barcode services.
@@ -43,7 +49,7 @@ Use an isolated staging installation with WooCommerce and a modern browser.
 [Compatibility](docs/compatibility.md) distinguishes tested combinations from inherited,
 unverified environments. The tested floor is WordPress 6.0.3 / PHP 7.4.32 (Apache) / WooCommerce 7.0.1.
 
-Build the in-place RC10 ZIP with `python3 bin/build.py`, then upload via Plugins > Add New.
+Build the in-place RC11 ZIP with `python3 bin/build.py`, then upload via Plugins > Add New.
 The package deliberately retains `ramsey-labels-independent/ramsey-labels-independent.php`
 for RC8/RC9 in-place update safety. The separate candidate directory ZIP is built with
 `python3 bin/build-public.py`. Follow [migration](docs/migration.md); do not leave both

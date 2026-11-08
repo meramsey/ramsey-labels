@@ -54,21 +54,32 @@ check(count($category_page['items'])===100 && $category_page['has_more'] && coun
 $selected_category=Data::categories(['include'=>[$term_id]]);check(count($selected_category['items'])===1 && $selected_category['items'][0]['id']===$term_id,'deep-linked category lookup resolves by ID');
 $batch_term=term_exists('Synthetic Batch Fixture','product_cat');if(!$batch_term)$batch_term=wp_insert_term('Synthetic Batch Fixture','product_cat');
 $batch_ids=[];
-for($i=1;$i<=101;$i++){
+for($i=1;$i<=301;$i++){
     $sku='SYNTHETIC-BATCH-'.str_pad((string)$i,3,'0',STR_PAD_LEFT);$batch_id=wc_get_product_id_by_sku($sku);
     if(!$batch_id){$batch_product=new WC_Product_Simple();$batch_product->set_name('Synthetic batch '.str_pad((string)$i,3,'0',STR_PAD_LEFT));$batch_product->set_sku($sku);$batch_product->set_regular_price('1');$batch_product->set_status('publish');$batch_id=$batch_product->save();wp_set_object_terms($batch_id,[(int)$batch_term['term_id']],'product_cat');}
     $batch_ids[]=$batch_id;
 }
 $first=Data::searchProducts(['categories'=>[(int)$batch_term['term_id']],'per_page'=>30,'page'=>1]);
 $second=Data::searchProducts(['categories'=>[(int)$batch_term['term_id']],'per_page'=>30,'page'=>2]);
-check($first['total']===101 && $first['pages']===4 && count($first['items'])===30 && count($second['items'])===30,'101-product category has four complete paginated result sets');
+ $last=Data::searchProducts(['categories'=>[(int)$batch_term['term_id']],'per_page'=>30,'page'=>11]);
+check($first['total']===301 && $first['pages']===11 && count($first['items'])===30 && count($second['items'])===30 && count($last['items'])===1,'301-product catalog returns all 11 bounded search pages');
 check(array_intersect(array_column($first['items'],'id'),array_column($second['items'],'id'))===[],'category pages contain no duplicate IDs');
 $batch_records=Data::records(['ids'=>$batch_ids])['records'];
-check(count($batch_records)===101 && array_map(function($record){return (int)$record['values']['id'];},$batch_records)===$batch_ids,'more than 100 selected product IDs transfer without truncation');
+check(count($batch_records)===301 && array_map(function($record){return (int)$record['values']['id'];},$batch_records)===$batch_ids,'301 selected product IDs transfer without truncation or mutation');
 $records=Data::records(['ids'=>[$id], 'fields'=>['sku','price']])['records'];
 check($records[0]['values']['sku']==='RRA-726474','SKU payload unchanged');
 check($records[0]['values']['price_raw']==='12.00','WooCommerce price CRUD');
 check($records[0]['values']['currency_symbol']===html_entity_decode(get_woocommerce_currency_symbol(),ENT_QUOTES|ENT_HTML5,'UTF-8'),'currency symbol from WooCommerce settings');
+function stock_fixture($sku,$managed,$stock,$backorders='no'){
+    $product=new WC_Product_Simple();$product->set_name('Synthetic stock policy '.$sku);$product->set_sku($sku);$product->set_regular_price('1');$product->set_status('publish');$product->set_manage_stock($managed);$product->set_backorders($backorders);$product->set_stock_quantity($stock);return $product->save();
+}
+$stock_fixtures=[stock_fixture('RLI-STOCK-POS',true,5),stock_fixture('RLI-STOCK-UNMANAGED',false,null),stock_fixture('RLI-STOCK-BACKORDER',true,-2,'yes'),stock_fixture('RLI-STOCK-INVALID',true,-2,'no')];
+$stock_result=Data::records(['ids'=>array_slice($stock_fixtures,0,3),'quantity_mode'=>'stock','copies'=>2,'fields'=>['sku'],'segmented'=>true]);
+$stock_quantities=[];foreach($stock_result['records'] as $stock_record)$stock_quantities[$stock_record['values']['sku']]=$stock_record['quantity'];
+check($stock_quantities['RLI-STOCK-POS']===10 && $stock_quantities['RLI-STOCK-UNMANAGED']===2 && !isset($stock_quantities['RLI-STOCK-BACKORDER']),'managed stock copies, unmanaged fallback, and backorder exclusion use explicit on-hand policy');
+check(count($stock_result['warnings'])===2,'unmanaged stock and backorders produce clear policy warnings');
+rejects(function()use($stock_fixtures){Data::records(['ids'=>[$stock_fixtures[3]],'quantity_mode'=>'stock']);},'negative managed stock without backorders fails closed');
+foreach($stock_fixtures as $stock_fixture_id)wp_delete_post($stock_fixture_id,true);
 add_filter('rli_field_value',function($value,$field){return 'test.extension'===$field?'Independent extension field':$value;},10,2);
 $extension_record=Data::records(['ids'=>[$id],'fields'=>['test.extension']])['records'][0];
 check($extension_record['values']['test.extension']==='Independent extension field','documented PHP field extension hook');
@@ -95,6 +106,14 @@ $saved=Store::save($incoming);check($saved['revision']===$old['revision']+1,'set
 check(Store::read()['profiles'][0]['name']==='Synthetic saved profile','settings persistence');
 rejects(function()use($old){Store::save($old);},'stale revision conflict');
 $old['revision']=$saved['revision'];Store::save($old);
+$preset_before=Store::read();$preset_profile=$preset_before['profiles'][0];$preset_profile['id']='synthetic-avery-l7160';$preset_profile['name']='Synthetic Avery L7160 source-verified geometry';
+$preset_profile['design']['width']=63.5;$preset_profile['design']['height']=38.1;
+foreach($preset_profile['design']['elements'] as &$preset_element){$preset_element['x']*=63.5/50.8;$preset_element['w']*=63.5/50.8;$preset_element['y']*=38.1/25.4;$preset_element['h']*=38.1/25.4;}unset($preset_element);
+$preset_profile['page']=array_merge($preset_profile['page'],['preset'=>'avery-l7160','mode'=>'sheet','width'=>210,'height'=>297,'columns'=>3,'rows'=>7,'marginLeft'=>7.1967,'marginRight'=>7.2233,'marginTop'=>15.1875,'marginBottom'=>15.1125,'gapX'=>2.54,'gapY'=>0]);
+$preset_candidate=$preset_before;$preset_candidate['profiles'][]=$preset_profile;Store::save($preset_candidate);$preset_loaded=Store::read()['profiles'];
+$persisted_preset=null;foreach($preset_loaded as $saved_profile)if($saved_profile['id']==='synthetic-avery-l7160')$persisted_preset=$saved_profile;
+check(isset($persisted_preset['page']['preset'],$persisted_preset['page']['mode']) && $persisted_preset['page']['preset']==='avery-l7160' && $persisted_preset['page']['mode']==='sheet' && abs($persisted_preset['design']['width']-63.5)<0.0001 && $persisted_preset['page']['columns']===3 && $persisted_preset['page']['rows']===7,'verified sheet geometry/preset ID survives WooCommerce option serialization');
+$preset_before['revision']=Store::read()['revision'];Store::save($preset_before);
 $lock=Store::acquire_lock('synthetic-lock');
 rejects(function(){Store::with_lock('synthetic-lock',function(){return true;});},'concurrent option operation rejected while a live lease is held');
 Store::release_lock($lock);

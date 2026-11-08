@@ -716,8 +716,9 @@
             37: { max: 8, numeric: true },
         };
         const text = String(input),
-            parts = [];
-        if (text.startsWith('(')) {
+            parts = [],
+            humanReadable = text.startsWith('(');
+        if (humanReadable) {
             const expression = /\((\d{2})\)([^()]*)/g;
             let match,
                 end = 0;
@@ -748,6 +749,13 @@
                 parts.push([ai, text.slice(cursor, end)]);
                 cursor = end;
                 if (text[cursor] === '\x1d') cursor++;
+            }
+        }
+        if (humanReadable) {
+            for (const part of parts) {
+                if (['01', '02'].includes(part[0]) && [8, 12, 13].includes(part[1].length)) {
+                    part[1] = part[1].padStart(14, '0');
+                }
             }
         }
         for (const [ai, value] of parts) {

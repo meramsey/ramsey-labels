@@ -344,7 +344,7 @@
                 : JSON.stringify(family))
         );
     }
-    function drawText(ctx, text, e, width, height, dpi, issues) {
+    function textLayout(ctx, text, e, width, height, dpi, issues) {
         let size = (e.fontSize * dpi) / 72,
             lines,
             lineHeight;
@@ -388,6 +388,12 @@
             });
             return;
         }
+        return { size, lines, lineHeight };
+    }
+    function drawText(ctx, text, e, width, height, dpi, issues) {
+        const layout = textLayout(ctx, text, e, width, height, dpi, issues);
+        if (!layout) return;
+        const { size, lines, lineHeight } = layout;
         ctx.fillStyle = e.color;
         ctx.direction = ['inherit', 'ltr', 'rtl'].includes(e.direction) ? e.direction : 'inherit';
         ctx.textBaseline = 'top';
@@ -1219,28 +1225,336 @@
         if (!blob) throw Error(__('PNG export failed.', 'ramsey-labels-independent'));
         return blob;
     }
-    function exportSVG(design, record) {
+    function svgEscape(value) {
+        return String(value).replace(
+            /[&<>"']/g,
+            (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[ch],
+        );
+    }
+    function svgNumber(value) {
+        return Number(value)
+            .toFixed(5)
+            .replace(/\.?0+$/, '');
+    }
+    function svgText(e, text, width, height, dpi, issues) {
+        const ctx = document.createElement('canvas').getContext('2d');
+        const layout = textLayout(
+            ctx,
+            text,
+            e,
+            (width * dpi) / 25.4,
+            (height * dpi) / 25.4,
+            dpi,
+            issues,
+        );
+        if (!layout) return '';
+        const fontMm = (layout.size * 25.4) / dpi,
+            lineMm = (layout.lineHeight * 25.4) / dpi,
+            textWidth = (line) => (ctx.measureText(line).width * 25.4) / dpi,
+            textHeight = layout.lines.length * lineMm,
+            top =
+                e.vAlign === 'bottom'
+                    ? height - textHeight
+                    : e.vAlign === 'top'
+                      ? 0
+                      : (height - textHeight) / 2,
+            anchor = e.align === 'center' ? 'middle' : e.align === 'right' ? 'end' : 'start',
+            x = e.align === 'center' ? width / 2 : e.align === 'right' ? width : 0,
+            families = {
+                Arial: 'Arial, Helvetica, sans-serif',
+                Verdana: 'Verdana, Arial, sans-serif',
+                Georgia: 'Georgia, Times New Roman, serif',
+                'Times New Roman': 'Times New Roman, Georgia, serif',
+                'Courier New': 'Courier New, monospace',
+                'sans-serif': 'sans-serif',
+                serif: 'serif',
+                monospace: 'monospace',
+            },
+            family = families[e.fontFamily] || families.Arial,
+            styles = `${e.italic ? 'font-style="italic" ' : ''}${e.bold ? 'font-weight="bold" ' : ''}`;
+        let output = `<text x="${svgNumber(x)}" text-anchor="${anchor}" font-family="${svgEscape(family)}" font-size="${svgNumber(fontMm)}" fill="${svgEscape(e.color)}" direction="${['ltr', 'rtl'].includes(e.direction) ? e.direction : 'inherit'}" unicode-bidi="plaintext" ${styles}>`;
+        layout.lines.forEach((line, index) => {
+            const y = Math.max(0, top) + index * lineMm + fontMm * 0.82;
+            output += `<tspan x="${svgNumber(x)}" y="${svgNumber(y)}">${svgEscape(line)}</tspan>`;
+            if (e.underline && line) {
+                const widthMm = textWidth(line),
+                    left =
+                        e.align === 'center'
+                            ? x - widthMm / 2
+                            : e.align === 'right'
+                              ? x - widthMm
+                              : x;
+                output += `</text><rect x="${svgNumber(left)}" y="${svgNumber(y + fontMm * 0.18)}" width="${svgNumber(widthMm)}" height="${svgNumber(fontMm / 16)}" fill="${svgEscape(e.color)}"/><text x="${svgNumber(x)}" text-anchor="${anchor}" font-family="${svgEscape(family)}" font-size="${svgNumber(fontMm)}" fill="${svgEscape(e.color)}" direction="${['ltr', 'rtl'].includes(e.direction) ? e.direction : 'inherit'}" unicode-bidi="plaintext" ${styles}>`;
+            }
+        });
+        return output + '</text>';
+    }
+    function svgBarcode(symbol, e, width, height, dpi, issues) {
+        const q = symbol.quiet,
+            pxPerMm = dpi / 25.4,
+            pixelWidth = width * pxPerMm,
+            pixelHeight = height * pxPerMm,
+            reserve = e.showText ? ((e.fontSize * 25.4) / 72) * 1.3 : 0,
+            textHeight = reserve * pxPerMm,
+            areaHeight = pixelHeight - textHeight,
+            modulePx = Math.floor(
+                symbol.kind === 'linear'
+                    ? pixelWidth / (symbol.width + 2 * q)
+                    : Math.min(
+                          pixelWidth / (symbol.width + 2 * q),
+                          areaHeight / (symbol.height + 2 * q),
+                      ),
+            );
+        if (!Number.isFinite(modulePx) || modulePx < 1 || areaHeight < 1)
+            throw new Error(
+                __(
+                    'Barcode is too dense for this label size at the selected DPI.',
+                    'ramsey-labels-independent',
+                ),
+            );
+        const unit = modulePx / pxPerMm,
+            barcodeHeight = Math.floor(areaHeight) / pxPerMm,
+            left =
+                (Math.floor((pixelWidth - (symbol.width + 2 * q) * modulePx) / 2) + q * modulePx) /
+                pxPerMm,
+            top =
+                symbol.kind === 'linear'
+                    ? 0
+                    : (Math.floor((areaHeight - (symbol.height + 2 * q) * modulePx) / 2) +
+                          q * modulePx) /
+                      pxPerMm,
+            rectangles = [];
+        for (let row = 0; row < symbol.matrix.length; row++) {
+            let start = -1;
+            for (let col = 0; col <= symbol.width; col++) {
+                if (col < symbol.width && symbol.matrix[row][col]) {
+                    if (start < 0) start = col;
+                } else if (start >= 0) {
+                    rectangles.push(
+                        `<rect x="${svgNumber(left + start * unit)}" y="${svgNumber(top + (symbol.kind === 'linear' ? 0 : row * unit))}" width="${svgNumber((col - start) * unit)}" height="${svgNumber(symbol.kind === 'linear' ? barcodeHeight : unit)}"/>`,
+                    );
+                    start = -1;
+                }
+            }
+        }
+        let output = `<g fill="#000" shape-rendering="crispEdges">${rectangles.join('')}</g>`;
+        if (e.showText)
+            output += `<g transform="translate(0 ${svgNumber(barcodeHeight)})">${svgText(Object.assign({}, e, { autoFit: true, align: 'center', vAlign: 'middle' }), symbol.text.replace(/[\x00-\x1f\x7f]/g, ''), width, reserve, dpi, issues)}</g>`;
+        return output;
+    }
+    async function svgImageData(image, original) {
+        const match =
+            typeof original === 'string' &&
+            original.match(/^data:image\/(?:png|jpeg|jpg|gif|webp);base64,([A-Za-z0-9+/=]+)$/i);
+        if (match) {
+            if ((match[1].length * 3) / 4 > 8000000)
+                throw Error(
+                    __(
+                        'Embedded image exceeds the 8 MB SVG resource budget.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            return original;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        try {
+            canvas.getContext('2d').drawImage(image, 0, 0);
+            const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+            if (!blob) throw Error(__('PNG image embedding failed.', 'ramsey-labels-independent'));
+            if (blob.size > 8000000)
+                throw Error(
+                    __(
+                        'Embedded image exceeds the 8 MB SVG resource budget.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            const bytes = new Uint8Array(await blob.arrayBuffer());
+            let binary = '';
+            for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+                binary += String.fromCharCode(
+                    ...bytes.subarray(offset, Math.min(offset + 0x8000, bytes.length)),
+                );
+            }
+            return 'data:image/png;base64,' + btoa(binary);
+        } finally {
+            canvas.width = 1;
+            canvas.height = 1;
+        }
+    }
+    function exportBarcodeSVG(design, record) {
         const errors = C.validateDesign(design);
         if (errors.length) throw Error(errors.join('\n'));
-        const e =
+        const element =
             design.mode === 'html'
                 ? C.element('barcode', {
                       format: design.htmlBarcodeFormat,
                       content: design.htmlBarcodeSource,
                   })
                 : design.elements.find(
-                      (element) =>
-                          element.type === 'barcode' &&
-                          element.visible &&
-                          (!element.condition || C.resolve(element.condition, record)),
+                      (item) =>
+                          item.type === 'barcode' &&
+                          item.visible &&
+                          (!item.condition || C.resolve(item.condition, record)),
                   );
-        if (!e)
+        if (!element)
             throw Error(
                 __('This design has no visible barcode to export.', 'ramsey-labels-independent'),
             );
-        return new Blob([B.toSVG(symbolFor(e, transformedText(e, record)))], {
+        return new Blob([B.toSVG(symbolFor(element, transformedText(element, record)))], {
             type: 'image/svg+xml',
         });
+    }
+    async function exportSVG(design, record, options = {}) {
+        const errors = C.validateDesign(design);
+        if (errors.length) throw Error(errors.join('\n'));
+        if (design.mode === 'html')
+            throw Error(
+                __(
+                    'Full-label SVG export supports visual designs only; HTML layouts remain available as raster PNG/PDF.',
+                    'ramsey-labels-independent',
+                ),
+            );
+        const issues = [],
+            elements = [];
+        let svgBodyBytes = 180;
+        record = C.clone(record);
+        if (design.showCurrency === false && record.values?.currency_symbol) {
+            const symbol = String(record.values.currency_symbol);
+            for (const key of [
+                'price',
+                'regular_price',
+                'sale_price',
+                'price_incl_tax',
+                'price_excl_tax',
+            ])
+                if (record.values[key])
+                    record.values[key] = String(record.values[key]).split(symbol).join('').trim();
+        }
+        for (let index = 0; index < design.elements.length; index++) {
+            const e = Object.assign(C.element(), design.elements[index]);
+            if (!e.visible || (e.condition && !C.resolve(e.condition, record))) continue;
+            const x = Number(e.x),
+                y = Number(e.y),
+                w = Number(e.w),
+                h = Number(e.h),
+                rotate = Number(e.rotation)
+                    ? ` transform="rotate(${svgNumber(e.rotation)} ${svgNumber(w / 2)} ${svgNumber(h / 2)})"`
+                    : '',
+                background =
+                    e.background && e.background !== 'transparent'
+                        ? `<rect x="0" y="0" width="${svgNumber(w)}" height="${svgNumber(h)}" fill="${svgEscape(e.background)}"/>`
+                        : '';
+            if (Number(e.rotation)) {
+                const radians = (Number(e.rotation) * Math.PI) / 180,
+                    boundW = Math.abs(w * Math.cos(radians)) + Math.abs(h * Math.sin(radians)),
+                    boundH = Math.abs(w * Math.sin(radians)) + Math.abs(h * Math.cos(radians));
+                if (
+                    x + w / 2 - boundW / 2 < -0.1 ||
+                    x + w / 2 + boundW / 2 > design.width + 0.1 ||
+                    y + h / 2 - boundH / 2 < -0.1 ||
+                    y + h / 2 + boundH / 2 > design.height + 0.1
+                ) {
+                    issues.push({
+                        severity: 'error',
+                        element: e.id,
+                        message: __(
+                            'Rotated element extends outside the label.',
+                            'ramsey-labels-independent',
+                        ),
+                    });
+                    continue;
+                }
+            }
+            let body = '';
+            const text = transformedText(e, record);
+            if (e.type === 'text')
+                body = svgText(e, text, w, h, Number(options.dpi || 300), issues);
+            else if (e.type === 'barcode')
+                body = svgBarcode(symbolFor(e, text), e, w, h, Number(options.dpi || 300), issues);
+            else if (e.type === 'image' && text) {
+                const image = await loadImage(text);
+                if (image.naturalWidth * image.naturalHeight > 16000000)
+                    throw Error(
+                        __(
+                            'Image exceeds the 16-megapixel SVG embedding budget.',
+                            'ramsey-labels-independent',
+                        ),
+                    );
+                const embedded = await svgImageData(image, text);
+                body = `<svg x="0" y="0" width="${svgNumber(w)}" height="${svgNumber(h)}" viewBox="0 0 ${svgNumber(w)} ${svgNumber(h)}" overflow="hidden"><image x="0" y="0" width="${svgNumber(w)}" height="${svgNumber(h)}" href="${embedded}" preserveAspectRatio="${e.fit === 'cover' ? 'xMidYMid slice' : 'xMidYMid meet'}"/></svg>`;
+            } else if (['rect', 'line', 'ellipse'].includes(e.type)) {
+                const sw = Math.max(0.25, Number(e.strokeWidth));
+                if (e.type === 'line')
+                    body = `<path d="M 0 ${svgNumber(h / 2)} H ${svgNumber(w)}" fill="none" stroke="${svgEscape(e.color)}" stroke-width="${svgNumber(sw)}"/>`;
+                else if (e.type === 'rect')
+                    body = `<rect x="${svgNumber(sw / 2)}" y="${svgNumber(sw / 2)}" width="${svgNumber(Math.max(0, w - sw))}" height="${svgNumber(Math.max(0, h - sw))}" fill="none" stroke="${svgEscape(e.color)}" stroke-width="${svgNumber(sw)}"/>`;
+                else
+                    body = `<ellipse cx="${svgNumber(w / 2)}" cy="${svgNumber(h / 2)}" rx="${svgNumber(Math.max(0, (w - sw) / 2))}" ry="${svgNumber(Math.max(0, (h - sw) / 2))}" fill="none" stroke="${svgEscape(e.color)}" stroke-width="${svgNumber(sw)}"/>`;
+            }
+            const elementSVG = `<g transform="translate(${svgNumber(x)} ${svgNumber(y)})"><g${rotate}>${background}${body}</g></g>`;
+            if (elementSVG.length > 32000000 - svgBodyBytes)
+                throw Error(
+                    __(
+                        'SVG export exceeds the 32 MB embedded-image budget.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            svgBodyBytes += new TextEncoder().encode(elementSVG).byteLength;
+            if (svgBodyBytes > 32000000)
+                throw Error(
+                    __(
+                        'SVG export exceeds the 32 MB embedded-image budget.',
+                        'ramsey-labels-independent',
+                    ),
+                );
+            elements.push(elementSVG);
+        }
+        if (issues.some((issue) => issue.severity === 'error'))
+            throw Error(issues.map((issue) => issue.message).join('\n'));
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgNumber(design.width)}mm" height="${svgNumber(design.height)}mm" viewBox="0 0 ${svgNumber(design.width)} ${svgNumber(design.height)}"><rect width="100%" height="100%" fill="#fff"/>${elements.join('')}</svg>`;
+        if (new TextEncoder().encode(svg).byteLength > 32000000)
+            throw Error(
+                __(
+                    'SVG export exceeds the 32 MB embedded-image budget.',
+                    'ramsey-labels-independent',
+                ),
+            );
+        return new Blob([svg], { type: 'image/svg+xml' });
+    }
+    function exportCalibrationSVG(profile) {
+        const errors = C.validatePage(profile);
+        if (errors.length) throw Error(errors.join('\n'));
+        if (profile.page.mode !== 'sheet')
+            throw Error(
+                __('Calibration sheets require a sheet page profile.', 'ramsey-labels-independent'),
+            );
+        const page = C.geometry(profile),
+            design = profile.design,
+            marks = [],
+            slots = [];
+        for (let index = 0; index < page.rows * page.columns; index++) {
+            const column =
+                    page.flow === 'column' ? Math.floor(index / page.rows) : index % page.columns,
+                row = page.flow === 'column' ? index % page.rows : Math.floor(index / page.columns),
+                x = page.marginLeft + page.offsetX + column * (design.width + page.gapX),
+                y = page.marginTop + page.offsetY + row * (design.height + page.gapY),
+                skipped = index < page.start;
+            slots.push({ index: index + 1, x, y, skipped });
+            marks.push(
+                `<g stroke="${skipped ? '#cc3300' : '#111111'}" fill="none" stroke-width="0.15"><rect x="${svgNumber(x)}" y="${svgNumber(y)}" width="${svgNumber(design.width)}" height="${svgNumber(design.height)}" stroke-dasharray="${skipped ? '1 1' : 'none'}"/><path d="M ${svgNumber(x + design.width / 2 - 1)} ${svgNumber(y + design.height / 2)} h 2 M ${svgNumber(x + design.width / 2)} ${svgNumber(y + design.height / 2 - 1)} v 2"/></g>`,
+            );
+        }
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgNumber(page.width)}mm" height="${svgNumber(page.height)}mm" viewBox="0 0 ${svgNumber(page.width)} ${svgNumber(page.height)}"><title>Ramsey Labels print calibration sheet</title><desc>Print at 100 percent without fit-to-page scaling, margins, headers, or footers. This marks label positions and centers but does not certify printer alignment.</desc><metadata>${svgEscape(JSON.stringify({ preset: profile.page.preset, widthMm: page.width, heightMm: page.height, labelWidthMm: design.width, labelHeightMm: design.height, rows: page.rows, columns: page.columns, marginTopMm: page.marginTop, marginRightMm: page.marginRight, marginBottomMm: page.marginBottom, marginLeftMm: page.marginLeft, gapXMm: page.gapX, gapYMm: page.gapY, offsetXMm: page.offsetX, offsetYMm: page.offsetY, startSlot: page.start, slots }))}</metadata><rect width="100%" height="100%" fill="#fff"/>${marks.join('')}</svg>`;
+        if (new TextEncoder().encode(svg).byteLength > 1000000)
+            throw Error(
+                __(
+                    'Calibration sheet exceeds its output size budget.',
+                    'ramsey-labels-independent',
+                ),
+            );
+        return new Blob([svg], { type: 'image/svg+xml' });
     }
     function releaseJob(job) {
         if (!job) return;
@@ -1462,6 +1776,8 @@
         exportPDFStream,
         exportPNG,
         exportSVG,
+        exportBarcodeSVG,
+        exportCalibrationSVG,
         clearCaches,
         cacheStats,
         releaseJob,

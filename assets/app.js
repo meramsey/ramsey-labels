@@ -37,6 +37,7 @@
         library: upgradedLibrary,
         profile: null,
         records: [],
+        queueSort: 'selection',
         selection: null,
         results: [],
         source: 'products',
@@ -44,6 +45,8 @@
         categoryPage: 1,
         categorySelected: (B.preselection?.categories || []).map(Number)[0] || 0,
         categoryBusy: false,
+        genericPaper: 'a4',
+        genericOrientation: 'portrait',
         job: null,
         busy: false,
         dirty: false,
@@ -200,7 +203,10 @@
                     'ramsey-labels-independent',
                 ),
             );
-        state.records = window.RLIBatches.append(state.records, records);
+        state.records = window.RLIBatches.sort(
+            window.RLIBatches.append(state.records, records),
+            state.queueSort,
+        );
         invalidateJob();
     }
     function chooseProfile(id) {
@@ -465,6 +471,7 @@
                     (v) => {
                         d.width = v;
                         if (page.mode === 'roll') page.width = v;
+                        else page.preset = 'custom';
                         mark();
                     },
                     'number',
@@ -479,6 +486,7 @@
                     (v) => {
                         d.height = v;
                         if (page.mode === 'roll') page.height = v;
+                        else page.preset = 'custom';
                         mark();
                     },
                     'number',
@@ -511,6 +519,7 @@
                     (v) => {
                         page.mode = v;
                         if (v === 'roll') {
+                            page.preset = 'custom';
                             page.width = d.width;
                             page.height = d.height;
                             page.columns = 1;
@@ -556,6 +565,169 @@
                 })(),
             ),
         );
+        if (page.mode === 'sheet') {
+            const generic = window.RLICore.genericSheetLayouts,
+                verified = window.RLICore.verifiedSheetPresets,
+                presetOptions = [
+                    ['custom', __('Custom / manual sheet geometry', 'ramsey-labels-independent')],
+                    ...verified.map((item) => [
+                        item.id,
+                        `${item.maker} ${item.code} — ${item.count} up (${item.width} × ${item.height} mm)`,
+                    ]),
+                    ...generic.map((item) => [
+                        `generic-${item.count}`,
+                        sprintf(
+                            /* translators: %s: number of generic grid slots. */
+                            __(
+                                'Generic grid — %s slots; enter stock dimensions',
+                                'ramsey-labels-independent',
+                            ),
+                            item.count,
+                        ),
+                    ]),
+                ];
+            const currentPreset = presetOptions.some(([value]) => value === page.preset)
+                ? page.preset
+                : 'custom';
+            settings.append(
+                field(
+                    __('Sheet stock / grid preset', 'ramsey-labels-independent'),
+                    select(currentPreset, presetOptions, (id) => {
+                        if ('custom' === id) {
+                            page.preset = 'custom';
+                            mark();
+                            showTab('design');
+                            return;
+                        }
+                        let updated;
+                        if (id.startsWith('generic-')) {
+                            const count = Number(id.slice('generic-'.length));
+                            updated = C.applyGenericGrid(
+                                state.profile,
+                                count,
+                                state.genericPaper,
+                                state.genericOrientation,
+                            );
+                            msg(
+                                __(
+                                    'Generic grid only—this is not a manufacturer stock match. Confirm the stock label dimensions, rows/columns, pitch, margins and orientation before saving or printing.',
+                                    'ramsey-labels-independent',
+                                ),
+                            );
+                        } else {
+                            const preset = verified.find((item) => item.id === id);
+                            updated = C.applySheetPreset(state.profile, id);
+                            state.genericPaper = preset.page;
+                            state.genericOrientation = 'portrait';
+                            /* translators: %s: manufacturer product template URL. */
+                            msg(
+                                sprintf(
+                                    /* translators: %s: manufacturer product template URL. */
+                                    __(
+                                        'Applied verified manufacturer geometry from %s. Verify feed alignment on a calibration sheet.',
+                                        'ramsey-labels-independent',
+                                    ),
+                                    preset.source,
+                                ),
+                            );
+                        }
+                        state.profile = updated;
+                        state.selection = null;
+                        mark();
+                        showTab('design');
+                    }),
+                ),
+                field(
+                    __(
+                        'Generic paper size (used only for generic grids)',
+                        'ramsey-labels-independent',
+                    ),
+                    select(
+                        state.genericPaper,
+                        [
+                            ['a4', __('A4 — 210 × 297 mm', 'ramsey-labels-independent')],
+                            [
+                                'letter',
+                                __('US Letter — 215.9 × 279.4 mm', 'ramsey-labels-independent'),
+                            ],
+                            ['p4', __('P4 — 250 × 353 mm', 'ramsey-labels-independent')],
+                            ['custom', __('Custom dimensions below', 'ramsey-labels-independent')],
+                        ],
+                        (value) => {
+                            state.genericPaper = value;
+                            const match = page.preset.match(/^generic-(\d+)-/);
+                            if (match) {
+                                state.profile = C.applyGenericGrid(
+                                    state.profile,
+                                    Number(match[1]),
+                                    value,
+                                    state.genericOrientation,
+                                );
+                                mark();
+                                showTab('design');
+                            }
+                        },
+                    ),
+                ),
+                field(
+                    __(
+                        'Generic orientation (used only for generic grids)',
+                        'ramsey-labels-independent',
+                    ),
+                    select(
+                        state.genericOrientation,
+                        [
+                            ['portrait', __('Portrait', 'ramsey-labels-independent')],
+                            ['landscape', __('Landscape', 'ramsey-labels-independent')],
+                        ],
+                        (value) => {
+                            state.genericOrientation = value;
+                            const match = page.preset.match(/^generic-(\d+)-/);
+                            if (match) {
+                                state.profile = C.applyGenericGrid(
+                                    state.profile,
+                                    Number(match[1]),
+                                    state.genericPaper,
+                                    value,
+                                );
+                                mark();
+                                showTab('design');
+                            }
+                        },
+                    ),
+                ),
+            );
+            const verifiedPreset = verified.find((item) => item.id === page.preset);
+            if (verifiedPreset) {
+                settings.append(
+                    el('a', {
+                        href: verifiedPreset.source,
+                        target: '_blank',
+                        rel: 'noopener noreferrer',
+                        text: sprintf(
+                            /* translators: %s: manufacturer template product code. */
+                            __('Manufacturer template reference: %s', 'ramsey-labels-independent'),
+                            verifiedPreset.code,
+                        ),
+                    }),
+                );
+            } else if (page.preset.startsWith('generic-')) {
+                settings.append(
+                    el('p', {
+                        role: 'note',
+                        text: __(
+                            'Generic grid only. Set exact label width/height, pitch, gaps, margins and orientation from your stock manufacturer. Count alone does not establish printer compatibility.',
+                            'ramsey-labels-independent',
+                        ),
+                    }),
+                );
+            }
+            settings.append(
+                button(__('Download calibration sheet SVG', 'ramsey-labels-independent'), () => {
+                    R.download(R.exportCalibrationSVG(p), 'ramsey-labels-calibration.svg');
+                }),
+            );
+        }
         for (const [key, label] of [
             ['width', __('Paper width', 'ramsey-labels-independent')],
             ['height', __('Paper height', 'ramsey-labels-independent')],
@@ -580,6 +752,7 @@
                             page[key],
                             (v) => {
                                 page[key] = v;
+                                if (!['offsetX', 'offsetY'].includes(key)) page.preset = 'custom';
                                 mark();
                             },
                             'number',
@@ -1417,7 +1590,10 @@
                         ),
                     );
                 state.profile = C.clone(profile);
-                state.records = window.RLIBatches.append([], job.records);
+                state.records = window.RLIBatches.sort(
+                    window.RLIBatches.append([], job.records),
+                    state.queueSort,
+                );
                 invalidateJob();
                 showTab('data');
             }),
@@ -1447,6 +1623,27 @@
             ),
         ]);
         area.append(controls);
+        area.append(
+            field(
+                __('Sort print queue', 'ramsey-labels-independent'),
+                select(
+                    state.queueSort,
+                    [
+                        ['selection', __('Original selection order', 'ramsey-labels-independent')],
+                        ['name-asc', __('Product name A–Z', 'ramsey-labels-independent')],
+                        ['name-desc', __('Product name Z–A', 'ramsey-labels-independent')],
+                        ['sku-asc', __('SKU ascending', 'ramsey-labels-independent')],
+                        ['sku-desc', __('SKU descending', 'ramsey-labels-independent')],
+                    ],
+                    (mode) => {
+                        state.queueSort = mode;
+                        state.records = window.RLIBatches.sort(state.records, mode);
+                        invalidateJob();
+                        showTab('data');
+                    },
+                ),
+            ),
+        );
         const queuePages = Math.max(1, Math.ceil(state.records.length / 100));
         state.queuePage = Math.max(0, Math.min(state.queuePage, queuePages - 1));
         if (queuePages > 1) {
@@ -1565,7 +1762,7 @@
                             state.records[index],
                             state.records[index - 1],
                         ];
-                        state.queueSort = 'manual';
+                        state.queueSort = 'selection';
                         window.RLIBatches.rememberManualOrder(state.records);
                         invalidateJob();
                         showTab('data');
@@ -1580,7 +1777,7 @@
                             state.records[index],
                             state.records[index + 1],
                         ];
-                        state.queueSort = 'manual';
+                        state.queueSort = 'selection';
                         window.RLIBatches.rememberManualOrder(state.records);
                         invalidateJob();
                         showTab('data');
@@ -1871,6 +2068,24 @@
                         );
                     R.download(blob, 'ramsey-labels-label.png');
                 }),
+                button(__('Export full-label SVG', 'ramsey-labels-independent'), async () => {
+                    if (state.busy)
+                        throw Error(
+                            __(
+                                'Preview is still rendering. Please wait.',
+                                'ramsey-labels-independent',
+                            ),
+                        );
+                    if (!state.job) await prepare();
+                    if (state.job)
+                        R.download(
+                            await R.exportSVG(
+                                state.job.profile.design,
+                                state.segmentInfo.records[0],
+                            ),
+                            'ramsey-labels-label.svg',
+                        );
+                }),
                 button(__('Export barcode SVG', 'ramsey-labels-independent'), async () => {
                     if (state.busy)
                         throw Error(
@@ -1882,7 +2097,10 @@
                     if (!state.job) await prepare();
                     if (state.job)
                         R.download(
-                            R.exportSVG(state.job.profile.design, state.segmentInfo.records[0]),
+                            R.exportBarcodeSVG(
+                                state.job.profile.design,
+                                state.segmentInfo.records[0],
+                            ),
                             'ramsey-labels-barcode.svg',
                         );
                 }),
@@ -1988,6 +2206,8 @@
         exports: Object.freeze({
             png: R.exportPNG,
             svg: R.exportSVG,
+            barcodeSVG: R.exportBarcodeSVG,
+            calibrationSVG: R.exportCalibrationSVG,
             pdf: R.exportPDF,
             streamPDF: R.exportPDFStream,
         }),

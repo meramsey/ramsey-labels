@@ -83,21 +83,36 @@
             );
         return result;
     }
-    function sort(records, mode = 'manual') {
+    const collator = new Intl.Collator('en-US', {
+        numeric: true,
+        sensitivity: 'base',
+        usage: 'sort',
+    });
+    function compareText(left, right) {
+        return (
+            collator.compare(String(left), String(right)) ||
+            (String(left) < String(right) ? -1 : String(left) > String(right) ? 1 : 0)
+        );
+    }
+    function sort(records, mode = 'selection') {
         const result = records.slice();
-        if (mode === 'alpha-asc' || mode === 'alpha-desc')
+        const stable = (a, b) => a.__queueOrder - b.__queueOrder,
+            name = (record) => String(record.values.name || ''),
+            sku = (record) => String(record.values.sku || '');
+        if (mode === 'alpha-asc') mode = 'name-asc';
+        if (mode === 'alpha-desc') mode = 'name-desc';
+        if (mode === 'name-asc' || mode === 'name-desc') {
+            const direction = mode === 'name-desc' ? -1 : 1;
+            result.sort((a, b) => direction * compareText(name(a), name(b)) || stable(a, b));
+        } else if (mode === 'sku-asc' || mode === 'sku-desc') {
+            const direction = mode === 'sku-desc' ? -1 : 1;
             result.sort((a, b) => {
-                const left = String(a.values.name || a.values.sku || a.key),
-                    right = String(b.values.name || b.values.sku || b.key);
-                return (
-                    (mode === 'alpha-desc' ? -1 : 1) *
-                        left.localeCompare(right, undefined, {
-                            numeric: true,
-                            sensitivity: 'base',
-                        }) || a.__queueOrder - b.__queueOrder
-                );
+                const left = sku(a),
+                    right = sku(b);
+                if (!left || !right) return left ? -1 : right ? 1 : stable(a, b);
+                return direction * compareText(left, right) || stable(a, b);
             });
-        else result.sort((a, b) => a.__queueOrder - b.__queueOrder);
+        } else result.sort(stable);
         return result;
     }
     function rememberManualOrder(records) {
