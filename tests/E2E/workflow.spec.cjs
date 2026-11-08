@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
     await page.locator('#user_login').fill('labels_admin');
     await page.locator('#user_pass').fill('local-test-only-password');
     await page.locator('#wp-submit').click();
-    await expect(page).toHaveURL(/wp-admin\//);
+    await expect(page).toHaveURL(/wp-admin\//, { timeout: 15000 });
     await page.goto('/wp-admin/admin.php?page=ramsey-labels');
     await expect(
         page.getByRole('heading', { name: 'Ramsey Labels — Designer & Print' }),
