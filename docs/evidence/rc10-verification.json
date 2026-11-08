@@ -2,11 +2,11 @@
   "status": "READY FOR OWNER REVIEW; NOT APPROVED/PUBLISHED",
   "generated_utc": "2026-11-07T04:24:27.670815+00:00",
   "branch": "engineering/wordpress-org-readiness",
-  "git_commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
-  "runtime_source_commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
+  "git_commit": "bc2a75aaaaae115b7b82bfc921ac742de439c768",
+  "runtime_source_commit": "bc2a75aaaaae115b7b82bfc921ac742de439c768",
   "legacy_artifact": {
     "version": "1.0.0-rc.10",
-    "commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
+    "commit": "bc2a75aaaaae115b7b82bfc921ac742de439c768",
     "archive": "ramsey-labels-independent-1.0.0-rc.10.zip",
     "sha256": "cd2aa1ebc95c54a972421ae1ce19746d26a52a60374cb6b6a1a04126014c849a",
     "files": {
@@ -35,7 +35,7 @@
   "public_directory_candidate": {
     "slug": "ramsey-labels",
     "version": "1.0.0-rc.10",
-    "commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
+    "commit": "bc2a75aaaaae115b7b82bfc921ac742de439c768",
     "archive": "ramsey-labels-1.0.0-rc.10.zip",
     "sha256": "20142f43ee0513d2269cf1a62c196402672d6db56db7b543c41866c5c6705904",
     "files": {

@@ -1,0 +1,349 @@
+{
+  "operation": "owner-authorized commit attribution correction",
+  "date_utc": "2026-11-08T18:30:00Z",
+  "scope": {
+    "rewritten_owner_commits": 20,
+    "external_dependabot_commits_rewritten": 0,
+    "remote_branch": "engineering/wordpress-org-readiness",
+    "local_checkpoint_branches": [
+      "checkpoint/rc10",
+      "checkpoint/rc10-verified"
+    ]
+  },
+  "verified_owner_identity": {
+    "name": "Michael Ramsey",
+    "email": "mike@hackerdise.me"
+  },
+  "retired_identities": [
+    "Michael Ramsey <mike@pop-os.localdomain>",
+    "Ramsey Labels Engineering <engineering@example.invalid>"
+  ],
+  "backup": {
+    "bundle": "/tmp/opencode/ramsey-labels-identity-rewrite-20261108/ramsey-labels-all-refs.bundle",
+    "sha256": "692cb6b84ca151523d98ec142e7943e9fec66ef695df5bb81187fa15a4848512",
+    "verified": true
+  },
+  "cryptographic_signatures": "Rewritten commits receive new object IDs; original commit signatures cannot survive unchanged. No owner-authored commit in the rewritten engineering lineage had a valid signature.",
+  "commits": [
+    {
+      "old": "0661abf0991ea2eda729d59eb35446e26c7540f5",
+      "new": "8162ea4a0eb43dc19d5368da353f1db888a2f799",
+      "subject": "Add RC11 GitHub release draft artifacts",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "0a95b8e6fc15ac45ba1a2f002a2f5093395c157f",
+      "new": "1b0287c397533691627cffac27699ff06762fce1",
+      "subject": "feat: harden RC9 and add isolated regression, security and release engineering",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Ramsey Labels Engineering <engineering@example.invalid>",
+        "committer": "Ramsey Labels Engineering <engineering@example.invalid>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "0d81cdc343dd9d6a8b104dd66e8e05d33e39403a",
+      "new": "5e5f037fb8537a5694096b46e9932af6b990c136",
+      "subject": "Point RC11 evidence verified head to last code commit",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "2b67682303591fc57637846ac43a005ff81fb935",
+      "new": "70947e9198cf3a6c43cf7c2d0ab304bdf43105c6",
+      "subject": "Record RC10 release verification evidence",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "378aa653330e17c0a2f8102e6e1c6ddd0ec186b2",
+      "new": "b931c9b7da6987b06962138018b59088b9398368",
+      "subject": "Final RC11 evidence and checksum update",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "46b56ab8717fe05d61e12a4df7a4c6040288013e",
+      "new": "6a96e88481f5133cc1282e79a0ed3a5d19408471",
+      "subject": "Document RC8 AI-assisted provenance and qualify claims",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "482746ee90114e2a9ce7db7e89723f3d75172ede",
+      "new": "a650f83329618ff5689c436f4b774416ab36c0e2",
+      "subject": "Record AI-assisted RC8 provenance limits",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "5a69195492786a6b763d7cb5ba3aa4348e84f192",
+      "new": "3aec72a058e62df46d8a8aab10e15035e0a8c3fb",
+      "subject": "Record owner attestation that RC8 code was made fresh without copying",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
+      "new": "bc2a75aaaaae115b7b82bfc921ac742de439c768",
+      "subject": "Prepare RC10 release candidate and public slug migration",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "6d6cbbc5d9d98294135582f7e9cc7fe4601b7bda",
+      "new": "8a1c12bb4bbbcf3d245ed3d6a46ae8d5795bacc1",
+      "subject": "Update RC11 evidence and provenance for exact verified head",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "707e379e44dcf73a379819d8fd2d3a99305fcf73",
+      "new": "3ad9d1ec77e042316d5c319d858f13852d3b03d3",
+      "subject": "Wait for preview generation in WebKit sort test",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "85736a5e11280309fd83dd55c336ec1970964d5e",
+      "new": "09b4b4eeba2c85104d473c6f4a6db0f691fa974b",
+      "subject": "Sync RC11 evidence to final verified commit",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "9acf96b0c172b3ab778937966020155efefe711f",
+      "new": "3b2475c679a7904d8cdd7d6396cffa092deccd61",
+      "subject": "Sync final RC11 manifests and evidence to verified head",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "9f901b2c475ef206582bf600f11628fe6b6bce7f",
+      "new": "83431f2b47deb1cb7334852c02dd1b76ef4b9d93",
+      "subject": "Prepare RC11 competitive feature candidate",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "a75e51ed832ba95fb8b721887ce8cc575cbd5200",
+      "new": "dbb8658ca898e0a89e85197e0a9565978c441752",
+      "subject": "Record final RC11 artifact checksums after provenance cleanup",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "aa2c836489543a1489ee7eb0df1f76dec06d66d0",
+      "new": "e02c173fb96a79de9db04a92238525db58c8a39d",
+      "subject": "Clarify RC11 syntax verification coverage",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "b337f66b3b5b98d8954a343b84beb07b88ced1b6",
+      "new": "e97ac080f3c703161cfdfdd54c437cea517e3953",
+      "subject": "Record RC11 artifact and verification evidence",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "b8136929e56802c98a3c0a89af01c33b97e0320f",
+      "new": "3a3e5e79effca49aa7353e6abd5a7ba0eea18903",
+      "subject": "chore: preserve exact user-tested RC8 source and archive",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "d7c0636846b122faeac15332586b777db590b0d4",
+      "new": "1e8c04d92869e45d94cd681cb18c3c9e6f913a2c",
+      "subject": "Final RC11 evidence sync",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Michael Ramsey <mike@pop-os.localdomain>",
+        "committer": "Michael Ramsey <mike@pop-os.localdomain>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    },
+    {
+      "old": "f3c508c558755c84981a6a176f1769ec02148f1a",
+      "new": "4907b6565a90dcf313c0085514be6f35f4a8322f",
+      "subject": "docs: record verified matrix, installed ZIP evidence and unresolved release gates",
+      "author_date_preserved": true,
+      "committer_date_preserved": true,
+      "tree_preserved": true,
+      "old_identity": {
+        "author": "Ramsey Labels Engineering <engineering@example.invalid>",
+        "committer": "Ramsey Labels Engineering <engineering@example.invalid>"
+      },
+      "new_identity": {
+        "author": "Michael Ramsey <mike@hackerdise.me>",
+        "committer": "Michael Ramsey <mike@hackerdise.me>"
+      }
+    }
+  ]
+}

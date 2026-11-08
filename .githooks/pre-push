@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root=$(git rev-parse --show-toplevel)
+while read -r local_ref local_sha remote_ref remote_sha; do
+    [[ "$local_sha" == 0000000000000000000000000000000000000000 ]] && continue
+    if [[ "$remote_sha" == 0000000000000000000000000000000000000000 ]] || ! git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
+        # A history rewrite can prune the leased remote commit locally. Check every outgoing ancestor.
+        "$root/bin/check-git-identity.sh" --commit-range "$local_sha"
+    else
+        "$root/bin/check-git-identity.sh" --commit-range "$remote_sha..$local_sha"
+    fi
+done
+for hook in "$root/.githooks/pre-push.d"/*; do
+    [[ -e "$hook" && -x "$hook" ]] || continue
+    "$hook"
+done

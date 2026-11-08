@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root=$(git rev-parse --show-toplevel)
+"$root/bin/check-git-identity.sh"
+for hook in "$root/.githooks/pre-commit.d"/*; do
+    [[ -e "$hook" && -x "$hook" ]] || continue
+    "$hook"
+done

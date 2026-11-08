@@ -23,9 +23,9 @@ third-party material that may be present in RC8.
 
 ## Repository-history evidence
 
-The oldest locally available commit is `b8136929e56802c98a3c0a89af01c33b97e0320f`, titled
+The oldest locally available commit is `3a3e5e79effca49aa7353e6abd5a7ba0eea18903` (rewritten from `b8136929e56802c98a3c0a89af01c33b97e0320f`), titled
 “chore: preserve exact user-tested RC8 source and archive,” attributed in Git metadata to Michael
-Ramsey (`mike@pop-os.localdomain`). The next engineering commit is `0a95b8e6fc15ac45ba1a2f002a2f5093395c157f` with generic engineering identity. Those commits document preservation and subsequent changes; they do not record who authored the pre-existing RC8 implementation. The local repository has eight reachable commits and is not shallow, but no earlier source history or original ChatGPT conversation is present in it.
+Ramsey (`mike@pop-os.localdomain`). The next engineering commit is `1b0287c397533691627cffac27699ff06762fce1` (rewritten from `0a95b8e6fc15ac45ba1a2f002a2f5093395c157f`) with corrected owner identity. Those commits document preservation and subsequent changes; they do not record who authored the pre-existing RC8 implementation. The local repository has eight reachable commits and is not shallow, but no earlier source history or original ChatGPT conversation is present in it.
 
 The RC8 plugin entry point names “Ramsey Resin Art” as author and declares GPL-2.0-or-later. The `barcodes.js` and `symbol-tables.js` comments make independence/standard-data assertions, but supply no standards edition, source citations, generator, transcript, or license record. RC11 has changed these comments to describe the verifiable status rather than repeat the unsupported independence assertion.
 
@@ -36,7 +36,7 @@ The RC8 plugin entry point names “Ramsey Resin Art” as author and declares G
   licensing. The owner-provided AI-assisted history is relevant context, but has no per-file mapping.
 - **New RC11 engineering work:** the new NetworkJobs class and the specifically listed features
   below were authored as new engineering changes in source commit
-  `9f901b2c475ef206582bf600f11628fe6b6bce7f`, without using competitor code. They are not presented
+  `83431f2b47deb1cb7334852c02dd1b76ef4b9d93` (rewritten from `9f901b2c475ef206582bf600f11628fe6b6bce7f`), without using competitor code. They are not presented
   as inherited RC8 work. Project ownership/acceptance and final distribution under the project
   license still require rights-holder review; this audit is not a legal opinion or assignment.
 - **Third-party licensed runtime code:** none is identified or bundled in either RC11 ZIP. The
@@ -105,3 +105,12 @@ If the owner cannot attest all files, remove the disputed files from the public 
 replace them with independently authored code based only on approved behavior/API specifications
 and normative standards. Barcode/symbol-table provenance is a separate blocking subgate because
 encoder algorithms and symbol tables may have distinct origins from the rest of the plugin.
+
+## Attribution correction
+
+On 2026-11-08, the owner authorized an attribution-only rewrite of the engineering lineage so that
+project commits use `Michael Ramsey <mike@hackerdise.me>` instead of the retired local-domain or
+generic engineering identities. File trees, commit messages, and author/committer timestamps were
+verified unchanged; the complete old/new map and recovery-bundle checksum are retained in
+`docs/evidence/identity-rewrite-20261108.json`. This correction changes Git object IDs only. It does
+not alter the RC8 provenance conclusion or manufacture external licensing evidence.

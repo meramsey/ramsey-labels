@@ -4,7 +4,7 @@
     "private": true,
     "license": "GPL-2.0-or-later",
     "scripts": {
-        "test": "node --test tests/Unit/*.test.cjs",
+        "test": "node --test tests/Unit/*.test.cjs && bash tests/Identity/identity-guard.test.sh",
         "lint": "eslint assets tests bin/*.cjs && prettier --check assets tests bin/*.cjs *.cjs *.mjs package.json",
         "format": "prettier --write assets tests bin/*.cjs *.cjs *.mjs package.json",
         "test:e2e": "playwright test",
