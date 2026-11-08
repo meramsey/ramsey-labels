@@ -1,6 +1,6 @@
 /**
- * Ramsey Labels — independent barcode encoders.
- * Symbol tables are standardized data, not source from the reference plugin.
+ * Ramsey Labels barcode encoders, supplied in RC8.
+ * RC8 authorship and derivation are unverified; see the repository provenance audit.
  * Every encoder returns modules; the renderer owns physical sizing and quiet zones.
  * QR: Model 2, byte mode + UTF-8 ECI, versions 1–40, all four correction levels.
  * Data Matrix: ECC200 ASCII encoding + UTF-8 ECI, all square symbol sizes.

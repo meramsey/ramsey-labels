@@ -2,6 +2,8 @@
 
 This checklist is deliberately unsigned. The coding agent cannot attest ownership or grant a
 license on behalf of Ramsey Resin Art, an author, contractor, client, or prior employer.
+An owner preference or approval cannot license proprietary third-party code; any third-party
+component needs documented redistribution rights compatible with the selected project license.
 
 ## Source, copyright, license and brand
 
@@ -10,9 +12,11 @@ author/rights holder and confirm one of the following with records: created by t
 within assigned work; assigned to the owner; or received under a compatible written license.
 
 - [ ] Confirm the complete RC8 file inventory, its original archive checksum, and the source history predating that archive.
+- [ ] If retained, supply the earlier ChatGPT-assisted development transcript/export and identify which files/sections came from that conversation, any human edits, model/service terms applicable at the time, and any sources/pasted reference material. This may support provenance, but is not a substitute for verifying third-party rights or a license.
 - [ ] For `assets/barcodes.js` and `assets/symbol-tables.js`, attest authorship/derivation independently of the other plugin files; identify standards versions, code sources, table sources, generator tools and third-party notices.
 - [ ] Confirm every shipped `assets/defaults.json` profile/template is owner-created or explicitly licensed for GPL-compatible redistribution.
 - [ ] Confirm no contractor, customer, employer, client, co-author or third-party rights remain unassigned.
+- [ ] Do not rely on owner consent alone for any identified proprietary third-party code/data; provide compatible written rights or approve its removal and clean replacement.
 - [ ] Approve redistribution and modification under GPL-2.0-or-later for both RC11 ZIP identities and public source history; if not, identify exact files that must be replaced/removed before submission.
 - [ ] Approve “Ramsey Labels for WooCommerce”, the Ramsey Resin Art attribution, contributor slug `meramsey`, WordPress.org slug/text domain `ramsey-labels`, and the RC11 migration behavior.
 - [ ] Approve use of third-party product codes/manufacturer names only to identify source-verified sheet layouts; confirm no manufacturer artwork/template is bundled.

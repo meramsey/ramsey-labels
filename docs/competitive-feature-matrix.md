@@ -1,7 +1,7 @@
 # Competitive feature matrix
 
-**Research checked 2026-11-06 UTC.** No competitor source, binaries, templates or images were
-used. This is a behavior comparison based only on official public descriptions. The two supplied
+**Research checked 2026-11-06 UTC.** No competitor source, binaries, templates or images were used
+as implementation material in this engineering pass. This is a behavior comparison based only on official public descriptions. The two supplied
 URLs refer to the same UKR Solution plugin/product family, not independent competitors. The
 WordPress.org listing is 4.0.3; the vendor landing page mixes Basic/Business/Premium tiers and
 older/free-versus-premium wording. Where statements conflict, both are noted; purchase-specific
