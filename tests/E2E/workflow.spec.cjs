@@ -292,6 +292,8 @@ test('name/SKU sort options produce the same order in queue and preview', async 
     await expect(page.locator('.rli-queued-product').nth(1)).toContainText('Éclair');
     await expect(page.locator('.rli-queued-product').nth(2)).toContainText('Zulu');
     await page.getByRole('button', { name: 'Print preview', exact: true }).click();
+    await page.getByRole('button', { name: 'Generate preview', exact: true }).click();
+    await expect(page.locator('#rli-status')).toContainText('Ready: 4 labels');
     await expect(page.locator('.rli-preview-page')).toHaveCount(4);
     const altText = await page
         .locator('.rli-preview-page img')
