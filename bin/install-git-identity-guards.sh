@@ -20,6 +20,7 @@ for hook in .git/hooks/pre-commit .git/hooks/pre-push; do
         exit 1
     }
 done
+mkdir -p .githooks/pre-commit.d .githooks/pre-push.d
 git config --local ramseyLabelsIdentity.name "$name"
 git config --local ramseyLabelsIdentity.email "$email"
 git config --local core.hooksPath .githooks
