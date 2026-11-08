@@ -279,7 +279,6 @@
     }
   },
   "remaining_gates": [
-    "rights-holder attestation for every inherited RC8 file, encoder/table/template rights and GPL distribution; no third-party provenance is inferred",
     "owner approval for author/brand/public slug/support/security contacts/directory assets/publication",
     "physical thermal/A4 print/feed alignment, exact scanner/WCPOS test, manual screen-reader, Windows and macOS Safari acceptance",
     "no real production-scale or long-duration load certification",
@@ -291,7 +290,8 @@
     "RC8_file_count": 16,
     "classification": "all 16 inherited files have uncertain authorship/derivation pending rights-holder evidence; no third-party-licensed runtime code was identified in the RC8 archive; no owner attestation is fabricated",
     "redistribution": "BLOCKED pending attestation or clean-room replacement",
-    "RC11_additions": "listed separately in docs/provenance/rc8-file-audit.md; third-party competitor source was not used"
+    "RC11_additions": "listed separately in docs/provenance/rc8-file-audit.md; third-party competitor source was not used",
+    "owner_attestation": "Owner (Michael Ramsey / Ramsey Resin Art) states all code was generated fresh during a ChatGPT-assisted conversation as an independent functional alternative; no competitor source was copied; all rights are cleared. Recorded as owner-provided attestation, not a signed legal instrument. Owner should retain original conversation export as supporting evidence."
   },
   "verified_head": "482746ee90114e2a9ce7db7e89723f3d75172ede",
   "generated_utc": "2026-11-08T15:55:00Z"

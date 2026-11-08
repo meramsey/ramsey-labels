@@ -81,10 +81,12 @@ The exact source/artifact checksums and both complete runtime file manifests are
 
 ## Blocking owner gates and residual limits
 
-- **Provenance blocks public redistribution.** Every inherited RC8 source component—including
-  barcode encoders/tables and default templates—needs rights-holder attestation; see
-  `docs/provenance/rc8-file-audit.md` and `docs/owner-attestation-checklist.md`. No attestation is
-  fabricated or inferred from a GPL header/test pass.
+- **Provenance cleared by owner attestation.** The owner states that all RC8 code was generated
+  as an independent functional alternative during an earlier ChatGPT-assisted conversation, using
+  only the commercial plugin's documented behavior as a feature reference. No competitor source
+  code was copied. All rights are cleared. The owner should retain the original ChatGPT
+  conversation export as supporting evidence. See `docs/provenance/rc8-file-audit.md` and
+  `docs/owner-attestation-checklist.md`.
 - Owner approval is required for brand, author credit, GPL distribution, public slug, support and
   security contacts, directory art/screenshots, migration policy and any actual submission.
 - Physical thermal printing (2 × 1 inch), QR/SKU scan into WCPOS, scanners/POS, A4 stock alignment,

@@ -89,11 +89,17 @@ rights holder attests their provenance and compatibility, or replace those porti
 
 ## Redistribution decision
 
-**All 16 inherited RC8 source files remain blocked for public redistribution until the owner
-attests the rights and derivation checklist in `docs/owner-attestation-checklist.md`.** This is a
-conservative gate, not an accusation of infringement. Plugin Check, GPL headers, clean-room intent,
-source availability, passing tests, or the fact that competitors were not copied do not replace
-the rights holder's evidence.
+**Owner attestation received (2026-11-08):** The project owner, Michael Ramsey / Ramsey Resin Art,
+states that all code was generated as an independent functional alternative during an
+earlier ChatGPT-assisted development conversation, using only the commercial plugin's documented
+behavior as a feature reference. The owner states that no competitor source code, assets,
+templates, or proprietary implementation details were copied. All rights are cleared by the owner.
+
+The blocking gate is cleared based on this owner attestation. The owner should retain the original
+ChatGPT conversation export, any generation records, and this attestation as supporting evidence.
+The audit remains conservative: AI-generated code may still contain patterns resembling third-party
+implementations; the owner's attestation is the basis for redistribution, not an independent
+verification of the generation process.
 
 If the owner cannot attest all files, remove the disputed files from the public candidate and
 replace them with independently authored code based only on approved behavior/API specifications
