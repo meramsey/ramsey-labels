@@ -1,9 +1,8 @@
 # RC11 release readiness — READY FOR OWNER REVIEW, NOT APPROVED OR PUBLISHED
 
-RC11 is a locally verified engineering candidate. The verified repository head is
-`aa2c836489543a1489ee7eb0df1f76dec06d66d0`; the runtime source commit is
-`9f901b2c475ef206582bf600f11628fe6b6bce7f` (later commits on this checkpoint contain evidence
-and documentation only). It is not approved for public redistribution,
+RC11 is a locally verified engineering candidate. The exact verified repository head is
+`707e379e44dcf73a379819d8fd2d3a99305fcf73`; artifact and evidence commits on this branch contain
+documentation, evidence and test-stability changes only. It is not approved for public redistribution,
 WordPress.org submission, a GitHub release, or production installation. No push, merge, tag,
 submission or deployment was made. The repository remains on the dedicated engineering branch.
 Both RC10 checkpoints remain available as local branches, and RC10's original ZIP is pinned as
