@@ -1,0 +1,30 @@
+{
+  "slug": "ramsey-labels",
+  "version": "1.0.0-rc.11",
+  "commit": "9f901b2c475ef206582bf600f11628fe6b6bce7f",
+  "archive": "ramsey-labels-1.0.0-rc.11.zip",
+  "sha256": "3eda1167c8d63e3ad6f98d11dfba0cba9f3c6c9cee76268c8c2b0520c7578666",
+  "files": {
+    "LICENSE": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "assets/app.css": "8a3823eed26d1e3975b9a1385225ff174274588afbce1c6e7e97b888a0c99863",
+    "assets/app.js": "837d0ab53f11365903aa153023b9e5f1fea8f15c7c84f5db1659df03ee07ab06",
+    "assets/barcodes.js": "2b97973294ee0b1c73d2100f187d96d1aa9a7311fd9c26de98622684dcb3e972",
+    "assets/batches.js": "1dcbc7ff29aa3b7936eb3ad42b2b952c5fcdc8929ac3d74ecebbd8cfff2263d8",
+    "assets/core.js": "722600760e6ec774fb4037ae06bd6203fdb4378ac7292eab06de74c7cf584232",
+    "assets/defaults.json": "49765f50ed9891b52077b119d20ed2d133d374940550e733de6ca5717e13c6f1",
+    "assets/integrations.js": "fc7af20ce3b270232e147f5efda7872459ca7de86437059d0d30e1a1c56ce1ff",
+    "assets/render.js": "cc171752f7b2ef3bf075b5975f40d2b7e662e02f043fc27f750acc69fa87e335",
+    "assets/symbol-tables.js": "20da96998b9f4bae53e252d6c4007d5ccde40e6bafd4deab1de3126d7f04199b",
+    "includes/Data.php": "e14650b8e1b2a06713ea2c7c2aaa09cf1e1715b44bf5615cdd33589bce161d75",
+    "includes/Migration.php": "02dc69bda25a32ab0628d2cc7c854bec09ee7e0df03e7cef6a97010bd3e6c3fa",
+    "includes/NetworkJobs.php": "97961e4f44a8fbc8566b75226661dc56aabfe25fe34c692aecb71cd9b29c755e",
+    "includes/Plugin.php": "f86b2c044af59a17572605c7715839996b1f0e9ba5f866a81c0cb140790ff0a6",
+    "includes/Schema.php": "91220c73a4d9c02a8e6115568dc2d209ad4ba28236ef46883dfd94910b0f9350",
+    "includes/Store.php": "8a442ac42bfd4d2e0a09ed42dbf9a2e54f7f6a8ff13f3560cf7344239beb3fe4",
+    "includes/class-privacy.php": "09e111e5d4e81cab06f3db6cc625ed1e371abea5b820b3b17547045bd44e9c5a",
+    "languages/ramsey-labels.pot": "5b063593a84e6688b57f72ece673cda13984d0447d064842c24b95a95c48bf09",
+    "ramsey-labels.php": "8ec4b17dbec4959dc44b5868514d61d2cc21f19ae937a5b159e3b3cc8d1e7034",
+    "readme.txt": "8ccaa31a6f60817b5c30ee3eacf2cd8aff2c9525c066dd53a9bc784ab47e1ca0",
+    "uninstall.php": "2471e97d8e1bf1a24c311cbc4b0001dc27f7540b9248d333f3ed790e924bb7c7"
+  }
+}
