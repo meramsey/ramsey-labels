@@ -36,7 +36,7 @@ Both RC10 checkpoints remain available as local branches, and RC10's original ZI
 | JavaScript unit/barcode/GS1/preset suite | 29 passed, 0 failed |
 | WPCS / PHPCS | Pass, zero errors/warnings |
 | PHPStan | Level 5 pass, zero errors |
-| PHPUnit | 16 tests / 23 assertions pass |
+| PHP syntax / PHPUnit | PHP 7.4.33, 8.3.35 and 8.5.12 syntax checks pass; PHPUnit 16 tests / 23 assertions pass |
 | WooCommerce integration | 99 assertions pass on WordPress 7.1.4 / WooCommerce 11.2.2 / PHP 8.3.35, legacy order storage |
 | Installed public-directory package integration | 99 assertions pass; RC9 public folder transition and option/job/SKU retention pass |
 | Browser | 27 scenarios pass each on Chromium, Firefox and Playwright WebKit (Linux) |
@@ -53,10 +53,11 @@ Both RC10 checkpoints remain available as local branches, and RC10's original ZI
 
 The full command outputs are retained locally under `build/rc11-reports/` and summarized in
 `docs/evidence/rc11-verification.json` after the release source commit. Tests use synthetic,
-isolated WordPress/WooCommerce instances and loopback ports. The full historical matrix for PHP
-7.4/8.5, oldest WordPress/WooCommerce, HPOS, and Windows/macOS was verified for RC10, but was not
-re-run in this RC11 iteration; RC11-specific changes were fully tested on the current Linux PHP
-8.3/legacy-order stack. Do not extrapolate a newly verified RC11 matrix beyond that coverage.
+isolated WordPress/WooCommerce instances and loopback ports. The full historical runtime matrix for
+PHP 7.4/8.5, oldest WordPress/WooCommerce and HPOS was verified for RC10, but those integration
+stacks were not re-run for RC11; only PHP syntax was rechecked on 7.4/8.5. RC11-specific runtime
+tests use the current Linux PHP 8.3/legacy-order stack. Do not extrapolate an RC11 runtime matrix
+beyond that coverage.
 
 ## Candidate artifacts
 

@@ -16,6 +16,10 @@
       "failed": 0,
       "command": "composer test (Composer 2.8.12 container)"
     },
+    "php_syntax": {
+      "versions": ["7.4.33", "8.3.35", "8.5.12"],
+      "result": "all distributed/source PHP entry and include files pass php -l"
+    },
     "phpcs_wpcs": {
       "errors": 0,
       "warnings": 0,
