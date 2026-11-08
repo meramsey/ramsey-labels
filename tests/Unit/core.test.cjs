@@ -32,6 +32,80 @@ test('all factory profiles and templates validate', () => {
     assert.equal(shipped.profiles[0].design.width, 50.8);
     assert.equal(shipped.profiles[0].design.height, 25.4);
 });
+test('verified Avery sheet geometry matches source-derived grids; all remaining counts stay generic', () => {
+    const expected = {
+        'avery-l7164': [12, 3, 4],
+        'avery-l7163': [14, 2, 7],
+        'avery-l7162': [16, 2, 8],
+        'avery-l7160': [21, 3, 7],
+        'avery-l7159': [24, 3, 8],
+        'avery-l7651': [65, 5, 13],
+    };
+    for (const [id, [count, columns, rows]] of Object.entries(expected)) {
+        const profile = C.applySheetPreset(C.defaultProfile(), id),
+            page = profile.page,
+            pageGeometry = C.geometry(profile);
+        assert.equal(columns * rows, count, id);
+        assert.equal(page.mode, 'sheet', id);
+        assert.equal(page.preset, id, id);
+        assert.deepEqual([page.columns, page.rows], [columns, rows], id);
+        assert.ok(
+            page.width - page.marginRight >=
+                columns * profile.design.width + (columns - 1) * page.gapX,
+            id,
+        );
+        assert.ok(
+            page.height - page.marginBottom >=
+                rows * profile.design.height + (rows - 1) * page.gapY,
+            id,
+        );
+        assert.deepEqual(C.validatePage(profile), [], id);
+        const job = C.paginate([{ key: id, quantity: count, values: {} }], profile);
+        assert.equal(job.total, count, id);
+        assert.equal(job.pages[0].length, count, id);
+        const last = job.pages[0][count - 1];
+        assert.equal(job.pages[0][0].x, page.marginLeft + page.offsetX, id);
+        assert.equal(job.pages[0][0].y, page.marginTop + page.offsetY, id);
+        assert.equal(
+            last.x,
+            page.marginLeft + page.offsetX + (columns - 1) * (profile.design.width + page.gapX),
+            id,
+        );
+        assert.equal(
+            last.y,
+            page.marginTop + page.offsetY + (rows - 1) * (profile.design.height + page.gapY),
+            id,
+        );
+        assert.ok(
+            profile.design.width + page.gapX >= profile.design.width &&
+                profile.design.height + page.gapY >= profile.design.height,
+            id,
+        );
+        assert.ok(last.x + profile.design.width <= page.width - page.marginRight + 1e-6, id);
+        assert.ok(last.y + profile.design.height <= page.height - page.marginBottom + 1e-6, id);
+        const serialized = JSON.parse(JSON.stringify(profile));
+        assert.equal(
+            C.validateLibrary({
+                ...C.defaultLibrary(),
+                profiles: [serialized],
+                defaultProfile: serialized.id,
+            }).profiles[0].page.preset,
+            id,
+        );
+    }
+    const counts = [12, 14, 16, 21, 24, 40, 44, 56, 65, 120, 189, 230, 324];
+    assert.deepEqual(
+        C.genericSheetLayouts.map((item) => item.count),
+        counts,
+    );
+    for (const count of counts) {
+        const generic = C.applyGenericGrid(C.defaultProfile(), count, 'letter');
+        assert.equal(generic.page.columns * generic.page.rows, count);
+        assert.equal(generic.page.width, 215.9);
+        assert.equal(generic.page.preset, `generic-${count}-letter-portrait`);
+        assert.equal(generic.design.width, C.defaultProfile().design.width);
+    }
+});
 test('complete 2000-label roll batch has no three-page limit', () => {
     const job = C.paginate([{ quantity: 2000, values: {} }], C.defaultProfile());
     assert.equal(job.pages.length, 2000);
@@ -97,28 +171,59 @@ test('external integration records are copied, scalar-only and bounded', () => {
         ),
     );
 });
-test('record sorting is stable and queue order survives append/serialization', () => {
+test('name/SKU sorting is stable, Unicode-aware, and restores selection order', () => {
     let records = Batches.append(
         [],
         [
-            { key: 'second', values: { name: 'Beta' }, quantity: 1 },
-            { key: 'first', values: { name: 'Alpha' }, quantity: 1 },
+            {
+                key: 'second',
+                values: { name: 'Beta 10', sku: 'SKU-10', id: '22' },
+                quantity: 4,
+                selected: true,
+            },
+            {
+                key: 'first',
+                values: { name: 'Alpha é', sku: 'SKU-2', id: '23' },
+                quantity: 2,
+                selected: false,
+            },
+            {
+                key: 'third',
+                values: { name: 'Alpha é', sku: 'SKU-1', id: '24' },
+                quantity: 3,
+                selected: true,
+            },
         ],
     );
-    records = Batches.sort(records, 'alpha-asc');
+    const original = records.map((record) => record.key);
+    records = Batches.sort(records, 'name-asc');
     assert.deepEqual(
-        records.map((r) => r.key),
-        ['first', 'second'],
+        records.map((record) => record.key),
+        ['first', 'third', 'second'],
     );
-    records = Batches.append(records, [{ key: 'third', values: { name: 'Gamma' }, quantity: 1 }]);
+    assert.equal(records[0].quantity, 2);
+    assert.equal(records[0].selected, false);
+    assert.equal(records[0].values.id, '23');
     assert.deepEqual(
-        Batches.sort(records, 'manual').map((r) => r.key),
+        Batches.sort(records, 'name-desc').map((record) => record.key),
         ['second', 'first', 'third'],
+    );
+    assert.deepEqual(
+        Batches.sort(records, 'sku-asc').map((record) => record.key),
+        ['third', 'first', 'second'],
+    );
+    assert.deepEqual(
+        Batches.sort(records, 'sku-desc').map((record) => record.key),
+        ['second', 'first', 'third'],
+    );
+    assert.deepEqual(
+        Batches.sort(records, 'selection').map((record) => record.key),
+        original,
     );
     Batches.rememberManualOrder(records);
     assert.deepEqual(
-        Batches.sort(records, 'manual').map((r) => r.key),
-        records.map((r) => r.key),
+        Batches.sort(records, 'selection').map((record) => record.key),
+        records.map((record) => record.key),
     );
 });
 test('GS1-128 validates fixed and variable application identifiers', () => {
@@ -128,6 +233,36 @@ test('GS1-128 validates fixed and variable application identifiers', () => {
     assert.equal(B.encode('code128', payload, { gs1: true }).text, payload);
     assert.throws(() => B.gs1Payload('(01)123(99)BAD'));
     assert.throws(() => B.gs1Payload('(17)261332'));
+});
+test('GS1 parenthesized GTIN-8/12/13 input normalizes to 14 digits while raw element strings stay strict', () => {
+    for (const input of ['(01)96385074', '(01)012345678905', '(01)9506000134352']) {
+        const output = B.gs1Payload(input);
+        assert.equal(output.length, 16);
+        assert.match(output, /^01\d{14}$/);
+        assert.equal(B.checkDigit(output.slice(2, -1)), output.slice(-1));
+    }
+    assert.throws(() => B.gs1Payload('0196385074'));
+});
+test('documented GS1 fixed/variable AIs decode with FNC1 separators and reject unsupported data', async () => {
+    const human = '(00)000123456789012343(10)LOT42(21)SERIAL9(30)12(37)4';
+    const expected = '0000012345678901234310LOT42\x1d21SERIAL9\x1d3012\x1d374';
+    const symbol = B.encode('code128', human, { gs1: true });
+    assert.equal(symbol.text, expected);
+    const decoded = await Z.readBarcodes(pixels(symbol), {
+        formats: ['Code128'],
+        tryHarder: true,
+        textMode: 'Plain',
+    });
+    assert.equal(decoded[0]?.text, expected);
+    assert.equal(B.gs1Payload('(11)240229'), '11240229');
+    assert.equal(B.gs1Payload('(11)250200'), '11250200');
+    assert.throws(() => B.gs1Payload('(11)250229'), /date/i);
+    assert.throws(() => B.gs1Payload('(91)private'), /Unsupported GS1/);
+    assert.throws(() => B.gs1Payload('(10)BAD@VALUE'), /characters/i);
+    assert.throws(
+        () => B.encode('qrcode', '(01)09506000134352', { gs1: true }),
+        /only for GS1-128/,
+    );
 });
 test('common GS1-128 payload independently decodes with separators intact', async () => {
     const human = '(01)09506000134352(17)260101(10)LOT42(21)SERIAL9';

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.0-rc.11 — engineering candidate
+
+- Add full-label mixed vector/raster SVG export; keep barcode-only SVG and test with independent XML parsing, rasterization, and Code 128/QR/Data Matrix decoding.
+- Add six A4 Avery presets verified from official public product/template pages and manufacturer Word grid files; generic count starters never claim a stock/brand match.
+- Add stable Unicode-aware product-name/SKU ascending/descending sorting, preserve original selection order, and assert preview order matches the queue.
+- Add a physical-size calibration SVG with mm geometry, offsets and skipped-slot marks.
+- Add a network-admin quarantine inventory, dry-run, explicit legacy multisite job assignment, decision audit, and fingerprint-checked rollback.
+- Document GS1-128's supported AI subset, FNC1, dates, check digits, GTIN input normalization and unsupported GS1 families.
+- Define on-hand stock behavior for unmanaged products, zero stock, and negative backordered stock; negative stock without backorders fails closed.
+- Keep RC10 checkpoint and regressions; run updated source/package verification before owner review.
+
 ## 1.0.0-rc.10 — engineering candidate
 
 - Retain separate legacy and public-slug ZIP manifests; add `ramsey-labels` bootstrap with a tested double-runtime guard and RC9 upgrade path.

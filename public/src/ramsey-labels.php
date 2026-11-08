@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ramsey Labels for WooCommerce
  * Description: Independent free WooCommerce label design, barcodes, batch printing and PDF export.
- * Version: 1.0.0-rc.10
+ * Version: 1.0.0-rc.11
  * Requires at least: 6.0.3
  * Requires PHP: 7.4.32
  * Requires Plugins: woocommerce
@@ -42,9 +42,9 @@ if ( defined( 'RLI_PUBLIC_ENTRY' ) ) {
 	return;
 }
 define( 'RLI_PUBLIC_ENTRY', __FILE__ );
-define( 'RLI_VERSION', '1.0.0-rc.10' );
+define( 'RLI_VERSION', '1.0.0-rc.11' );
 define( 'RLI_FILE', __FILE__ );
-foreach ( array( 'Schema', 'Store', 'Data', 'Migration', 'Plugin' ) as $ramsey_labels_class ) {
+foreach ( array( 'Schema', 'Store', 'Data', 'Migration', 'Plugin', 'NetworkJobs' ) as $ramsey_labels_class ) {
 	require_once __DIR__ . '/includes/' . $ramsey_labels_class . '.php';
 }
 unset( $ramsey_labels_class );
@@ -60,4 +60,5 @@ add_action(
 );
 
 \RamseyLabels\Privacy::boot();
+\RamseyLabels\NetworkJobs::boot();
 \RamseyLabels\Plugin::boot();

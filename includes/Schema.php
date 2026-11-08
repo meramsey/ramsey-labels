@@ -295,6 +295,7 @@ final class Schema {
 	public static function page( array $raw, array $design ) {
 		$p   = array_merge( self::defaults()['profiles'][0]['page'], $raw );
 		$out = array(
+			'preset'   => self::identifier( isset( $p['preset'] ) ? $p['preset'] : 'custom' ),
 			'mode'     => self::choice( $p['mode'], array( 'roll', 'sheet' ) ),
 			'flow'     => self::choice( $p['flow'], array( 'row', 'column' ) ),
 			'outlines' => self::boolean( $p['outlines'] ),

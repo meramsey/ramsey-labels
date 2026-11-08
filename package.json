@@ -1,6 +1,6 @@
 {
     "name": "ramsey-labels",
-    "version": "1.0.0-rc.10",
+    "version": "1.0.0-rc.11",
     "private": true,
     "license": "GPL-2.0-or-later",
     "scripts": {
@@ -10,6 +10,7 @@
         "test:e2e": "playwright test",
         "test:e2e:firefox": "BROWSER=firefox playwright test",
         "test:e2e:webkit": "BROWSER=webkit playwright test",
+        "test:e2e:multisite": "playwright test -c playwright.multisite.config.cjs",
         "i18n:pot": "docker run --rm --user \"$(id -u):$(id -g)\" -v \"$PWD:/app\" -w /app wordpress:cli-2.12.0-php8.3 wp i18n make-pot /app /app/languages/ramsey-labels-independent.pot --slug=ramsey-labels-independent --domain=ramsey-labels-independent --exclude=node_modules,vendor,build,tests,public",
         "build": "python3 bin/build.py"
     },

@@ -12,7 +12,8 @@ export PACKAGE_PORT="$port"
 export COMPOSE_PROJECT_NAME="$project"
 legacy_slug='ramsey-labels-independent'
 public_slug='ramsey-labels'
-archive="/evidence/build/public/${public_slug}-1.0.0-rc.10.zip"
+version=$(node -p "require('./package.json').version")
+archive="/evidence/build/public/${public_slug}-${version}.zip"
 cli() { COMPOSE_PROJECT_NAME="$project" docker compose -f compose.package.yaml run --rm cli wp "$@"; }
 
 docker compose -f compose.package.yaml up -d --wait wordpress
@@ -35,12 +36,12 @@ cli plugin install "$archive" --force
 cli plugin activate "$public_slug"
 cli eval '$active=(array)get_option("active_plugins",[]);if(!in_array("ramsey-labels-independent/ramsey-labels-independent.php",$active,true)||!in_array("ramsey-labels/ramsey-labels.php",$active,true))throw new RuntimeException("Expected both directory entries during guarded transition");if(!class_exists("RamseyLabels\\Plugin"))throw new RuntimeException("Legacy runtime missing during guarded transition");if(defined("RLI_PUBLIC_ENTRY"))throw new RuntimeException("New runtime booted beside legacy runtime");echo "PASS: both plugin entries coexist without a duplicate runtime\n";'
 cli plugin deactivate "$legacy_slug"
-cli --user=labels_admin eval 'if(!class_exists("RamseyLabels\\Plugin")||RLI_FILE!==WP_PLUGIN_DIR."/ramsey-labels/ramsey-labels.php"||"1.0.0-rc.10"!==RLI_VERSION)throw new RuntimeException("Public runtime failed after legacy deactivation");if("Synthetic RC9 public migration profile"!==RamseyLabels\Store::read()["profiles"][0]["name"])throw new RuntimeException("Public slug migration lost RC9 profile");$jobs=RamseyLabels\Store::jobs();if(!isset($jobs["public-migration-fixture"])||$jobs["public-migration-fixture"]["records"][0]["values"]["sku"]!=="RRA-726474")throw new RuntimeException("Public slug migration lost user job");if(wc_get_product_id_by_sku("RRA-726474")!==(int)get_option("rli_test_public_sku_id"))throw new RuntimeException("Migration changed the synthetic product SKU association");echo "PASS: legacy option keys, user jobs and product/SKU association survive folder/domain migration\n";'
-cli eval-file /evidence/tests/Integration/run.php > build/rc10-reports/public-integration.txt
-TEST_PORT="$port" npm run test:e2e > build/rc10-reports/public-e2e.txt 2>&1
-node bin/check-pdf.cjs > build/rc10-reports/public-pdf.txt 2>&1
+cli --user=labels_admin eval '$m=json_decode(file_get_contents("/evidence/build/public/artifact-manifest.json"),true);if(!class_exists("RamseyLabels\\Plugin")||RLI_FILE!==WP_PLUGIN_DIR."/ramsey-labels/ramsey-labels.php"||RLI_VERSION!==$m["version"])throw new RuntimeException("Public runtime failed after legacy deactivation");if("Synthetic RC9 public migration profile"!==RamseyLabels\Store::read()["profiles"][0]["name"])throw new RuntimeException("Public slug migration lost RC9 profile");$jobs=RamseyLabels\Store::jobs();if(!isset($jobs["public-migration-fixture"])||$jobs["public-migration-fixture"]["records"][0]["values"]["sku"]!=="RRA-726474")throw new RuntimeException("Public slug migration lost user job");if(wc_get_product_id_by_sku("RRA-726474")!==(int)get_option("rli_test_public_sku_id"))throw new RuntimeException("Migration changed the synthetic product SKU association");echo "PASS: legacy option keys, user jobs and product/SKU association survive folder/domain migration\n";'
+cli eval-file /evidence/tests/Integration/run.php > build/rc11-reports/public-integration.txt
+TEST_PORT="$port" npm run test:e2e > build/rc11-reports/public-e2e.txt 2>&1
+node bin/check-pdf.cjs > build/rc11-reports/public-pdf.txt 2>&1
 if ! cli plugin is-active plugin-check >/dev/null 2>&1; then
   cli plugin install plugin-check --version=2.1.0 --activate
 fi
-cli plugin check "$public_slug" --format=json > build/rc10-reports/public-plugin-check.txt
-python3 bin/assert-plugin-check.py build/rc10-reports/public-plugin-check.txt
+cli plugin check "$public_slug" --format=json > build/rc11-reports/public-plugin-check.txt
+python3 bin/assert-plugin-check.py build/rc11-reports/public-plugin-check.txt

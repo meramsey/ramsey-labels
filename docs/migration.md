@@ -36,12 +36,17 @@ The new Store guard no longer treats a partially customized original layout as f
 The earlier exact QR permalink expression repair is retained; intentionally customized other
 URL expressions remain intact. Role restrictions and per-user job privacy remain enforced.
 
-RC8/RC9 stored one global user-meta jobs key on multisite without a site-owner ID. RC10 scopes
-new jobs to `rli_v1_jobs_site_<blog-id>` to prevent cross-site customer/order-data disclosure.
-Ambiguous old network jobs are retained but not silently exposed on arbitrary sites. A network
-administrator/data controller must decide the correct site mapping before explicit migration;
-the plugin cannot infer that ownership safely. See the remaining approval gates in
-`docs/wordpress-org-submission.md`.
+RC8/RC9 stored one global user-meta jobs key on multisite without a site-owner ID. RC10/RC11
+scope new jobs to `rli_v1_jobs_site_<blog-id>` to prevent cross-site customer/order-data disclosure.
+Ambiguous old network jobs stay under the legacy `rli_v1_jobs` key and do not appear in any site
+queue. A network administrator can use **Network Admin → Settings → Ramsey Labels job quarantine**
+to inspect redacted owner/token/date/count metadata, dry-run a target, explicitly assign a copy,
+and roll back an unchanged copy. The source is never deleted. The owner/controller—not code—must
+confirm ownership; site membership, current profile/source permissions, target-site existence and
+2 MB storage limits are checked. Conflicts, partial writes and stale edited copies fail closed.
+Every assignment/rollback is recorded in a network-only redacted ledger. Invalid legacy job IDs
+remain visible as quarantined tokens and require manual review. See
+`docs/wordpress-org-submission.md` for owner decisions still required.
 
 Legacy external settings migration is separate from an RC8 upgrade: only administrators
 may inspect/preview/apply/restore. The preview hash must still match sources. It creates

@@ -19,7 +19,7 @@ PHPStan uses WordPress/WooCommerce stubs, which are not runtime compatibility te
 | 7.1.4 | 8.3.35 CLI / 8.3.36 Apache | 11.2.2 | HPOS | Integration validates actual datastore mode |
 | 7.1.4 | 8.5.12 CLI and Apache | 11.2.2 | Legacy and HPOS | Integration, Chrome E2E and genuine RC8 upgrade |
 
-RC10 explicitly exercises both current order stores, then retains the HPOS compatibility declaration.
+RC11 regression runs explicitly exercise both current order stores and retain the HPOS compatibility declaration.
 WooCommerce absence boots without a fatal and displays the admin notice. Single-site RC9 upgrade and
 network activation/site-isolation/purge run on the 7.1.4 / 8.3.36 stack; RC8/RC9 custom libraries
 round-trip on all PHP matrix entries.

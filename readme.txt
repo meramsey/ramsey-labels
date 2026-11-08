@@ -5,7 +5,7 @@ Requires at least: 6.0.3
 Tested up to: 7.1
 Requires PHP: 7.4.32
 Requires Plugins: woocommerce
-Stable tag: 1.0.0-rc.10
+Stable tag: 1.0.0-rc.11
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -31,7 +31,7 @@ Privacy: no telemetry, external scripts, fonts or barcode services. Product thum
 4. Open Products & orders, search, select results, and add them to the job.
 5. Open Preview / print. Inspect all pages with segment navigation; use Export full PDF for the entire job. Print the active segment at 100% scale, no margins or headers/footers.
 
-The in-place RC10 ZIP retains the RC8/RC9 basename ramsey-labels-independent/ramsey-labels-independent.php and saved option names. A separate prospective ramsey-labels directory ZIP has a tested, guarded migration path; do not keep both copies active. Back up first. See repository migration instructions, especially the explicit owner mapping required for legacy multisite jobs.
+The in-place RC11 ZIP retains the RC8/RC9 basename ramsey-labels-independent/ramsey-labels-independent.php and saved option names. A separate prospective ramsey-labels directory ZIP has a tested, guarded migration path; do not keep both copies active. Back up first. On multisite, use Network Admin > Settings > Ramsey Labels job quarantine to explicitly dry-run, assign, and if necessary rollback legacy global jobs. The plugin never guesses a site owner.
 
 == Frequently Asked Questions ==
 
@@ -47,8 +47,11 @@ Resource budgets are based on a 2.2 MB request, 8 MB live browser queue, 2 MB pe
 = Can I migrate from RC9 to the proposed WordPress.org directory slug? =
 The source includes a separate candidate archive and automated RC9-to-directory upgrade test. The slug has not been reserved, the package has not been submitted, and owner branding/license approval remains pending. On multisite, assign legacy global jobs to a site before exposing them; the plugin intentionally does not guess.
 
+= Which sheet templates are verified? =
+Six named Avery A4 layouts are source-backed (L7159, L7160, L7162, L7163, L7164, L7651). Other requested counts are generic grids only; enter the actual stock dimensions, margins and pitch. See docs/sheet-presets.md and docs/gs1-support-matrix.md in the source repository. No printer model is hardware-certified.
+
 = Can I download PDFs? =
-Yes. PDFs embed lossless raster labels at the profile DPI; they are not vector labels. Browser export needs modern Canvas, Blob and TextEncoder APIs.
+Yes. Full-label SVG keeps text, shapes and barcodes vector and embeds permitted product images as raster PNGs. PDFs embed lossless raster labels at the profile DPI. Browser export needs modern Canvas, Blob and TextEncoder APIs.
 
 = Will uninstall delete settings? =
 No. An administrator must explicitly set RLI_PURGE_ON_UNINSTALL to true before uninstall to remove this plugin's stored library, migration backup and saved jobs. Other plugin settings, products and orders are never removed.
@@ -61,6 +64,15 @@ No. An administrator must explicitly set RLI_PURGE_ON_UNINSTALL to true before u
 
 == Changelog ==
 
+= 1.0.0-rc.11 =
+* Add full-label SVG export with vector text, shape and barcode layers; bounded raster image embedding; safe local resource embedding; and independent parser/raster/decoder verification.
+* Add source-verified Avery A4 templates for L7159, L7160, L7162, L7163, L7164 and L7651; provide generic count grids for other requested quantities without claiming manufacturer compatibility.
+* Add alphabetical name and SKU ascending/descending sorting with original-selection restoration and print/preview order parity.
+* Document the exact GS1-128 common-AI subset, FNC1 handling, check digits, dates, GTIN input normalization and unsupported symbologies.
+* Add network-administrator-only quarantine inspection, dry-run, explicit site assignment, audit trail and fingerprint-checked rollback for legacy global multisite jobs.
+* Clarify stock/on-hand quantity behavior for unmanaged stock, zero inventory and negative backorder inventory.
+* Add printable, dimensioned calibration-sheet SVG exports and geometry/browser/PDF regression coverage.
+
 = 1.0.0-rc.10 =
 * Stream complete PDF batches in bounded segments, add PNG/full-label and vector-barcode SVG downloads, and remove total batch-label quota.
 * Add category pagination, resource-bounded record pages, developer hooks/API docs, queue reordering and private saved-job controls.
@@ -72,5 +84,5 @@ No. An administrator must explicitly set RLI_PURGE_ON_UNINSTALL to true before u
 
 == Upgrade Notice ==
 
-= 1.0.0-rc.10 =
+= 1.0.0-rc.11 =
 Engineering candidate only. Back up settings before installing. Do not install the public-slug candidate beside the legacy copy and leave both active. Owner rights, licensing, branding and directory submission approvals are pending.

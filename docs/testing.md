@@ -13,7 +13,11 @@ Run from the repository root; inspect command exit codes, not only progress outp
 | Static | `composer analyse` | PHPStan level 5 with WP/WC stubs |
 | Package | `python3 bin/build.py` | exact allowlist, metadata, folder and deterministic SHA-256 |
 | PDF | `node bin/check-pdf.cjs` | Poppler media/page counts and rasterized QR decode |
-| Upgrade | `bash bin/upgrade-test.sh` | authentic archived RC8 and RC9 files write custom libraries; RC10 verifies exact preservation |
+| SVG | `python3 bin/check-svg.py <svg> <png> <width-mm> <height-mm> <dpi>` | Python XML safety/geometry and ImageMagick rasterization; browser test also rasterizes SVG and independently decodes symbols |
+| Stock geometry | `npm test`, `npm run test:e2e -- --grep 'verified Avery'` | Six Avery A4 Word-template-derived grids, all generic count starters, skip-slot/offset and PDF media geometry |
+| GS1-128 | `npm test` | Supported-AI matrix, GTIN normalization, dates/FNC1/separators/errors with independent decoder vector |
+| Multisite quarantine | `bash bin/multisite-test.sh` | 29 assertions: redacted owner/job pages, network/site authorization, membership, assignment, partial-write recovery, rollback and cross-site isolation |
+| Upgrade | `bash bin/upgrade-test.sh` | authentic archived RC8 and RC9 files write custom libraries; RC11 verifies exact preservation |
 | Lifecycle | `bash bin/lifecycle-test.sh` | activation/deactivation preservation and missing WooCommerce notice |
 | Multisite | `bash bin/multisite-test.sh` | two-site settings/job isolation, default preservation and explicit network purge |
 | Directory migration | `python3 bin/build-public.py` then `bash bin/check-public-migration.sh` | clean public slug, RC9 dual-active guard, deactivation migration, archive hashes, real installed-package integration/E2E and Plugin Check |

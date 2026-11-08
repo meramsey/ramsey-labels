@@ -668,6 +668,15 @@ final class Data {
 						/* translators: %s: product name. */
 						$warnings[] = sprintf( __( '%s: stock is not managed; using one label × copies.', 'ramsey-labels-independent' ), $product->get_name() );
 					} else {
+						if ( is_numeric( $stock ) && (float) $stock < 0 ) {
+							if ( $product->backorders_allowed() || 'onbackorder' === $product->get_stock_status() ) {
+								/* translators: %s: product name. */
+								$warnings[] = sprintf( __( '%s: item is on backorder with negative on-hand stock; backorders are not physical inventory, so no stock labels were added.', 'ramsey-labels-independent' ), esc_html( $product->get_name() ) );
+								continue;
+							}
+							/* translators: %s: product name. */
+							throw new \InvalidArgumentException( esc_html__( 'Managed stock is negative but backorders are disabled. Correct inventory or use one label per product.', 'ramsey-labels-independent' ) );
+						}
 						$quantity *= self::quantity( $stock, $segmented );
 					}
 				}

@@ -258,6 +258,118 @@ test('public JavaScript API appends scalar synthetic records and keyboard-sort c
         page.locator('.rli-queued-product').first().locator('input[type=checkbox]'),
     ).toHaveAttribute('aria-label', /Include Synthetic Second/);
 });
+test('name/SKU sort options produce the same order in queue and preview', async ({ page }) => {
+    await page.evaluate(() =>
+        window.RamseyLabels.queueRecords([
+            {
+                key: 'sort-z',
+                source: 'manual',
+                quantity: 1,
+                selected: true,
+                values: { name: 'Zulu', sku: 'SKU-30' },
+            },
+            {
+                key: 'sort-e',
+                source: 'manual',
+                quantity: 1,
+                selected: true,
+                values: { name: 'Éclair', sku: 'SKU-20' },
+            },
+            {
+                key: 'sort-a',
+                source: 'manual',
+                quantity: 2,
+                selected: true,
+                values: { name: 'Alpha', sku: 'SKU-10' },
+            },
+        ]),
+    );
+    await page.getByLabel('Sort print queue', { exact: true }).selectOption('name-asc');
+    await expect(page.locator('.rli-queued-product')).toHaveCount(3);
+    await expect(page.locator('.rli-queued-product').nth(0)).toContainText('Alpha');
+    await expect(page.locator('.rli-queued-product').nth(1)).toContainText('Éclair');
+    await expect(page.locator('.rli-queued-product').nth(2)).toContainText('Zulu');
+    await page.getByRole('button', { name: 'Print preview', exact: true }).click();
+    await expect(page.locator('.rli-preview-page')).toHaveCount(4);
+    const altText = await page
+        .locator('.rli-preview-page img')
+        .evaluateAll((images) => images.map((image) => image.alt));
+    expect(altText).toEqual([
+        'Label: Alpha — SKU-10',
+        'Label: Alpha — SKU-10',
+        'Label: Éclair — SKU-20',
+        'Label: Zulu — SKU-30',
+    ]);
+    await page.getByRole('button', { name: 'Products & orders', exact: true }).click();
+    await page.getByLabel('Sort print queue', { exact: true }).selectOption('selection');
+    await expect(page.locator('.rli-queued-product').nth(0)).toContainText('Zulu');
+    await page.getByLabel('Sort print queue', { exact: true }).selectOption('sku-desc');
+    await expect(page.locator('.rli-queued-product').nth(0)).toContainText('Zulu');
+    await expect(page.locator('.rli-queued-product').nth(1)).toContainText('Éclair');
+    await expect(page.locator('.rli-queued-product').nth(2)).toContainText('Alpha');
+});
+test('cancelled multi-segment PDF aborts its sink and a fresh retry completes', async ({
+    page,
+}) => {
+    const result = await page.evaluate(async () => {
+        const profile = window.RLICore.defaultProfile(),
+            records = [
+                {
+                    key: 'cancel-fixture',
+                    source: 'manual',
+                    quantity: 4500,
+                    selected: true,
+                    values: { name: 'Cancellation fixture', sku: 'CANCEL-4500' },
+                },
+            ];
+        let cancelled = false,
+            aborted = false,
+            writes = 0;
+        try {
+            await window.RLIRender.exportPDFStream(
+                profile,
+                records,
+                {
+                    write(chunk) {
+                        writes += chunk.length;
+                    },
+                    abort() {
+                        aborted = true;
+                    },
+                },
+                {
+                    cancelled: () => cancelled,
+                    progress() {
+                        cancelled = true;
+                    },
+                },
+            );
+            return { cancelled: false, aborted, writes };
+        } catch (error) {
+            const retry = await window.RLIRender.exportPDFStream(
+                profile,
+                [{ ...records[0], quantity: 3 }],
+                {
+                    write() {},
+                    close() {},
+                    abort() {},
+                },
+            );
+            return {
+                cancelled: /cancelled/i.test(error.message),
+                aborted,
+                writes,
+                retryLabels: retry.labels,
+                retryPages: retry.pages,
+            };
+        }
+    });
+    expect(result.cancelled).toBe(true);
+    expect(result.aborted).toBe(true);
+    expect(result.writes).toBeGreaterThan(0);
+    expect(result.retryLabels).toBe(3);
+    expect(result.retryPages).toBe(3);
+});
 test('streamed PDF covers more than two rendered segments without truncation', async ({ page }) => {
     const result = await page.evaluate(async () => {
         const profile = window.RLICore.defaultProfile();

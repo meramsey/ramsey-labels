@@ -47,10 +47,20 @@ CSV exporter handles formula prefixes; there is no server-side CSV execution.
 - Role-restricted profiles are workflow restrictions, not an encrypted data boundary; templates
   are shared library content. Restricted-operator/source/profile/migration negative tests pass;
   shop-manager and more custom-role combinations still need expansion.
-- Core privacy export/erasure now pages 25 owners, excludes other customers' records in the same
+- Core privacy export/erasure now pages 10 owners, excludes other customers' records in the same
   job, locks per-user writes and preserves stable owner rows between pages. 26-owner integration
   tests prove no skipped records. Deeper concurrent user-deletion/realtime privacy-request races
   and formal legal/retention policy review remain.
+- RC11 multisite quarantine uses a network lease plus the same per-site jobs-index and owner locks
+  as normal writes. It never displays job contents; it requires network-admin capability and owner
+  membership, retains the global source, logs only mapping/fingerprint/status metadata, and refuses
+  rollback if a copied job changed. Pending assignments from partial writes can be rolled back.
+  Hard-deleted-site cleanup is serialized by the network lease because that site has no runtime.
+- Full-label SVG uses escaped XML primitives. It emits no scripts, event-handler attributes,
+  stylesheets, foreign objects or external resource URLs. Product imagery is bounded and embedded
+  as raster PNG; external image load reuses preview consent and network-host safeguards. Python's
+  XML parser, ImageMagick rasterizer, Chromium's SVG renderer and independent barcode decoders
+  exercise the artifact. Renderer/font substitution differences remain possible.
 - Legacy migration backups are now written only after the CAS profile save succeeds. Serialized
   input is class-disabled, depth/node/byte bounded and malformed input rejected.
 - Literal private-net hosts, credential URLs, response redirects and non-raster content are blocked.

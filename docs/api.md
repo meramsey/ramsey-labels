@@ -35,7 +35,7 @@ After the label administration page loads, `window.RamseyLabels` exposes:
 - `clear()`, `showPreview()`, `refresh()`, `cancel()`.
 - `encode(format, payload, options)` — supported independent barcode encoder.
 - `segment(records, profile, index)` — arithmetic bounded-segment descriptor.
-- `exports.png(design, record, options)`, `exports.svg(design, record)`,
+- `exports.png(design, record, options)`, `exports.svg(design, record)` (complete visual label SVG with embedded raster images), `exports.barcodeSVG(design, record)` (barcode only),
   `exports.pdf(job)` and `exports.streamPDF(profile, records, writable, options)`.
 
 Custom record shape: `{key, source, values: {field: scalar}, quantity, selected}`.

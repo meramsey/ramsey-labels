@@ -12,7 +12,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SLUG = 'ramsey-labels-independent'  # Retain the RC8 installation basename.
 MANIFEST = [
     'ramsey-labels-independent.php', 'uninstall.php', 'readme.txt', 'LICENSE',
-    'includes/Data.php', 'includes/Migration.php', 'includes/Plugin.php',
+    'includes/Data.php', 'includes/Migration.php', 'includes/NetworkJobs.php', 'includes/Plugin.php',
     'includes/Schema.php', 'includes/Store.php', 'includes/class-privacy.php',
     'assets/app.js', 'assets/core.js', 'assets/render.js', 'assets/barcodes.js',
     'assets/symbol-tables.js', 'assets/integrations.js', 'assets/defaults.json',
@@ -31,6 +31,11 @@ def main():
         main_file=archive.read('ramsey-labels-independent/ramsey-labels-independent.php').decode()
         assert re.search(r'\* Version:\s*1\.0\.0-rc\.9',main_file)
         assert _hashlib.sha256((ROOT/'tests/Fixtures/rc9.zip').read_bytes()).hexdigest()=='8c369220c6a15286ae38ac1b4f5f3097a3f44b70562169b822d7beef7ae7afdd'
+    with zipfile.ZipFile(ROOT/'tests/Fixtures/rc10.zip') as archive:
+        assert archive.testzip() is None
+        assert 'ramsey-labels-independent/ramsey-labels-independent.php' in archive.namelist()
+        assert re.search(r'\* Version:\s*1\.0\.0-rc\.10',archive.read('ramsey-labels-independent/ramsey-labels-independent.php').decode())
+        assert _hashlib.sha256((ROOT/'tests/Fixtures/rc10.zip').read_bytes()).hexdigest()=='cd2aa1ebc95c54a972421ae1ce19746d26a52a60374cb6b6a1a04126014c849a'
     assert f"define( 'RLI_VERSION', '{version}' )" in header
     assert json.loads((ROOT / 'package.json').read_text())['version'] == version
     assert f'Stable tag: {version}' in (ROOT / 'readme.txt').read_text()

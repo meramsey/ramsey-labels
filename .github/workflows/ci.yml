@@ -55,6 +55,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
+      - run: sudo apt-get update && sudo apt-get install -y imagemagick poppler-utils
       - run: npx playwright install --with-deps chromium
       - run: npx playwright install --with-deps firefox webkit
       - run: docker compose up -d --wait wordpress
@@ -76,8 +77,6 @@ jobs:
       - run: CHROME_PATH="$(node -e "process.stdout.write(require('@playwright/test').chromium.executablePath())")" npm run test:e2e
       - run: npm run test:e2e:firefox
       - run: npm run test:e2e:webkit
-      - run: sudo apt-get update
-      - run: sudo apt-get install -y poppler-utils
       - run: node bin/check-pdf.cjs
       - name: Reproducible allowlisted release candidate
         run: |

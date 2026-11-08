@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ramsey Labels for WooCommerce 1.0.0-rc.10\n"
+"Project-Id-Version: Ramsey Labels for WooCommerce 1.0.0-rc.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ramsey-labels-independent\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-07T04:16:01+00:00\n"
+"POT-Creation-Date: 2026-11-08T03:28:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ramsey-labels-independent\n"
@@ -49,11 +49,12 @@ msgid "Saved-job ownership changed during the privacy operation. Retry it."
 msgstr ""
 
 #: includes/class-privacy.php:157
-#: assets.js:1068
+#: assets.js:1241
 msgid "Job name"
 msgstr ""
 
 #: includes/class-privacy.php:161
+#: includes/NetworkJobs.php:578
 msgid "Created"
 msgstr ""
 
@@ -134,82 +135,93 @@ msgid "%s: stock is not managed; using one label × copies."
 msgstr ""
 
 #. translators: %s: product name.
-#: includes/Data.php:676
+#: includes/Data.php:674
+#, php-format
+msgid "%s: item is on backorder with negative on-hand stock; backorders are not physical inventory, so no stock labels were added."
+msgstr ""
+
+#. translators: %s: product name.
+#: includes/Data.php:678
+msgid "Managed stock is negative but backorders are disabled. Correct inventory or use one label per product."
+msgstr ""
+
+#. translators: %s: product name.
+#: includes/Data.php:685
 #, php-format
 msgid "%s: zero stock, skipped."
 msgstr ""
 
 #. translators: %s: order ID.
-#: includes/Data.php:695
+#: includes/Data.php:704
 #, php-format
 msgid "Order %s was not found."
 msgstr ""
 
 #. translators: %s: order item ID.
-#: includes/Data.php:753
+#: includes/Data.php:762
 #, php-format
 msgid "Order item %s: original product is deleted; only historical order data is available."
 msgstr ""
 
 #. translators: %s: coupon ID.
-#: includes/Data.php:771
+#: includes/Data.php:780
 #, php-format
 msgid "Coupon %s was not found."
 msgstr ""
 
 #. translators: %s: user ID.
-#: includes/Data.php:810
+#: includes/Data.php:819
 #, php-format
 msgid "User %s was not found."
 msgstr ""
 
-#: includes/Data.php:831
+#: includes/Data.php:840
 msgid "Custom user metadata requires permission to edit that user."
 msgstr ""
 
-#: includes/Data.php:834
+#: includes/Data.php:843
 msgid "Sensitive user metadata cannot be printed."
 msgstr ""
 
 #. translators: %s: post ID.
-#: includes/Data.php:852
+#: includes/Data.php:861
 #, php-format
 msgid "Post %s cannot be read."
 msgstr ""
 
-#: includes/Data.php:855
+#: includes/Data.php:864
 msgid "Use the dedicated product/order source for this record."
 msgstr ""
 
-#: includes/Data.php:889
+#: includes/Data.php:898
 msgid "Developer API records exceed the 2 MB response budget. Return fewer records per request."
 msgstr ""
 
-#: includes/Data.php:911
+#: includes/Data.php:920
 msgid "The selected label total exceeds the exact browser integer range; split or refine the selection."
 msgstr ""
 
-#: includes/Data.php:915
+#: includes/Data.php:924
 msgid "Response exceeds its rendering or byte budget. Use paginated requests and segmented printing."
 msgstr ""
 
-#: includes/Data.php:930
+#: includes/Data.php:939
 msgid "This attachment is not readable."
 msgstr ""
 
-#: includes/Data.php:941
+#: includes/Data.php:950
 msgid "Attachment must be a readable image inside the local uploads directory."
 msgstr ""
 
-#: includes/Data.php:944
+#: includes/Data.php:953
 msgid "Attachment exceeds the 8 MB image limit."
 msgstr ""
 
-#: includes/Data.php:948
+#: includes/Data.php:957
 msgid "Select a PNG, JPEG, GIF, or WebP image."
 msgstr ""
 
-#: includes/Data.php:952
+#: includes/Data.php:961
 msgid "Attachment exceeds the 16-megapixel image budget."
 msgstr ""
 
@@ -275,6 +287,192 @@ msgstr ""
 
 #: includes/Migration.php:550
 msgid "No migration backup exists."
+msgstr ""
+
+#: includes/NetworkJobs.php:31
+msgid "Ramsey Labels job quarantine"
+msgstr ""
+
+#: includes/NetworkJobs.php:41
+msgid "Only a network administrator can manage quarantined legacy jobs."
+msgstr ""
+
+#: includes/NetworkJobs.php:87
+msgid "The network assignment audit limit is reached; export/review the ledger before continuing."
+msgstr ""
+
+#: includes/NetworkJobs.php:92
+msgid "Could not verify the network assignment audit write."
+msgstr ""
+
+#: includes/NetworkJobs.php:135
+msgid "Another network job assignment is in progress; retry shortly."
+msgstr ""
+
+#: includes/NetworkJobs.php:199
+msgid "Choose an active, existing network site."
+msgstr ""
+
+#: includes/NetworkJobs.php:218
+msgid "The owner cannot access this saved job profile or its product/order sources on the destination site. The job remains quarantined."
+msgstr ""
+
+#: includes/NetworkJobs.php:241
+msgid "The job owner must be an active member of the destination site."
+msgstr ""
+
+#: includes/NetworkJobs.php:245
+msgid "The quarantined job no longer exists."
+msgstr ""
+
+#: includes/NetworkJobs.php:249
+msgid "This legacy job does not meet current bounded record requirements; it remains quarantined."
+msgstr ""
+
+#: includes/NetworkJobs.php:257
+msgid "This job already has an active or pending assignment to another site."
+msgstr ""
+
+#: includes/NetworkJobs.php:260
+msgid "This job has a pending rollback; finish that recovery before assigning it again."
+msgstr ""
+
+#: includes/NetworkJobs.php:264
+msgid "A different site-scoped job with this ID already exists; it will not be overwritten."
+msgstr ""
+
+#: includes/NetworkJobs.php:312
+msgid "Destination site status or owner membership changed during assignment; the legacy job remains quarantined."
+msgstr ""
+
+#: includes/NetworkJobs.php:316
+msgid "The quarantined source changed after the dry run. Inspect it again before assigning."
+msgstr ""
+
+#: includes/NetworkJobs.php:321
+msgid "A site-scoped job appeared during assignment; the legacy job remains quarantined."
+msgstr ""
+
+#: includes/NetworkJobs.php:325
+msgid "The destination account has no room under the saved-job storage budget."
+msgstr ""
+
+#: includes/NetworkJobs.php:331
+msgid "The destination copy could not be verified. The legacy source remains quarantined; use rollback if a partial copy exists."
+msgstr ""
+
+#: includes/NetworkJobs.php:361
+msgid "No active assignment exists to roll back."
+msgstr ""
+
+#: includes/NetworkJobs.php:371
+msgid "The site copy changed after assignment. Rollback refused to avoid deleting edits; manually review the two copies."
+msgstr ""
+
+#: includes/NetworkJobs.php:381
+msgid "Could not verify removal of the site copy; the legacy source remains quarantined."
+msgstr ""
+
+#. translators: 1: user ID, 2: opaque job token, 3: record count, 4: site ID, 5: site URL.
+#: includes/NetworkJobs.php:518
+#, php-format
+msgid "Dry run passed: owner %1$d, job token %2$s, %3$d records, destination site %4$d (%5$s). No data was changed."
+msgstr ""
+
+#. translators: 1: opaque job token, 2: site ID.
+#: includes/NetworkJobs.php:522
+#, php-format
+msgid "Job token %1$s assigned to site %2$d. The legacy source remains in quarantine."
+msgstr ""
+
+#. translators: %s: opaque job token.
+#: includes/NetworkJobs.php:526
+#, php-format
+msgid "Assignment for job token %1$s was rolled back. The legacy source remains quarantined."
+msgstr ""
+
+#: includes/NetworkJobs.php:528
+msgid "Choose a valid quarantine action."
+msgstr ""
+
+#: includes/NetworkJobs.php:573
+msgid "Ramsey Labels legacy-job quarantine"
+msgstr ""
+
+#: includes/NetworkJobs.php:574
+msgid "These RC8/RC9 network jobs have no recorded owning site. This page shows only owner IDs, opaque job tokens, timestamps and record counts. Run a dry-run, confirm the site with the data owner, then explicitly assign. The original legacy records are retained; rollback removes only an unchanged site-scoped copy."
+msgstr ""
+
+#: includes/NetworkJobs.php:578
+msgid "Owner ID"
+msgstr ""
+
+#: includes/NetworkJobs.php:578
+msgid "Opaque job token"
+msgstr ""
+
+#: includes/NetworkJobs.php:578
+msgid "Records"
+msgstr ""
+
+#: includes/NetworkJobs.php:578
+msgid "Decision"
+msgstr ""
+
+#: includes/NetworkJobs.php:578
+msgid "Explicit site mapping"
+msgstr ""
+
+#: includes/NetworkJobs.php:582
+msgid "Unsupported legacy ID; remains quarantined for manual review."
+msgstr ""
+
+#: includes/NetworkJobs.php:587
+msgid "Dry run"
+msgstr ""
+
+#: includes/NetworkJobs.php:588
+msgid "Assign this job"
+msgstr ""
+
+#: includes/NetworkJobs.php:592
+msgid "Assign only after you have confirmed this owner-to-site mapping with the responsible site owner. The global source will remain quarantined."
+msgstr ""
+
+#: includes/NetworkJobs.php:596
+msgid "Destination site ID"
+msgstr ""
+
+#: includes/NetworkJobs.php:596
+msgid "Site ID"
+msgstr ""
+
+#: includes/NetworkJobs.php:601
+msgid "Rollback unchanged copy"
+msgstr ""
+
+#: includes/NetworkJobs.php:615
+msgid "Show more quarantined jobs for this owner"
+msgstr ""
+
+#: includes/NetworkJobs.php:619
+msgid "No quarantined legacy jobs were found on this page."
+msgstr ""
+
+#: includes/NetworkJobs.php:633
+msgid "Previous jobs for owner"
+msgstr ""
+
+#: includes/NetworkJobs.php:645
+msgid "Next jobs for owner"
+msgstr ""
+
+#: includes/NetworkJobs.php:657
+msgid "Previous owner page"
+msgstr ""
+
+#: includes/NetworkJobs.php:668
+msgid "Next owner page"
 msgstr ""
 
 #: includes/Plugin.php:69
@@ -353,7 +551,7 @@ msgid "Order / shipping label"
 msgstr ""
 
 #: includes/Plugin.php:521
-#: assets/render.js:946
+#: assets/render.js:952
 msgid "Label"
 msgstr ""
 
@@ -457,81 +655,81 @@ msgstr ""
 
 #. translators: %s: visual element identifier.
 #: includes/Schema.php:280
-#: assets/core.js:606
+#: assets/core.js:828
 #, php-format,js-format
 msgid "Element %s is outside the label."
 msgstr ""
 
-#: includes/Schema.php:335
+#: includes/Schema.php:336
 msgid "Invalid sheet capacity or skipped slots."
 msgstr ""
 
-#: includes/Schema.php:338
+#: includes/Schema.php:339
 msgid "Labels do not fit the page width."
 msgstr ""
 
-#: includes/Schema.php:341
+#: includes/Schema.php:342
 msgid "Labels do not fit the page height."
 msgstr ""
 
-#: includes/Schema.php:355
+#: includes/Schema.php:356
 msgid "Unsupported library schema."
 msgstr ""
 
 #. translators: %s: library collection name.
-#: includes/Schema.php:360
+#: includes/Schema.php:361
 #, php-format
 msgid "Invalid %s collection."
 msgstr ""
 
-#: includes/Schema.php:364
-#: assets/core.js:957
+#: includes/Schema.php:365
+#: assets/core.js:1179
 msgid "Library exceeds the 2.2 MB document budget. Export or split the document before saving."
 msgstr ""
 
-#: includes/Schema.php:367
+#: includes/Schema.php:368
 msgid "At least one profile is required."
 msgstr ""
 
-#: includes/Schema.php:380
+#: includes/Schema.php:381
 msgid "Invalid profile."
 msgstr ""
 
-#: includes/Schema.php:384
+#: includes/Schema.php:385
 msgid "Duplicate profile identifier."
 msgstr ""
 
-#: includes/Schema.php:389
+#: includes/Schema.php:390
 msgid "Invalid role restrictions."
 msgstr ""
 
-#: includes/Schema.php:401
-#: assets/core.js:974
+#: includes/Schema.php:402
+#: assets/core.js:1196
 msgid "Default profile does not exist."
 msgstr ""
 
-#: includes/Schema.php:407
+#: includes/Schema.php:408
 msgid "Duplicate template identifier."
 msgstr ""
 
-#: includes/Schema.php:419
+#: includes/Schema.php:420
 msgid "Duplicate paper identifier."
 msgstr ""
 
-#: includes/Schema.php:442
+#: includes/Schema.php:443
 msgid "Too many records in the saved job."
 msgstr ""
 
-#: includes/Schema.php:448
+#: includes/Schema.php:449
 msgid "Invalid job record."
 msgstr ""
 
-#: includes/Schema.php:453
+#: includes/Schema.php:454
 msgid "Invalid field key."
 msgstr ""
 
 #. translators: %s: labels per rendering segment.
-#: includes/Schema.php:470
+#: includes/Schema.php:471
 #, php-format
 msgid "The job exceeds %s labels."
 msgstr ""
@@ -568,900 +766,999 @@ msgstr ""
 msgid "Saved jobs exceed the 2 MB per-user limit. Export CSV locally instead."
 msgstr ""
 
-#: assets.js:92
-#: assets.js:1773
-#: assets.js:1846
+#: assets.js:95
+#: assets.js:1970
+#: assets.js:2043
 msgid "Cancel current operation"
 msgstr ""
 
-#: assets.js:132
+#: assets.js:135
 msgid "Thermal 2 × 1 inches"
 msgstr ""
 
-#: assets.js:134
+#: assets.js:137
 msgid "A4 · 65 labels · 38.1 × 21.2 mm"
 msgstr ""
 
-#: assets.js:139
-#: assets/core.js:382
+#: assets.js:142
+#: assets/core.js:604
 msgid "Product barcode"
 msgstr ""
 
-#: assets.js:140
-#: assets/core.js:385
+#: assets.js:143
+#: assets/core.js:607
 msgid "QR with text"
 msgstr ""
 
-#: assets.js:141
-#: assets/core.js:388
+#: assets.js:144
+#: assets/core.js:610
 msgid "Product image with barcode"
 msgstr ""
 
-#: assets.js:142
-#: assets/core.js:393
+#: assets.js:145
+#: assets/core.js:615
 msgid "QR left · price/name right · SKU below"
 msgstr ""
 
 #. translators: HTTP status code.
-#: assets.js:179
+#: assets.js:182
 #, js-format
 msgid "Request failed (%s)"
 msgstr ""
 
-#: assets.js:198
+#: assets.js:201
 msgid "Finish or cancel the PDF export before changing the queue."
 msgstr ""
 
-#: assets.js:221
-#: assets.js:369
+#: assets.js:227
+#: assets.js:375
 msgid "Unsaved changes"
 msgstr ""
 
-#: assets.js:249
+#: assets.js:255
 msgid "Profile missing"
 msgstr ""
 
-#: assets.js:259
+#: assets.js:265
 msgid "Saved to WordPress."
 msgstr ""
 
-#: assets.js:271
+#: assets.js:277
 msgid "Print profile"
 msgstr ""
 
-#: assets.js:278
+#: assets.js:284
 msgid "Save settings"
 msgstr ""
 
-#: assets.js:279
+#: assets.js:285
 msgid "Duplicate profile"
 msgstr ""
 
 #. translators: %s: existing profile name.
-#: assets.js:284
+#: assets.js:290
 #, js-format
 msgid "%s copy"
 msgstr ""
 
-#: assets.js:290
+#: assets.js:296
 msgid "Delete profile"
 msgstr ""
 
-#: assets.js:292
+#: assets.js:298
 msgid "Keep at least one profile"
 msgstr ""
 
-#: assets.js:295
+#: assets.js:301
 msgid "Delete this profile? Save settings to persist."
 msgstr ""
 
-#: assets.js:310
+#: assets.js:316
 msgid "Export library"
 msgstr ""
 
-#: assets.js:313
+#: assets.js:319
 msgid "Import library"
 msgstr ""
 
-#: assets.js:320
+#: assets.js:326
 msgid "Select a JSON library smaller than 2.2 MB."
 msgstr ""
 
-#: assets.js:333
+#: assets.js:339
 msgid "Replace all current profiles and templates in this editor? Save to persist."
 msgstr ""
 
-#: assets.js:355
+#: assets.js:361
 msgid "Ramsey Labels — Designer & Print"
 msgstr ""
 
-#: assets.js:357
+#: assets.js:363
 msgid "Independent WooCommerce label printing. Save settings before leaving. Test print alignment and barcode scanning before production."
 msgstr ""
 
-#: assets.js:374
+#: assets.js:380
 msgid "Label workflows"
 msgstr ""
 
-#: assets.js:377
-#: assets.js:420
+#: assets.js:383
+#: assets.js:426
 msgid "Design"
 msgstr ""
 
-#: assets.js:378
-#: assets.js:421
+#: assets.js:384
+#: assets.js:427
 msgid "Products & orders"
 msgstr ""
 
-#: assets.js:379
-#: assets.js:422
+#: assets.js:385
+#: assets.js:428
 msgid "Preview / print"
 msgstr ""
 
-#: assets.js:380
-#: assets.js:423
+#: assets.js:386
+#: assets.js:429
 msgid "Migration"
 msgstr ""
 
-#: assets.js:455
+#: assets.js:461
 msgid "Profile name"
 msgstr ""
 
-#: assets.js:462
+#: assets.js:468
 msgid "Label width (mm)"
 msgstr ""
 
-#: assets.js:476
+#: assets.js:483
 msgid "Label height (mm)"
 msgstr ""
 
-#: assets.js:490
+#: assets.js:498
 msgid "Layout mode"
 msgstr ""
 
-#: assets.js:494
+#: assets.js:502
 msgid "Visual"
 msgstr ""
 
-#: assets.js:495
-#: assets.js:670
+#: assets.js:503
+#: assets.js:843
 msgid "HTML template"
 msgstr ""
 
-#: assets.js:504
+#: assets.js:512
 msgid "Page type"
 msgstr ""
 
-#: assets.js:508
+#: assets.js:516
 msgid "Thermal / roll"
 msgstr ""
 
-#: assets.js:509
+#: assets.js:517
 msgid "Sheet"
 msgstr ""
 
-#: assets.js:532
+#: assets.js:541
 msgid "Resolution (DPI)"
 msgstr ""
 
-#: assets.js:545
+#: assets.js:554
 msgid "Show currency symbol"
 msgstr ""
 
-#: assets.js:560
-msgid "Paper width"
-msgstr ""
-
-#: assets.js:561
-msgid "Paper height"
-msgstr ""
-
-#: assets.js:562
-msgid "Columns"
-msgstr ""
-
-#: assets.js:563
-msgid "Rows"
-msgstr ""
-
-#: assets.js:564
-msgid "Top margin"
-msgstr ""
-
-#: assets.js:565
-msgid "Left margin"
-msgstr ""
-
-#: assets.js:566
-msgid "Right margin"
-msgstr ""
-
-#: assets.js:567
-msgid "Bottom margin"
-msgstr ""
-
-#: assets.js:568
-msgid "Horizontal gap"
-msgstr ""
-
-#: assets.js:569
-msgid "Vertical gap"
-msgstr ""
-
-#: assets.js:570
-msgid "Skip first slots"
-msgstr ""
-
-#: assets.js:571
-msgid "X calibration offset"
-msgstr ""
-
 #: assets.js:572
-msgid "Y calibration offset"
+msgid "Custom / manual sheet geometry"
 msgstr ""
 
-#: assets.js:593
-msgid "Quantity mode"
+#. translators: %s: number of generic grid slots.
+#: assets.js:581
+#, js-format
+msgid "Generic grid — %s slots; enter stock dimensions"
 msgstr ""
 
-#: assets.js:597
-msgid "One per product"
-msgstr ""
-
-#: assets.js:598
-msgid "Stock quantity"
-msgstr ""
-
-#: assets.js:599
-msgid "Order quantity"
-msgstr ""
-
-#: assets.js:611
-msgid "Text element"
+#: assets.js:594
+msgid "Sheet stock / grid preset"
 msgstr ""
 
 #: assets.js:612
+msgid "Generic grid only—this is not a manufacturer stock match. Confirm the stock label dimensions, rows/columns, pitch, margins and orientation before saving or printing."
+msgstr ""
+
+#. translators: %s: manufacturer product template URL.
+#: assets.js:626
+#, js-format
+msgid "Applied verified manufacturer geometry from %s. Verify feed alignment on a calibration sheet."
+msgstr ""
+
+#: assets.js:641
+msgid "Generic paper size (used only for generic grids)"
+msgstr ""
+
+#: assets.js:648
+msgid "A4 — 210 × 297 mm"
+msgstr ""
+
+#: assets.js:651
+msgid "US Letter — 215.9 × 279.4 mm"
+msgstr ""
+
+#: assets.js:653
+msgid "P4 — 250 × 353 mm"
+msgstr ""
+
+#: assets.js:654
+msgid "Custom dimensions below"
+msgstr ""
+
+#: assets.js:673
+msgid "Generic orientation (used only for generic grids)"
+msgstr ""
+
+#: assets.js:680
+msgid "Portrait"
+msgstr ""
+
+#: assets.js:681
+msgid "Landscape"
+msgstr ""
+
+#. translators: %s: manufacturer template product code.
+#: assets.js:709
+#, js-format
+msgid "Manufacturer template reference: %s"
+msgstr ""
+
+#: assets.js:718
+msgid "Generic grid only. Set exact label width/height, pitch, gaps, margins and orientation from your stock manufacturer. Count alone does not establish printer compatibility."
+msgstr ""
+
+#: assets.js:726
+msgid "Download calibration sheet SVG"
+msgstr ""
+
+#: assets.js:732
+msgid "Paper width"
+msgstr ""
+
+#: assets.js:733
+msgid "Paper height"
+msgstr ""
+
+#: assets.js:734
+msgid "Columns"
+msgstr ""
+
+#: assets.js:735
+msgid "Rows"
+msgstr ""
+
+#: assets.js:736
+msgid "Top margin"
+msgstr ""
+
+#: assets.js:737
+msgid "Left margin"
+msgstr ""
+
+#: assets.js:738
+msgid "Right margin"
+msgstr ""
+
+#: assets.js:739
+msgid "Bottom margin"
+msgstr ""
+
+#: assets.js:740
+msgid "Horizontal gap"
+msgstr ""
+
+#: assets.js:741
+msgid "Vertical gap"
+msgstr ""
+
+#: assets.js:742
+msgid "Skip first slots"
+msgstr ""
+
+#: assets.js:743
+msgid "X calibration offset"
+msgstr ""
+
+#: assets.js:744
+msgid "Y calibration offset"
+msgstr ""
+
+#: assets.js:766
+msgid "Quantity mode"
+msgstr ""
+
+#: assets.js:770
+msgid "One per product"
+msgstr ""
+
+#: assets.js:771
+msgid "Stock quantity"
+msgstr ""
+
+#: assets.js:772
+msgid "Order quantity"
+msgstr ""
+
+#: assets.js:784
+msgid "Text element"
+msgstr ""
+
+#: assets.js:785
 msgid "Barcode element"
 msgstr ""
 
-#: assets.js:613
+#: assets.js:786
 msgid "Image element"
 msgstr ""
 
-#: assets.js:614
+#: assets.js:787
 msgid "Rectangle element"
 msgstr ""
 
-#: assets.js:615
+#: assets.js:788
 msgid "Line element"
 msgstr ""
 
-#: assets.js:616
+#: assets.js:789
 msgid "Ellipse element"
 msgstr ""
 
 #. translators: element type.
-#: assets.js:621
+#: assets.js:794
 #, js-format
 msgid "Add %s"
 msgstr ""
 
-#: assets.js:638
+#: assets.js:811
 msgid "Save as template"
 msgstr ""
 
-#: assets.js:639
+#: assets.js:812
 msgid "Template name"
 msgstr ""
 
-#: assets.js:645
+#: assets.js:818
 msgid "Load template"
 msgstr ""
 
-#: assets.js:649
+#: assets.js:822
 msgid "Choose template"
 msgstr ""
 
-#: assets.js:656
+#: assets.js:829
 msgid "Replace current design?"
 msgstr ""
 
-#: assets.js:674
+#: assets.js:847
 msgid "CSS"
 msgstr ""
 
-#: assets.js:692
+#: assets.js:865
 msgid "Drag elements to reposition. Click to edit. Dimensions and coordinates are in millimeters."
 msgstr ""
 
 #. translators: element type; element identifier.
-#: assets.js:736
+#: assets.js:909
 #, js-format
 msgid "Edit %1$s element %2$s"
 msgstr ""
 
-#: assets.js:792
+#: assets.js:965
 msgid "Select an element to edit its properties."
 msgstr ""
 
-#: assets.js:800
+#: assets.js:973
 msgid "Element properties"
 msgstr ""
 
-#: assets.js:802
+#: assets.js:975
 msgid "Type"
 msgstr ""
 
-#: assets.js:803
+#: assets.js:976
 msgid "Text / field expression"
 msgstr ""
 
-#: assets.js:804
+#: assets.js:977
 msgid "X position (mm)"
 msgstr ""
 
-#: assets.js:805
+#: assets.js:978
 msgid "Y position (mm)"
 msgstr ""
 
-#: assets.js:806
+#: assets.js:979
 msgid "Width"
 msgstr ""
 
-#: assets.js:807
+#: assets.js:980
 msgid "Height"
 msgstr ""
 
-#: assets.js:808
+#: assets.js:981
 msgid "Font size (pt)"
 msgstr ""
 
-#: assets.js:809
+#: assets.js:982
 msgid "Minimum font size"
 msgstr ""
 
-#: assets.js:810
+#: assets.js:983
 msgid "Rotation (degrees)"
 msgstr ""
 
-#: assets.js:811
+#: assets.js:984
 msgid "Color"
 msgstr ""
 
-#: assets.js:812
+#: assets.js:985
 msgid "Background"
 msgstr ""
 
-#: assets.js:813
+#: assets.js:986
 msgid "Barcode format"
 msgstr ""
 
-#: assets.js:814
+#: assets.js:987
 msgid "QR error correction"
 msgstr ""
 
-#: assets.js:815
+#: assets.js:988
 msgid "Horizontal alignment"
 msgstr ""
 
-#: assets.js:816
+#: assets.js:989
 msgid "Text direction"
 msgstr ""
 
-#: assets.js:817
+#: assets.js:990
 msgid "Vertical alignment"
 msgstr ""
 
-#: assets.js:818
+#: assets.js:991
 msgid "Image fit"
 msgstr ""
 
-#: assets.js:819
+#: assets.js:992
 msgid "Visibility condition"
 msgstr ""
 
-#: assets.js:867
+#: assets.js:1040
 msgid "Bold"
 msgstr ""
 
-#: assets.js:868
+#: assets.js:1041
 msgid "Italic"
 msgstr ""
 
-#: assets.js:869
+#: assets.js:1042
 msgid "Underline"
 msgstr ""
 
-#: assets.js:870
+#: assets.js:1043
 msgid "Fit text automatically"
 msgstr ""
 
-#: assets.js:871
+#: assets.js:1044
 msgid "Show barcode text"
 msgstr ""
 
-#: assets.js:872
+#: assets.js:1045
 msgid "Visible"
 msgstr ""
 
-#: assets.js:873
+#: assets.js:1046
 msgid "GS1-128 (CODE128 only)"
 msgstr ""
 
-#: assets.js:883
+#: assets.js:1056
 msgid "Delete element"
 msgstr ""
 
-#: assets.js:902
+#: assets.js:1075
 msgid "For this source, enter IDs using the direct-ID field below."
 msgstr ""
 
 #. translators: %1$s: item.name.
-#: assets.js:921
-#: assets.js:1522
+#: assets.js:1094
+#: assets.js:1719
 #, js-format
 msgid "Product photo: %s"
 msgstr ""
 
-#: assets.js:926
-#: assets.js:1529
+#: assets.js:1099
+#: assets.js:1726
 msgid "No photo"
 msgstr ""
 
 #. translators: 1: product SKU, 2: formatted product price.
-#: assets.js:934
-#: assets.js:1543
+#: assets.js:1107
+#: assets.js:1740
 #, js-format
 msgid "SKU: %1$s · %2$s"
 msgstr ""
 
-#: assets.js:935
-#: assets.js:1544
+#: assets.js:1108
+#: assets.js:1741
 msgid "No SKU"
 msgstr ""
 
-#: assets.js:936
-#: assets.js:1545
+#: assets.js:1109
+#: assets.js:1742
 msgid "No price"
 msgstr ""
 
 #. translators: matching result count; current page; total pages.
-#: assets.js:950
+#: assets.js:1123
 #, js-format
 msgid "%1$s matching records; page %2$s of %3$s"
 msgstr ""
 
-#: assets.js:980
-#: assets.js:1244
+#: assets.js:1153
+#: assets.js:1417
 msgid "All categories"
 msgstr ""
 
 #. translators: %s: current category page number.
-#: assets.js:990
-#: assets.js:1259
+#: assets.js:1163
+#: assets.js:1432
 #, js-format
 msgid "Category page %s"
 msgstr ""
 
-#: assets.js:1002
+#: assets.js:1175
 msgid "#rli-results input:checked"
 msgstr ""
 
-#: assets.js:1005
+#: assets.js:1178
 msgid "Select at least one item."
 msgstr ""
 
-#: assets.js:1011
+#: assets.js:1184
 msgid "Select valid positive numeric IDs."
 msgstr ""
 
 #. translators: 1: loaded product count, 2: total selected product IDs.
-#: assets.js:1031
+#: assets.js:1204
 #, js-format
 msgid "Loading %1$s of %2$s product IDs…"
 msgstr ""
 
 #. translators: record count; source warnings.
-#: assets.js:1041
+#: assets.js:1214
 #, js-format
 msgid "Added %1$s records. %2$s"
 msgstr ""
 
-#: assets.js:1066
+#: assets.js:1239
 msgid "Save private print job"
 msgstr ""
 
-#: assets.js:1070
+#: assets.js:1243
 msgid "I understand this job may contain customer/order information and is private to my WordPress account."
 msgstr ""
 
-#: assets.js:1078
-#: assets.js:1089
-#: assets.js:1376
+#: assets.js:1251
+#: assets.js:1262
+#: assets.js:1549
 msgid "Save print job"
 msgstr ""
 
-#: assets.js:1085
-#: assets.js:1145
+#: assets.js:1258
+#: assets.js:1318
 msgid "Cancel"
 msgstr ""
 
-#: assets.js:1120
+#: assets.js:1293
 msgid "Choose a saved job"
 msgstr ""
 
-#: assets.js:1136
+#: assets.js:1309
 msgid "Load private print job"
 msgstr ""
 
-#: assets.js:1138
+#: assets.js:1311
 msgid "Saved print job"
 msgstr ""
 
-#: assets.js:1141
-#: assets.js:1150
-#: assets.js:1398
+#: assets.js:1314
+#: assets.js:1323
+#: assets.js:1571
 msgid "Load saved print job"
 msgstr ""
 
-#: assets.js:1178
+#: assets.js:1351
 msgid "Source"
 msgstr ""
 
-#: assets.js:1182
+#: assets.js:1355
 msgid "Products"
 msgstr ""
 
-#: assets.js:1183
+#: assets.js:1356
 msgid "Purchased order items"
 msgstr ""
 
-#: assets.js:1184
+#: assets.js:1357
 msgid "Orders / shipping"
 msgstr ""
 
-#: assets.js:1185
+#: assets.js:1358
 msgid "Coupons"
 msgstr ""
 
-#: assets.js:1186
+#: assets.js:1359
 msgid "Customers / users"
 msgstr ""
 
-#: assets.js:1187
+#: assets.js:1360
 msgid "Posts"
 msgstr ""
 
-#: assets.js:1197
+#: assets.js:1370
 msgid "Copies"
 msgstr ""
 
-#: assets.js:1201
+#: assets.js:1374
 msgid "Variation expansion"
 msgstr ""
 
-#: assets.js:1205
+#: assets.js:1378
 msgid "Parent"
 msgstr ""
 
-#: assets.js:1206
+#: assets.js:1379
 msgid "Variations"
 msgstr ""
 
-#: assets.js:1207
+#: assets.js:1380
 msgid "Both"
 msgstr ""
 
-#: assets.js:1218
+#: assets.js:1391
 msgid "Search name / SKU / order ID"
 msgstr ""
 
-#: assets.js:1222
+#: assets.js:1395
 msgid "Search WooCommerce"
 msgstr ""
 
-#: assets.js:1225
+#: assets.js:1398
 msgid "Search"
 msgstr ""
 
-#: assets.js:1229
+#: assets.js:1402
 msgid "Previous"
 msgstr ""
 
-#: assets.js:1233
+#: assets.js:1406
 msgid "Next"
 msgstr ""
 
-#: assets.js:1241
+#: assets.js:1414
 msgid "Category"
 msgstr ""
 
-#: assets.js:1251
+#: assets.js:1424
 msgid "Previous category page"
 msgstr ""
 
-#: assets.js:1264
+#: assets.js:1437
 msgid "Next category page"
 msgstr ""
 
-#: assets.js:1295
+#: assets.js:1468
 msgid "Add selected to job"
 msgstr ""
 
-#: assets.js:1297
+#: assets.js:1470
 msgid "Direct IDs (comma-separated)"
 msgstr ""
 
-#: assets.js:1307
+#: assets.js:1480
 msgid "Enter IDs from the selected source. Large selections are loaded in bounded pages."
 msgstr ""
 
-#: assets.js:1312
+#: assets.js:1485
 msgid "Add IDs"
 msgstr ""
 
-#: assets.js:1317
+#: assets.js:1490
 msgid "Enter positive numeric IDs separated by commas."
 msgstr ""
 
 #. translators: number of records.
-#: assets.js:1327
+#: assets.js:1500
 #, js-format
 msgid "Print job (%s records)"
 msgstr ""
 
-#: assets.js:1336
+#: assets.js:1509
 msgid "Clear job"
 msgstr ""
 
-#: assets.js:1337
+#: assets.js:1510
 msgid "Clear job?"
 msgstr ""
 
-#: assets.js:1346
+#: assets.js:1519
 msgid "Export CSV"
 msgstr ""
 
-#: assets.js:1352
+#: assets.js:1525
 msgid "Import CSV"
 msgstr ""
 
-#: assets.js:1359
-#: assets/core.js:783
+#: assets.js:1532
+#: assets/core.js:1005
 msgid "CSV exceeds the 8 MB transfer budget."
 msgstr ""
 
-#: assets.js:1375
+#: assets.js:1548
 msgid "Print preview"
 msgstr ""
 
-#: assets.js:1379
+#: assets.js:1552
 msgid "Add records before saving a print job."
 msgstr ""
 
-#: assets.js:1392
+#: assets.js:1565
 msgid "Print job saved to your private WordPress account."
 msgstr ""
 
-#: assets.js:1403
+#: assets.js:1576
 msgid "No saved print jobs are available to this account."
 msgstr ""
 
-#: assets.js:1414
+#: assets.js:1587
 msgid "The saved job references a profile unavailable to this account."
 msgstr ""
 
-#: assets.js:1424
+#: assets.js:1600
 msgid "Clear all saved print jobs"
 msgstr ""
 
-#: assets.js:1427
+#: assets.js:1603
 msgid "Delete every saved label job belonging to your WordPress account on this site?"
 msgstr ""
 
-#: assets.js:1436
+#: assets.js:1612
 msgid "All private saved print jobs have been deleted."
 msgstr ""
 
-#: assets.js:1442
+#: assets.js:1618
 msgid "Save queue in this browser"
 msgstr ""
 
-#: assets.js:1445
+#: assets.js:1621
 msgid "Restore browser draft"
 msgstr ""
 
+#: assets.js:1628
+msgid "Sort print queue"
+msgstr ""
+
+#: assets.js:1632
+msgid "Original selection order"
+msgstr ""
+
+#: assets.js:1633
+msgid "Product name A–Z"
+msgstr ""
+
+#: assets.js:1634
+msgid "Product name Z–A"
+msgstr ""
+
+#: assets.js:1635
+msgid "SKU ascending"
+msgstr ""
+
+#: assets.js:1636
+msgid "SKU descending"
+msgstr ""
+
 #. translators: current queue page; total queue pages.
-#: assets.js:1457
+#: assets.js:1654
 #, js-format
 msgid "Queue page %1$s of %2$s; all records remain selected independently of the visible page."
 msgstr ""
 
-#: assets.js:1466
+#: assets.js:1663
 msgid "Previous queue page"
 msgstr ""
 
-#: assets.js:1474
+#: assets.js:1671
 msgid "Next queue page"
 msgstr ""
 
 #. translators: record display name.
-#: assets.js:1493
+#: assets.js:1690
 #, js-format
 msgid "Include %s in print job"
 msgstr ""
 
-#: assets.js:1523
+#: assets.js:1720
 msgid "Product"
 msgstr ""
 
-#: assets.js:1537
+#: assets.js:1734
 msgid "Record"
 msgstr ""
 
-#: assets.js:1554
+#: assets.js:1751
 msgid "Quantity"
 msgstr ""
 
-#: assets.js:1555
+#: assets.js:1752
 msgid "Remove"
 msgstr ""
 
-#: assets.js:1561
+#: assets.js:1758
 msgid "Move up"
 msgstr ""
 
-#: assets.js:1576
+#: assets.js:1773
 msgid "Move down"
 msgstr ""
 
-#: assets.js:1606
+#: assets.js:1803
 msgid "Rendering job…"
 msgstr ""
 
 #. translators: completed records; total unique records.
-#: assets.js:1614
+#: assets.js:1811
 #, js-format
 msgid "Rendering %1$s / %2$s"
 msgstr ""
 
-#: assets.js:1626
+#: assets.js:1823
 msgid "Queue or profile changed while rendering. Generate a new preview."
 msgstr ""
 
-#: assets.js:1634
-#: assets/render.js:832
+#: assets.js:1831
+#: assets/render.js:838
 msgid "Print job cancelled."
 msgstr ""
 
 #. translators: label count; page count; warning count.
-#: assets.js:1642
+#: assets.js:1839
 #, js-format
 msgid "Ready: %1$s labels, %2$s pages. %3$s warnings."
 msgstr ""
 
 #. translators: current segment; total segments; total labels.
-#: assets.js:1663
+#: assets.js:1860
 #, js-format
 msgid "Segment %1$s of %2$s; %3$s total labels. Every segment is available; no labels are truncated."
 msgstr ""
 
-#: assets.js:1676
-#: assets.js:1710
-#: assets.js:1728
-#: assets.js:1852
-#: assets.js:1877
+#: assets.js:1873
+#: assets.js:1907
+#: assets.js:1925
+#: assets.js:2049
+#: assets.js:2074
+#: assets.js:2092
 msgid "Preview is still rendering. Please wait."
 msgstr ""
 
-#: assets.js:1685
+#: assets.js:1882
 msgid "Previous segment"
 msgstr ""
 
-#: assets.js:1690
+#: assets.js:1887
 msgid "Next segment"
 msgstr ""
 
-#: assets.js:1698
+#: assets.js:1895
 msgid "Browser print: set scale to 100%, margins to none, and disable headers/footers. For PDF use the export button."
 msgstr ""
 
-#: assets.js:1706
+#: assets.js:1903
 msgid "Generate preview"
 msgstr ""
 
-#: assets.js:1707
+#: assets.js:1904
 msgid "Print"
 msgstr ""
 
-#: assets.js:1723
+#: assets.js:1920
 msgid "Export segment PDF"
 msgstr ""
 
-#: assets.js:1724
+#: assets.js:1921
 msgid "Export PDF"
 msgstr ""
 
-#: assets.js:1739
-#: assets.js:1867
+#: assets.js:1936
+#: assets.js:2064
 msgid "Export cancelled because the queue or profile changed."
 msgstr ""
 
-#: assets.js:1758
+#: assets.js:1955
 msgid "Export full PDF"
 msgstr ""
 
-#: assets.js:1761
+#: assets.js:1958
 msgid "A print operation is already in progress."
 msgstr ""
 
-#: assets.js:1785
+#: assets.js:1982
 msgid "PDF document"
 msgstr ""
 
-#: assets.js:1800
+#: assets.js:1997
 msgid "This browser needs segment downloads for a PDF this large, or a browser with file streaming support."
 msgstr ""
 
 #. translators: labels exported; total labels.
-#: assets.js:1818
+#: assets.js:2015
 #, js-format
 msgid "Exporting %1$s of %2$s labels"
 msgstr ""
 
-#: assets.js:1844
+#: assets.js:2041
 msgid "Complete PDF exported."
 msgstr ""
 
-#: assets.js:1849
+#: assets.js:2046
 msgid "Export label PNG"
 msgstr ""
 
-#: assets.js:1874
+#: assets.js:2071
+msgid "Export full-label SVG"
+msgstr ""
+
+#: assets.js:2089
 msgid "Export barcode SVG"
 msgstr ""
 
-#: assets.js:1906
+#: assets.js:2124
 msgid "Read-only inspection first. Importing creates a backup of Ramsey Labels settings and never modifies the original plugin."
 msgstr ""
 
-#: assets.js:1913
+#: assets.js:2131
 msgid "Inspect installed plugin"
 msgstr ""
 
-#: assets.js:1917
+#: assets.js:2135
 msgid "Preview migration"
 msgstr ""
 
-#: assets.js:1923
+#: assets.js:2141
 msgid "Apply previewed migration"
 msgstr ""
 
-#: assets.js:1927
+#: assets.js:2145
 msgid "Apply this migration to Ramsey Labels settings?"
 msgstr ""
 
-#: assets.js:1939
+#: assets.js:2157
 msgid "Migration completed. Reload to see changes."
 msgstr ""
 
-#: assets.js:1948
+#: assets.js:2166
 msgid "Restore migration backup"
 msgstr ""
 
-#: assets.js:1951
+#: assets.js:2169
 msgid "Restore saved Ramsey Labels settings from before migration?"
 msgstr ""
 
-#: assets.js:1976
+#: assets.js:2194
 msgid "Cancel the export before clearing the queue."
 msgstr ""
 
-#: assets.js:2013
+#: assets.js:2233
 msgid "Save this queue in this browser? The draft may contain customer data and is not sent to WordPress."
 msgstr ""
 
-#: assets.js:2032
+#: assets.js:2252
 msgid "Select a local media attachment."
 msgstr ""
 
@@ -1527,51 +1824,51 @@ msgstr ""
 msgid "Data does not fit a supported square Data Matrix ECC200 symbol."
 msgstr ""
 
-#: assets/barcodes.js:727
-#: assets/barcodes.js:734
+#: assets/barcodes.js:728
+#: assets/barcodes.js:735
 msgid "Malformed GS1 application identifiers."
 msgstr ""
 
-#: assets/barcodes.js:744
-#: assets/barcodes.js:757
+#: assets/barcodes.js:745
+#: assets/barcodes.js:765
 msgid "Unsupported GS1 application identifier."
 msgstr ""
 
-#: assets/barcodes.js:764
+#: assets/barcodes.js:772
 msgid "Invalid GS1 field length."
 msgstr ""
 
-#: assets/barcodes.js:771
+#: assets/barcodes.js:779
 msgid "Unsupported characters in this GS1 field."
 msgstr ""
 
-#: assets/barcodes.js:774
+#: assets/barcodes.js:782
 msgid "Incorrect GS1 check digit."
 msgstr ""
 
-#: assets/barcodes.js:782
+#: assets/barcodes.js:790
 msgid "Invalid GS1 date."
 msgstr ""
 
-#: assets/barcodes.js:797
+#: assets/barcodes.js:805
 msgid "Barcode data is empty. Choose another source field or supply a value."
 msgstr ""
 
-#: assets/barcodes.js:804
+#: assets/barcodes.js:812
 msgid "Barcode input is too long (maximum 6,000 characters)."
 msgstr ""
 
 #. translators: %1$s: format.
-#: assets/barcodes.js:812
+#: assets/barcodes.js:820
 #, js-format
 msgid "Unsupported barcode format: %s"
 msgstr ""
 
-#: assets/barcodes.js:817
+#: assets/barcodes.js:825
 msgid "GS1 mode is supported only for GS1-128; other GS1 families are not advertised."
 msgstr ""
 
-#: assets/barcodes.js:838
+#: assets/barcodes.js:846
 msgid "SVG dimensions must be positive finite numbers."
 msgstr ""
 
@@ -1599,185 +1896,201 @@ msgstr ""
 msgid "Live queue exceeds its 8 MB data budget. Print or export it before adding more records."
 msgstr ""
 
-#: assets/batches.js:130
+#: assets/batches.js:145
 msgid "Use positive safe whole quantities."
 msgstr ""
 
-#: assets/batches.js:134
+#: assets/batches.js:149
 msgid "Total quantity is outside the safely representable range."
 msgstr ""
 
-#: assets/batches.js:140
+#: assets/batches.js:155
 msgid "Select at least one label."
 msgstr ""
 
-#: assets/batches.js:143
+#: assets/batches.js:158
 msgid "Print position is outside the safely representable range."
 msgstr ""
 
-#: assets/core.js:401
+#: assets/core.js:390
+msgid "Unknown verified stock-sheet preset."
+msgstr ""
+
+#: assets/core.js:428
+msgid "Choose one of the listed generic label counts."
+msgstr ""
+
+#: assets/core.js:433
+msgid "Choose A4, Letter, P4, or custom sheet geometry."
+msgstr ""
+
+#: assets/core.js:439
+msgid "Invalid sheet orientation."
+msgstr ""
+
+#: assets/core.js:623
 msgid "US Letter"
 msgstr ""
 
-#: assets/core.js:474
+#: assets/core.js:696
 msgid "Resolved label text exceeds its rendering budget."
 msgstr ""
 
-#: assets/core.js:483
+#: assets/core.js:705
 msgid "Template text exceeds its rendering budget."
 msgstr ""
 
-#: assets/core.js:530
+#: assets/core.js:752
 msgid "Missing design."
 msgstr ""
 
 #. translators: %1$s: key.
-#: assets/core.js:539
+#: assets/core.js:761
 #, js-format
 msgid "Label %s must be 5–500 mm."
 msgstr ""
 
-#: assets/core.js:542
+#: assets/core.js:764
 msgid "Invalid design mode."
 msgstr ""
 
-#: assets/core.js:545
+#: assets/core.js:767
 msgid "Invalid currency symbol visibility setting."
 msgstr ""
 
 #. translators: %s: maximum design element count.
-#: assets/core.js:551
+#: assets/core.js:773
 #, js-format
 msgid "Use at most %s elements."
 msgstr ""
 
-#: assets/core.js:558
+#: assets/core.js:780
 msgid "Element IDs must be unique."
 msgstr ""
 
-#: assets/core.js:561
+#: assets/core.js:783
 msgid "Invalid element type."
 msgstr ""
 
-#: assets/core.js:563
+#: assets/core.js:785
 msgid "Invalid text direction."
 msgstr ""
 
 #. translators: element identifier; invalid field name.
-#: assets/core.js:578
+#: assets/core.js:800
 #, js-format
 msgid "Element %1$s has an invalid %2$s."
 msgstr ""
 
 #. translators: element identifier.
-#: assets/core.js:590
+#: assets/core.js:812
 #, js-format
 msgid "Element %s must have positive dimensions."
 msgstr ""
 
-#: assets/core.js:611
+#: assets/core.js:833
 msgid "Invalid element color."
 msgstr ""
 
 #. translators: %1$s: key.
-#: assets/core.js:657
+#: assets/core.js:879
 #, js-format
 msgid "Invalid page value: %s"
 msgstr ""
 
-#: assets/core.js:660
+#: assets/core.js:882
 msgid "Page dimensions must be 5–1,000 mm."
 msgstr ""
 
-#: assets/core.js:669
+#: assets/core.js:891
 msgid "Use positive whole rows and columns, at most 1,000 slots."
 msgstr ""
 
-#: assets/core.js:676
+#: assets/core.js:898
 msgid "Skipped slots must be less than the number of labels per sheet."
 msgstr ""
 
-#: assets/core.js:686
+#: assets/core.js:908
 msgid "Labels and horizontal gaps/margins do not fit the page width."
 msgstr ""
 
-#: assets/core.js:696
+#: assets/core.js:918
 msgid "Labels and vertical gaps/margins do not fit the page height."
 msgstr ""
 
-#: assets/core.js:702
+#: assets/core.js:924
 msgid "Resolution must be 72–600 dpi."
 msgstr ""
 
-#: assets/core.js:706
+#: assets/core.js:928
 msgid "Margins and gaps cannot be negative."
 msgstr ""
 
 #. translators: maximum records in this request.
-#: assets/core.js:715
+#: assets/core.js:937
 #, js-format
 msgid "Use at most %s records per print job."
 msgstr ""
 
 #. translators: maximum labels per segment.
-#: assets/core.js:735
+#: assets/core.js:957
 #, js-format
 msgid "Select between 1 and %s labels per print job."
 msgstr ""
 
 #. translators: record name.
-#: assets/core.js:754
+#: assets/core.js:976
 #, js-format
 msgid "Invalid quantity for %s"
 msgstr ""
 
-#: assets/core.js:786
+#: assets/core.js:1008
 msgid "Unsupported delimiter."
 msgstr ""
 
-#: assets/core.js:796
+#: assets/core.js:1018
 msgid "Unclosed quoted CSV field."
 msgstr ""
 
-#: assets/core.js:817
+#: assets/core.js:1039
 msgid "Unexpected quote in CSV."
 msgstr ""
 
-#: assets/core.js:822
+#: assets/core.js:1044
 msgid "Unexpected text after a closing CSV quote."
 msgstr ""
 
-#: assets/core.js:841
+#: assets/core.js:1063
 msgid "Headers must be non-empty field names (letters, digits, dots, colons, underscores or hyphens)."
 msgstr ""
 
-#: assets/core.js:847
+#: assets/core.js:1069
 msgid "Duplicate CSV column name."
 msgstr ""
 
 #. translators: %s: CSV rows allowed per import.
-#: assets/core.js:853
+#: assets/core.js:1075
 #, js-format
 msgid "At most %s CSV records are allowed."
 msgstr ""
 
 #. translators: CSV row number.
-#: assets/core.js:892
+#: assets/core.js:1114
 #, js-format
 msgid "Invalid quantity in CSV row %s."
 msgstr ""
 
 #. translators: CSV row number.
-#: assets/core.js:906
+#: assets/core.js:1128
 #, js-format
 msgid "Manual label %s"
 msgstr ""
 
-#: assets/core.js:949
+#: assets/core.js:1171
 msgid "Invalid Ramsey Labels library (schema 1 and valid collections required)."
 msgstr ""
 
-#: assets/core.js:964
+#: assets/core.js:1186
 msgid "Duplicate/missing profile ID."
 msgstr ""
 
@@ -1838,88 +2151,124 @@ msgstr ""
 msgid "Text does not fit at the minimum font size. Enlarge this element or reduce its minimum font size."
 msgstr ""
 
-#: assets/render.js:445
+#: assets/render.js:451
 msgid "Barcode is too dense for this box/resolution. Enlarge it, shorten the value, or increase print DPI."
 msgstr ""
 
 #. translators: barcode module width in millimeters.
-#: assets/render.js:457
+#: assets/render.js:463
 #, js-format
 msgid "Narrow barcode modules (%s mm). Verify scanner readability on the actual printer."
 msgstr ""
 
-#: assets/render.js:626
+#: assets/render.js:632
 msgid "An HTML image exceeds the 16-megapixel safety limit."
 msgstr ""
 
-#: assets/render.js:669
+#: assets/render.js:675
 msgid "This browser cannot safely rasterize this HTML design. Use the visual designer or remove external image resources."
 msgstr ""
 
-#: assets/render.js:687
+#: assets/render.js:693
 msgid "Label exceeds 16 megapixels or supported DPI. Reduce the size or print DPI."
 msgstr ""
 
-#: assets/render.js:739
+#: assets/render.js:745
+#: assets/render.js:1462
 msgid "Rotated element extends outside the label."
 msgstr ""
 
-#: assets/render.js:824
+#: assets/render.js:830
 msgid "Segment exceeds its decoded-image memory budget. Use fewer distinct records or lower DPI."
 msgstr ""
 
-#: assets/render.js:859
+#: assets/render.js:865
 msgid "A render extension exceeded the pixel budget."
 msgstr ""
 
-#: assets/render.js:868
+#: assets/render.js:874
 msgid "Rendered job exceeds 120 MB. Split this batch or reduce DPI."
 msgstr ""
 
 #. translators: error count; concise error summaries.
-#: assets/render.js:887
+#: assets/render.js:893
 #, js-format
 msgid "Printing blocked: %1$s rendering error(s). %2$s"
 msgstr ""
 
 #. translators: product name, SKU and price.
-#: assets/render.js:940
+#: assets/render.js:946
 #, js-format
 msgid "Label: %s"
 msgstr ""
 
-#: assets/render.js:967
+#: assets/render.js:973
 msgid "Ramsey Labels print document"
 msgstr ""
 
-#: assets/render.js:1000
+#: assets/render.js:1006
 msgid "Print cancelled because the queue or profile changed."
 msgstr ""
 
-#: assets/render.js:1084
+#: assets/render.js:1090
 msgid "PDF export cancelled."
 msgstr ""
 
-#: assets/render.js:1219
+#: assets/render.js:1225
 msgid "PNG export failed."
 msgstr ""
 
-#: assets/render.js:1239
+#: assets/render.js:1310
+msgid "Barcode is too dense for this label size at the selected DPI."
+msgstr ""
+
+#: assets/render.js:1352
+#: assets/render.js:1368
+msgid "Embedded image exceeds the 8 MB SVG resource budget."
+msgstr ""
+
+#: assets/render.js:1365
+msgid "PNG image embedding failed."
+msgstr ""
+
+#: assets/render.js:1403
 msgid "This design has no visible barcode to export."
 msgstr ""
 
-#: assets/render.js:1259
+#: assets/render.js:1414
+msgid "Full-label SVG export supports visual designs only; HTML layouts remain available as raster PNG/PDF."
+msgstr ""
+
+#: assets/render.js:1480
+msgid "Image exceeds the 16-megapixel SVG embedding budget."
+msgstr ""
+
+#: assets/render.js:1499
+#: assets/render.js:1507
+#: assets/render.js:1519
+msgid "SVG export exceeds the 32 MB embedded-image budget."
+msgstr ""
+
+#: assets/render.js:1531
+msgid "Calibration sheets require a sheet page profile."
+msgstr ""
+
+#: assets/render.js:1552
+msgid "Calibration sheet exceeds its output size budget."
+msgstr ""
+
+#: assets/render.js:1573
 msgid "Streaming PDF requires the batch module and a writable sink."
 msgstr ""
 
-#: assets/render.js:1283
+#: assets/render.js:1597
 msgid "PDF exceeds the offset range of this format. Export separate segments."
 msgstr ""
 
-#: assets/render.js:1299
+#: assets/render.js:1613
 msgid "PDF export cancelled because the print data changed."
 msgstr ""
 
-#: assets/render.js:1411
+#: assets/render.js:1725
 msgid "PDF index exceeds its memory budget. Export separate segments."
 msgstr ""
