@@ -8,12 +8,24 @@ Z.prepareZXingModule({
         wasmBinary: fs.readFileSync(require.resolve('zxing-wasm/reader/zxing_reader.wasm')),
     },
 });
+async function logIn(page) {
+    let lastError;
+    for (let attempt = 0; attempt < 2; attempt++) {
+        await page.goto('/wp-login.php');
+        await page.locator('#user_login').fill('labels_admin');
+        await page.locator('#user_pass').fill('local-test-only-password');
+        await page.locator('#wp-submit').click();
+        try {
+            await page.waitForURL(/wp-admin\//, { timeout: 15000 });
+            return;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError;
+}
 test.beforeEach(async ({ page }) => {
-    await page.goto('/wp-login.php');
-    await page.locator('#user_login').fill('labels_admin');
-    await page.locator('#user_pass').fill('local-test-only-password');
-    await page.locator('#wp-submit').click();
-    await expect(page).toHaveURL(/wp-admin\//, { timeout: 15000 });
+    await logIn(page);
     await page.goto('/wp-admin/admin.php?page=ramsey-labels');
     await expect(
         page.getByRole('heading', { name: 'Ramsey Labels — Designer & Print' }),
