@@ -1,0 +1,21 @@
+{
+  "state": "DRAFT_ONLY_NOT_FOR_PUBLICATION",
+  "version": "1.0.0-rc.11",
+  "source_commit": "5a69195492786a6b763d7cb5ba3aa4348e84f192",
+  "branch": "engineering/wordpress-org-readiness",
+  "artifacts": [
+    {
+      "path": "build/ramsey-labels-independent-1.0.0-rc.11.zip",
+      "sha256": "096666d908b494c4aa7310e3fe9cc348fa59e49521417535a08117c440edb6b2",
+      "purpose": "legacy in-place upgrade candidate"
+    },
+    {
+      "path": "build/public/ramsey-labels-1.0.0-rc.11.zip",
+      "sha256": "e48c93667efb23e8705a17b7465253881ee159bb59410a657c17f6155ea0d0df",
+      "purpose": "separate public-directory candidate"
+    }
+  ],
+  "release_action": "NOT_AUTHORIZED",
+  "tag_action": "NOT_AUTHORIZED",
+  "wordpress_org_submission": "NOT_AUTHORIZED"
+}
