@@ -293,6 +293,6 @@
     "redistribution": "BLOCKED pending attestation or clean-room replacement",
     "RC11_additions": "listed separately in docs/provenance/rc8-file-audit.md; third-party competitor source was not used"
   },
-  "verified_head": "85736a5e11280309fd83dd55c336ec1970964d5e",
-  "generated_utc": "2026-11-08T15:50:00Z"
+  "verified_head": "378aa653330e17c0a2f8102e6e1c6ddd0ec186b2",
+  "generated_utc": "2026-11-08T15:55:00Z"
 }
