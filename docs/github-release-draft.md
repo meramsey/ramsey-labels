@@ -5,7 +5,7 @@
 ## Candidate commit and checks
 
 - Engineering branch: `engineering/wordpress-org-readiness`
-- Candidate source commit: `8162ea4a0eb43dc19d5368da353f1db888a2f799`
+- Candidate source commit: `ca63bd0be2461f7e8c5cae0d750e6d1e6353fe27`
 - Hosted required workflow: Quality and release gates run `42508133867` (verify final status before creating any release).
 - Local evidence and checksums: `docs/evidence/rc11-verification.json` and
   `docs/evidence/rc11-checksums.sha256`.
