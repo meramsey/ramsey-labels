@@ -194,6 +194,7 @@ test('save and restore private saved print jobs', async ({ page }) => {
     await expect(page.locator('.rli-queued-product')).toHaveCount(1);
     await page.getByRole('button', { name: 'Save print job', exact: true }).click();
     const saveDialog = page.getByRole('dialog');
+    await expect(saveDialog).toBeVisible();
     let dialogA11y = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
         .analyze();
@@ -220,6 +221,7 @@ test('save and restore private saved print jobs', async ({ page }) => {
     ).toBe(true);
     await page.getByRole('button', { name: 'Load saved print job', exact: true }).click();
     const loadDialog = page.getByRole('dialog');
+    await expect(loadDialog).toBeVisible();
     dialogA11y = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
         .analyze();
