@@ -1,11 +1,14 @@
 # Ramsey Labels for WooCommerce
 
-Free, independent WooCommerce label design, SKU barcodes, complete segmented batch
+Free WooCommerce label design, SKU barcodes, complete segmented batch
 previews, thermal/sheet browser printing and lossless raster PDF export.
 
 **Engineering release candidate RC11: not approved for publication or production.**
 See [release readiness](docs/release-readiness.md) for actual results and blockers.
 No code has been pushed or submitted to WordPress.org.
+Public redistribution remains blocked until the rights holder verifies the provenance and
+compatible license for inherited RC8 components; an owner preference cannot grant rights to
+third-party code.
 
 ## What it does
 
@@ -31,7 +34,8 @@ No code has been pushed or submitted to WordPress.org.
 - Read-only legacy configuration discovery with explicit migration preview and backup/restore.
 
 No runtime npm/Composer libraries, fonts, external scripts, telemetry or barcode services.
-This is not an implementation or API clone of any commercial product.
+No commercial competitor code or assets were used as implementation material in this engineering
+pass. The origin of inherited RC8 code is separately audited and remains unverified.
 
 ![Synthetic default 50.8 × 25.4 mm QR label showing Twinkle Light Earrings, $12.00 and RRA-726474](docs/assets/qr-label.png)
 
@@ -90,9 +94,10 @@ WCPOS integration certification. Existing SKU-generation hooks are not modified.
 Set the driver stock size to 50.8 × 25.4 mm for the default roll profile. Disable fit-to-page,
 choose actual size, and calibrate gap sensing/feed using your printer's instructions.
 Sheet profiles have independent margins, gaps, rows, columns, flow and X/Y calibration.
-Test one sheet/label before a large batch. PDF labels are lossless RGB rasters at profile
-DPI. The separate barcode SVG export is vector; complete label artwork is PNG or raster-PDF,
-and physical printer validation is not claimed.
+Test one sheet/label before a large batch. PDF labels are lossless RGB rasters at profile DPI.
+Full-label SVG keeps text, shapes and barcodes vector and embeds product images as bounded raster
+PNG; it does not embed external resources. The separate barcode-only SVG remains available.
+Physical printer and feed validation is not claimed.
 
 ## Troubleshooting
 

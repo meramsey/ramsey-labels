@@ -1,6 +1,9 @@
 # RC11 release readiness — READY FOR OWNER REVIEW, NOT APPROVED OR PUBLISHED
 
-RC11 is a locally verified engineering candidate. It is not approved for public redistribution,
+RC11 is a locally verified engineering candidate. The verified repository head is
+`aa2c836489543a1489ee7eb0df1f76dec06d66d0`; the runtime source commit is
+`9f901b2c475ef206582bf600f11628fe6b6bce7f` (later commits on this checkpoint contain evidence
+and documentation only). It is not approved for public redistribution,
 WordPress.org submission, a GitHub release, or production installation. No push, merge, tag,
 submission or deployment was made. The repository remains on the dedicated engineering branch.
 Both RC10 checkpoints remain available as local branches, and RC10's original ZIP is pinned as
@@ -36,28 +39,31 @@ Both RC10 checkpoints remain available as local branches, and RC10's original ZI
 | JavaScript unit/barcode/GS1/preset suite | 29 passed, 0 failed |
 | WPCS / PHPCS | Pass, zero errors/warnings |
 | PHPStan | Level 5 pass, zero errors |
-| PHP syntax / PHPUnit | PHP 7.4.33, 8.3.35 and 8.5.12 syntax checks pass; PHPUnit 16 tests / 23 assertions pass |
-| WooCommerce integration | 99 assertions pass on WordPress 7.1.4 / WooCommerce 11.2.2 / PHP 8.3.35, legacy order storage |
-| Installed public-directory package integration | 99 assertions pass; RC9 public folder transition and option/job/SKU retention pass |
-| Browser | 27 scenarios pass each on Chromium, Firefox and Playwright WebKit (Linux) |
+| PHP syntax / PHPUnit | PHP 7.4.33, 8.3.35 and 8.5.12 syntax checks pass; PHPUnit 16 tests / 23 assertions pass on each |
+| Current-stack WooCommerce integration | WordPress 7.1.4 / WooCommerce 11.2.2: 99 assertions each for legacy and HPOS via PHP CLI 7.4.33, 8.3.35 and 8.5.12; PHP 8.3.35 web stack also tested |
+| Oldest declared stack | WordPress 6.0.3 / WooCommerce 7.0.1 / PHP 7.4.33: 98 integration assertions and 27 Chromium scenarios, legacy storage |
+| Installed public-directory package integration | 99 assertions pass; 27 Chromium scenarios; RC9 public folder transition and option/job/SKU retention pass |
+| Browser | Current PHP 8.3.35 stack: 27 scenarios each on Chromium/Firefox/WebKit; PHP 8.5.12 web stack: 27 Chromium; oldest PHP 7.4.33 stack: 27 Chromium |
 | Installed legacy ZIP | All installed file hashes match manifest; 99 integration assertions, 27 Chromium E2E, streamed PDF checks; Plugin Check 2.1.0: 0 errors / 0 warnings |
 | Installed public ZIP | Guarded legacy-to-public directory transition, 99 integration assertions, 27 Chromium E2E, streamed PDF checks; Plugin Check 2.1.0: 0 errors / 0 warnings |
 | Multisite | 29 isolated integration assertions plus network-admin browser dry-run/assign/rollback |
-| Upgrade | Genuine archived RC8, RC9 and RC10 saved-library equality passes |
+| Upgrade | Genuine RC8, RC9 and RC10 saved-library equality passes under PHP 7.4.33 (oldest stack), 8.3.35 and 8.5.12 CLI environments |
 | Queue/catalog | 301 product records across 11 bounded pages; all 301 selected IDs transferred with no duplicates |
 | Calibration/PDF | Six A4 manufacturer layouts, generic requested counts, all-label counts, first/last positions, offsets/start slots, PDF physical media checked |
 | PDF/resource stress | 100,000-label arithmetic unit fixture; 4,500-page streamed PDF Poppler/page count and final-page barcode decode; cancellation and retry E2E pass |
 | JavaScript quality | ESLint and Prettier pass; WordPress POT regenerated without extraction warnings and matches a second deterministic generation |
 | Dependencies | npm/Composer lockfile audits and package license metadata checks recorded; development dependencies are not bundled |
+| Secret scan/workflow | Gitleaks 8.30.0 scanned all locally reachable commits and both ZIP extractions: no findings; actionlint 1.7.7 passed both workflow files; no hosted CI run |
 | Hardware/manual | Not tested; see `docs/owner-acceptance.md` |
 
-The full command outputs are retained locally under `build/rc11-reports/` and summarized in
-`docs/evidence/rc11-verification.json` after the release source commit. Tests use synthetic,
-isolated WordPress/WooCommerce instances and loopback ports. The full historical runtime matrix for
-PHP 7.4/8.5, oldest WordPress/WooCommerce and HPOS was verified for RC10, but those integration
-stacks were not re-run for RC11; only PHP syntax was rechecked on 7.4/8.5. RC11-specific runtime
-tests use the current Linux PHP 8.3/legacy-order stack. Do not extrapolate an RC11 runtime matrix
-beyond that coverage.
+Full outputs are retained locally under `build/rc11-reports/` and `build/reports/`; summaries and
+exact artifact manifests are in `docs/evidence/`. Tests use synthetic isolated sites and loopback
+ports. Current-stack PHP 7.4/8.5 integration uses WP-CLI PHP runtimes against the current
+WordPress/WooCommerce test database; it does **not** claim Apache/web execution on those PHP
+versions. Apache/browser execution passed on PHP 7.4 at the oldest declared stack, PHP 8.3 current
+stack, and PHP 8.5 current stack (Chromium only). HPOS runtime assertions passed on all three PHP
+CLI versions. Hosted GitHub Actions were not run against this exact commit; actionlint is local
+workflow lint only.
 
 ## Candidate artifacts
 

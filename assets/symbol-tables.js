@@ -1,4 +1,4 @@
-/* Standard barcode symbol tables. See docs/PROVENANCE.md. No plugin source used. */
+/* Standardized barcode symbol data supplied in RC8; source and derivation are unverified. */
 (function (root) {
     'use strict';
     const tables = {
