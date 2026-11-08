@@ -38,6 +38,13 @@ function productResult(page, productId) {
         has: page.locator(`input[value="${productId}"]`),
     });
 }
+async function searchProductResult(page, sku, productId) {
+    await page.locator('#rli-search').fill(sku);
+    await page.getByRole('button', { name: 'Search', exact: true }).click();
+    const result = productResult(page, productId);
+    await expect(result).toHaveCount(1, { timeout: 15000 });
+    return result;
+}
 async function expectLoadedProductImage(image, expectedUrl) {
     await expect(image).toBeVisible();
     await expect(image).toHaveAttribute('src', expectedUrl);
@@ -206,30 +213,30 @@ test('WooCommerce attachment thumbnails survive variation fallback, queue sortin
     expect(own.image_url).not.toBe(fallback.image_url);
     expect(missing.image_url).toBe('');
 
-    await page.locator('#rli-search').fill('SYNTHETIC-VAR-IMAGE');
-    await page.locator('#rli-search').press('Enter');
-    const ownResult = productResult(page, own.id);
-    await expect(ownResult).toHaveCount(1);
+    const ownResult = await searchProductResult(page, 'SYNTHETIC-VAR-IMAGE', own.id);
     await expectLoadedProductImage(ownResult.locator('img'), own.image_url);
     await ownResult.locator('input').check();
     await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
+    await expect(
+        page.locator('.rli-queued-product').filter({ hasText: 'SYNTHETIC-VAR-IMAGE' }),
+    ).toHaveCount(1);
 
-    await page.locator('#rli-search').fill('SYNTHETIC-VAR-1');
-    await page.locator('#rli-search').press('Enter');
-    const fallbackResult = productResult(page, fallback.id);
-    await expect(fallbackResult).toHaveCount(1);
+    const fallbackResult = await searchProductResult(page, 'SYNTHETIC-VAR-1', fallback.id);
     await expectLoadedProductImage(fallbackResult.locator('img'), fallback.image_url);
     await fallbackResult.locator('input').check();
     await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
+    await expect(
+        page.locator('.rli-queued-product').filter({ hasText: 'SYNTHETIC-VAR-1' }),
+    ).toHaveCount(1);
 
-    await page.locator('#rli-search').fill('SYNTHETIC-NO-IMAGE');
-    await page.locator('#rli-search').press('Enter');
-    const missingResult = productResult(page, missing.id);
-    await expect(missingResult).toHaveCount(1);
+    const missingResult = await searchProductResult(page, 'SYNTHETIC-NO-IMAGE', missing.id);
     await expect(missingResult.locator('img')).toHaveCount(0);
     await expect(missingResult.locator('.rli-no-image')).toHaveText('No photo');
     await missingResult.locator('input').check();
     await page.getByRole('button', { name: 'Add selected to job', exact: true }).click();
+    await expect(
+        page.locator('.rli-queued-product').filter({ hasText: 'SYNTHETIC-NO-IMAGE' }),
+    ).toHaveCount(1);
 
     const ownQueue = page.locator('.rli-queued-product').filter({ hasText: 'SYNTHETIC-VAR-IMAGE' });
     const fallbackQueue = page
