@@ -1,196 +1,298 @@
 {
-  "status": "READY FOR OWNER REVIEW; NOT APPROVED/PUBLISHED",
-  "generated_utc": "2026-11-07T04:24:27.670815+00:00",
+  "status": "READY FOR OWNER REVIEW; NOT OWNER-APPROVED OR PUBLISHED",
+  "version": "1.0.0-rc.11",
+  "source_commit": "9f901b2c475ef206582bf600f11628fe6b6bce7f",
   "branch": "engineering/wordpress-org-readiness",
-  "git_commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
-  "runtime_source_commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
-  "legacy_artifact": {
-    "version": "1.0.0-rc.10",
-    "commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
-    "archive": "ramsey-labels-independent-1.0.0-rc.10.zip",
-    "sha256": "cd2aa1ebc95c54a972421ae1ce19746d26a52a60374cb6b6a1a04126014c849a",
-    "files": {
-      "LICENSE": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
-      "assets/app.css": "8a3823eed26d1e3975b9a1385225ff174274588afbce1c6e7e97b888a0c99863",
-      "assets/app.js": "5b33ad244d86bc5df4e1f906fbfad21a13fa38bbb87cf222945716c28ed54e44",
-      "assets/barcodes.js": "3869bc307d437c0b2da8816894c2f94cb6d451bf91cb60b0cfafb207ee7125a2",
-      "assets/batches.js": "f1c0a8907d53a89969ec8e1206415b078d547e8451f93086b181a69791473793",
-      "assets/core.js": "09712917405c4f5c31e4e95a74d0ae20901ebef6178aaab3516298357b37b61c",
-      "assets/defaults.json": "49765f50ed9891b52077b119d20ed2d133d374940550e733de6ca5717e13c6f1",
-      "assets/integrations.js": "3fd33bce141d0fe1edf9de01a5517c62e155145eeb86ed965ea1e3cd41cdee08",
-      "assets/render.js": "c2af1b3a48265383e70d35f4a6ca6f040f72c3c610a8ad542008af53378d0a8b",
-      "assets/symbol-tables.js": "20da96998b9f4bae53e252d6c4007d5ccde40e6bafd4deab1de3126d7f04199b",
-      "includes/Data.php": "412bec25eb2485155b782e864dc6c06f0ab44dfa122462bd72273671f852f97d",
-      "includes/Migration.php": "6b9e677dc57325ade540ea63ef452ccae9de7bca372051d7422dda0ac0e7d906",
-      "includes/Plugin.php": "cd812c9e9fb3b487f5828a2baf3c7eae35116bed0327b966a6e5a63f54a09e5a",
-      "includes/Schema.php": "c358cc5a442a39994cc946e75c6b7cd3a3ed7eb0e28461f3348d4afb3b93cec2",
-      "includes/Store.php": "6c245081f283ba5d2b81b60205755acc8641bf8e5c18271d7d9ea720f30db7ef",
-      "includes/class-privacy.php": "6824300b5bc43a06d8bbc88c03c925793dc695dd4d381e4ed800c9ea64397109",
-      "languages/ramsey-labels-independent.pot": "7f7d8dacdacceb910389907a0c4470c2b56dc17244fd751bf33733f638b36bbe",
-      "ramsey-labels-independent.php": "0c62839f6a12b36fe106937da7cba8a7544334807420a54252b2e887c37961ab",
-      "readme.txt": "2b88ad3b28996fa4d6128df96c2c9bba83e7ff5e44f8e39dcf3664a28ee7b4ce",
-      "uninstall.php": "2471e97d8e1bf1a24c311cbc4b0001dc27f7540b9248d333f3ed790e924bb7c7"
-    }
-  },
-  "public_directory_candidate": {
-    "slug": "ramsey-labels",
-    "version": "1.0.0-rc.10",
-    "commit": "655089dea6bc3ae9bb5d7629ec5b9a1330ac6991",
-    "archive": "ramsey-labels-1.0.0-rc.10.zip",
-    "sha256": "20142f43ee0513d2269cf1a62c196402672d6db56db7b543c41866c5c6705904",
-    "files": {
-      "LICENSE": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
-      "assets/app.css": "8a3823eed26d1e3975b9a1385225ff174274588afbce1c6e7e97b888a0c99863",
-      "assets/app.js": "d89064f54b429491f22018141d0a60f09380754278b0653435105a3271c22c88",
-      "assets/barcodes.js": "844a76d4d22cd9fda5d36078eaaaad06d6085503450cd4a4d94a648e1aac7a18",
-      "assets/batches.js": "1b531c857c35b299054639e22a5acd1f3efa36542d32613b74d2edec1b3c0762",
-      "assets/core.js": "5b94f3bd26cb2f40536e7fb69b1275c7eeb69ba8b62d27fb4631aee265bc0a83",
-      "assets/defaults.json": "49765f50ed9891b52077b119d20ed2d133d374940550e733de6ca5717e13c6f1",
-      "assets/integrations.js": "fc7af20ce3b270232e147f5efda7872459ca7de86437059d0d30e1a1c56ce1ff",
-      "assets/render.js": "96d78e2bf38d0b6e90da84eadb446298d5788acb65d6859da124ffe11ce6eb9d",
-      "assets/symbol-tables.js": "20da96998b9f4bae53e252d6c4007d5ccde40e6bafd4deab1de3126d7f04199b",
-      "includes/Data.php": "304f9e3a0201d5038d62c522056bb4941cd8c59536484a18b0c115968d66a164",
-      "includes/Migration.php": "02dc69bda25a32ab0628d2cc7c854bec09ee7e0df03e7cef6a97010bd3e6c3fa",
-      "includes/Plugin.php": "f86b2c044af59a17572605c7715839996b1f0e9ba5f866a81c0cb140790ff0a6",
-      "includes/Schema.php": "be3c230dafc44068cef6539b3ce64ee462866cd9df84583c79fe5b5d345e4e21",
-      "includes/Store.php": "8a442ac42bfd4d2e0a09ed42dbf9a2e54f7f6a8ff13f3560cf7344239beb3fe4",
-      "includes/class-privacy.php": "09e111e5d4e81cab06f3db6cc625ed1e371abea5b820b3b17547045bd44e9c5a",
-      "languages/ramsey-labels.pot": "7fc2293c819ed87e97f7a9b974523b82b90c3bb10db34380b0522126bcceebda",
-      "ramsey-labels.php": "c842c11731d9cc43c589a816228e2c0c42b392c16fa7a2ac3db39b9a1db23604",
-      "readme.txt": "2b88ad3b28996fa4d6128df96c2c9bba83e7ff5e44f8e39dcf3664a28ee7b4ce",
-      "uninstall.php": "2471e97d8e1bf1a24c311cbc4b0001dc27f7540b9248d333f3ed790e924bb7c7"
-    }
-  },
-  "unit": {
-    "phpunit": {
-      "phpunit74.txt": {
-        "tests": 16,
-        "assertions": 23
-      },
-      "phpunit83.txt": {
-        "tests": 16,
-        "assertions": 23
-      },
-      "phpunit85.txt": {
-        "tests": 16,
-        "assertions": 23
-      }
+  "tests": {
+    "javascript_unit": {
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0,
+      "command": "npm test"
     },
-    "javascript_tests": 26,
-    "independent_barcode_formats": 8,
-    "gs1_128_common_ai_vectors": 1
-  },
-  "integration_assertions": {
-    "integration-hpos.txt": 95,
-    "integration-legacy.txt": 95,
-    "oldest-integration.txt": 94,
-    "php85-integration-hpos.txt": 95,
-    "php85-integration-legacy.txt": 95,
-    "public-integration.txt": 95
-  },
-  "browser_tests_each": {
-    "chromium_current_php83": 21,
-    "firefox_current_php83": 21,
-    "webkit_linux_current_php83": 21,
-    "chromium_oldest_wp_php74": 21,
-    "chromium_php85": 21,
-    "installed_legacy_zip": 21,
-    "installed_public_slug_zip": 21
-  },
-  "multisite_assertions": 6,
-  "upgrade": "Genuine archived RC8 and RC9 libraries, custom profile/template/default/DPI equality on PHP 7.4, 8.3 and 8.5; separate public slug/entrypoint transition preserves single-site options and saved job.",
-  "wordpress_matrix": {
-    "oldest": "WP 6.0.3 / Woo 7.0.1 / PHP 7.4.32 Apache, 7.4.33 CLI",
-    "current83": "WP 7.1.4 / Woo 11.2.2 / PHP 8.3.35",
-    "current85": "WP 7.1.4 / Woo 11.2.2 / PHP 8.5.12",
-    "orders": [
-      "Legacy",
-      "HPOS"
-    ],
-    "current_releases_checked": "WordPress Core Check API and Plugin Information API on 2026-11-06/07"
-  },
-  "php": {
-    "syntax": "pass",
-    "phpstan_level": 5,
-    "phpstan_errors": 0,
+    "phpunit": {
+      "tests": 16,
+      "assertions": 23,
+      "failed": 0,
+      "command": "composer test (Composer 2.8.12 container)"
+    },
+    "php_syntax": {
+      "versions": [
+        "7.4.33",
+        "8.3.35",
+        "8.5.12"
+      ],
+      "result": "all distributed/source PHP entry and include files pass php -l"
+    },
     "phpcs_wpcs": {
       "errors": 0,
       "warnings": 0,
-      "fixable": 0
+      "command": "composer lint"
+    },
+    "phpstan": {
+      "level": 5,
+      "errors": 0,
+      "command": "composer analyse"
+    },
+    "integration": {
+      "assertions": 99,
+      "environment": "WordPress 7.1.4 / PHP 8.3.35 / WooCommerce 11.2.2 / legacy order storage"
+    },
+    "multisite": {
+      "integration_assertions": 29,
+      "browser_scenarios": 1,
+      "browser_passed": 1,
+      "coverage": [
+        "cross-site isolation",
+        "network/site authorization",
+        "site membership",
+        "deleted site",
+        "conflict",
+        "partial write",
+        "concurrent writer",
+        "fingerprint rollback",
+        "redacted metadata pagination"
+      ]
+    },
+    "upgrade": {
+      "fixtures": [
+        "RC8",
+        "RC9",
+        "RC10"
+      ],
+      "result": "exact saved-library equality"
+    },
+    "browser": {
+      "chromium": {
+        "passed": 27,
+        "failed": 0
+      },
+      "firefox": {
+        "passed": 27,
+        "failed": 0
+      },
+      "playwright_webkit": {
+        "passed": 27,
+        "failed": 0
+      }
+    },
+    "installed_legacy_zip": {
+      "integration_assertions": 99,
+      "chromium_scenarios": 27,
+      "plugin_check_errors": 0,
+      "plugin_check_warnings": 0,
+      "installed_files_match_manifest": true
+    },
+    "installed_public_zip": {
+      "integration_assertions": 99,
+      "chromium_scenarios": 27,
+      "plugin_check_errors": 0,
+      "plugin_check_warnings": 0,
+      "legacy_folder_transition": "passed"
+    },
+    "independent_svg": {
+      "python_xml_parser": "passed",
+      "imagemagick_rasterizer": "passed",
+      "chromium_svg_rasterizer": "passed",
+      "barcode_roundtrip": [
+        "Code128",
+        "QRCode",
+        "DataMatrix"
+      ],
+      "physical_units": "millimeter dimensions match browser/PDF within documented raster rounding"
+    },
+    "sheet_geometry": {
+      "manufacturer_presets": [
+        "Avery L7164 12-up",
+        "Avery L7163 14-up",
+        "Avery L7162 16-up",
+        "Avery L7160 21-up",
+        "Avery L7159 24-up",
+        "Avery L7651 65-up"
+      ],
+      "generic_counts": [
+        12,
+        14,
+        16,
+        21,
+        24,
+        40,
+        44,
+        56,
+        65,
+        120,
+        189,
+        230,
+        324
+      ],
+      "pdf_media": "A4 physical page sizes checked",
+      "calibration_svg": "parsed/rasterized, offsets and skipped slots checked"
+    },
+    "stress": {
+      "catalog_products": 301,
+      "catalog_pages": 11,
+      "streamed_pdf_pages": 4500,
+      "arithmetic_labels": 100000,
+      "cancellation_retry": "passed"
+    },
+    "current_stack_runtime_matrix": {
+      "wordpress": "7.1.4",
+      "woocommerce": "11.2.2",
+      "php_cli": {
+        "7.4.33": {
+          "legacy_assertions": 99,
+          "hpos_assertions": 99
+        },
+        "8.3.35": {
+          "legacy_assertions": 99,
+          "hpos_assertions": 99
+        },
+        "8.5.12": {
+          "legacy_assertions": 99,
+          "hpos_assertions": 99
+        }
+      },
+      "web_runtime": {
+        "php_8.3.35": {
+          "chromium": 27,
+          "firefox": 27,
+          "webkit": 27
+        },
+        "php_8.5.12": {
+          "chromium": 27
+        }
+      },
+      "note": "PHP 7.4/8.5 WordPress integration runs used WP-CLI on the synthetic current WP/WooCommerce database; PHP 8.3/8.5 Apache browser runs were executed. Do not treat PHP 7.4 current-stack CLI results as PHP 7.4 web-runtime verification."
+    },
+    "oldest_stack_runtime": {
+      "wordpress": "6.0.3",
+      "woocommerce": "7.0.1",
+      "php": "7.4.33",
+      "order_storage": "legacy",
+      "integration_assertions": 98,
+      "chromium_scenarios": 27,
+      "upgrades": [
+        "RC8",
+        "RC9",
+        "RC10"
+      ]
+    },
+    "current_hpos": {
+      "php_cli_7_4_assertions": 99,
+      "php_cli_8_3_assertions": 99,
+      "php_cli_8_5_assertions": 99
+    },
+    "phpunit_by_php": {
+      "7.4.33": {
+        "tests": 16,
+        "assertions": 23,
+        "result": "pass"
+      },
+      "8.3.35": {
+        "tests": 16,
+        "assertions": 23,
+        "result": "pass"
+      },
+      "8.5.12": {
+        "tests": 16,
+        "assertions": 23,
+        "result": "pass"
+      }
+    },
+    "upgrade_by_php": {
+      "7.4.33": {
+        "fixtures": [
+          "RC8",
+          "RC9",
+          "RC10"
+        ],
+        "result": "exact saved-library equality passed"
+      },
+      "8.3.35": {
+        "fixtures": [
+          "RC8",
+          "RC9",
+          "RC10"
+        ],
+        "result": "exact saved-library equality passed"
+      },
+      "8.5.12": {
+        "fixtures": [
+          "RC8",
+          "RC9",
+          "RC10"
+        ],
+        "result": "exact saved-library equality passed"
+      }
     }
   },
-  "i18n": {
-    "text_domain_legacy": "ramsey-labels-independent",
-    "text_domain_public": "ramsey-labels",
-    "pot_extraction_warnings": 0,
-    "pot_match": "pass",
-    "js_wp_i18n": "wp-i18n dependency and wp_set_script_translations registered"
-  },
-  "accessibility": {
-    "axe_wcag21_A_AA_violations": 0,
-    "chromium_firefox_webkit": "pass",
-    "keyboard_and_rtl": "automated pass",
-    "manual_assistive_technology": "pending"
-  },
-  "plugin_check": [
-    {
-      "artifact": "legacy",
-      "errors": 0,
-      "warnings": 0,
-      "plugin_check": "2.1.0"
+  "audits": {
+    "npm_audit": "0 vulnerabilities",
+    "composer_audit": "0 security advisories",
+    "license_metadata": "90 npm and 36 Composer development packages accepted",
+    "translation_catalog": "regenerated with zero extraction warnings and deterministic comparison",
+    "full_history_secret_scan": {
+      "tool": "Gitleaks",
+      "version": "8.30.0",
+      "commits_scanned": 8,
+      "result": "no leaks found; 8 commits reachable from exact verified HEAD",
+      "scope": "all commits reachable from local refs; repository is not shallow"
     },
-    {
-      "artifact": "public",
-      "errors": 0,
-      "warnings": 0,
-      "plugin_check": "2.1.0"
+    "workflow_validation": {
+      "tool": "actionlint",
+      "version": "1.7.7",
+      "result": "both workflow files lint clean at verified HEAD"
+    },
+    "hosted_ci": "not run; no hosted workflow result claimed",
+    "artifact_secret_scan": {
+      "tool": "Gitleaks",
+      "version": "8.30.0",
+      "artifacts_scanned": [
+        "legacy ZIP extraction",
+        "public ZIP extraction"
+      ],
+      "result": "no leaks found in both exact deterministic ZIP extractions"
+    },
+    "runtime_package_contents": {
+      "legacy_files": 21,
+      "public_files": 21,
+      "runtime_third_party_dependencies": 0,
+      "tests_or_dev_dependencies_bundled": false,
+      "original_RC8_archive_bundled": false,
+      "verified_against_manifests": true
     }
-  ],
-  "pdf": [
-    "PASS: Poppler verifies 5 pages, 50.8 x 25.4 mm media, and independently rasterized PDF QR decodes exact RRA-726474",
-    "PASS: Poppler verifies 131 sheet labels occupy 3 A4 pages",
-    "PASS: streamed PDF has all 4,500 pages and independently decodes exact SKU on final page"
-  ],
-  "security": {
-    "rest_anonymous_role_nonce": "negative tests pass for all 12 registered route methods",
-    "customer_privacy_pages": 26,
-    "oversized_request": "413 before decode",
-    "serialized_object": "rejected; classes disabled; depth/node/byte limits",
-    "external_images": "explicit per-origin consent; private literal-host checks; CORS; omit credentials/referrer; reject redirects/non-raster; byte/MIME/pixel limits",
-    "gitleaks": "no leaks",
-    "residual": "DNS rebinding/browser extension risks; third-party custom-meta privacy is site capability-gated but not an encrypted boundary; adversarial fuzz and prolonged-load tests remain"
   },
-  "dependency_audit": {
-    "npm_vulnerabilities": {
-      "info": 0,
-      "low": 0,
-      "moderate": 0,
-      "high": 0,
-      "critical": 0,
-      "total": 0
+  "artifacts": {
+    "legacy": {
+      "archive": "ramsey-labels-independent-1.0.0-rc.11.zip",
+      "sha256": "096666d908b494c4aa7310e3fe9cc348fa59e49521417535a08117c440edb6b2",
+      "manifest": "rc11-legacy-manifest.json",
+      "file_count": 21,
+      "manifest_commit": "aa2c836489543a1489ee7eb0df1f76dec06d66d0"
     },
-    "composer_advisories": 0,
-    "composer_abandoned": []
+    "public": {
+      "archive": "ramsey-labels-1.0.0-rc.11.zip",
+      "sha256": "e48c93667efb23e8705a17b7465253881ee159bb59410a657c17f6155ea0d0df",
+      "manifest": "rc11-public-manifest.json",
+      "file_count": 21,
+      "manifest_commit": "aa2c836489543a1489ee7eb0df1f76dec06d66d0"
+    }
   },
-  "license_inventory": [
-    "PASS: license metadata allowlist for 90 npm and 36 Composer development packages",
-    "Runtime dependencies: none; RC8 provenance still requires owner attestation (docs/provenance.md)."
+  "remaining_gates": [
+    "rights-holder attestation for every inherited RC8 file, encoder/table/template rights and GPL distribution; no third-party provenance is inferred",
+    "owner approval for author/brand/public slug/support/security contacts/directory assets/publication",
+    "physical thermal/A4 print/feed alignment, exact scanner/WCPOS test, manual screen-reader, Windows and macOS Safari acceptance",
+    "no real production-scale or long-duration load certification",
+    "WordPress.org submission acceptance not established; slug is not reserved"
   ],
-  "release_zip_policy": "Both ZIPs are deterministic allowlist packages; tests, node_modules, vendor, fixtures, original archives and CI scripts excluded.",
-  "repository": {
-    "working_branch": "engineering/wordpress-org-readiness",
-    "private_data_scan": "Gitleaks scanned committed history; no leaks found",
-    "remote_push": "not performed"
+  "publication": "No push, merge, tag, WordPress.org submission, public GitHub release, or deployment.",
+  "provenance": {
+    "RC8_archive_sha256": "b62a94518299b891cb125590df96f8f4830f4e552a659eb9c7935f54769a01ef",
+    "RC8_file_count": 16,
+    "classification": "all 16 inherited files have uncertain authorship/derivation pending rights-holder evidence; no third-party-licensed runtime code was identified in the RC8 archive; no owner attestation is fabricated",
+    "redistribution": "BLOCKED pending attestation or clean-room replacement",
+    "RC11_additions": "listed separately in docs/provenance/rc8-file-audit.md; third-party competitor source was not used"
   },
-  "remaining": [
-    "Owner attestation: inherited RC8 encoders/source/assets are redistributable under GPL-2.0-or-later and author/brand attribution is authorized.",
-    "WordPress.org slug lookup was 404/unlisted at check time; not reserved or approved. Explicit owner approval to submit the separate directory archive is pending.",
-    "RC8/RC9 legacy multisite user-job data has no owning site ID; network administrator must explicitly map jobs to sites. Automatic migration is intentionally disabled to prevent cross-site PII disclosure.",
-    "Named manufacturer stock-sheet presets beyond verified A4 65 are not included; custom sheet geometry is supported.",
-    "GS1-128 supports documented common AIs, not the complete GS1 family; no broad compatibility claim.",
-    "Full-label vector SVG and one-click alphabetical sort remain gaps; barcode SVG, PNG/PDF and manual queue reorder are tested.",
-    "No real printer/scanner/POS, assistive-tech operator, macOS Safari or Windows platform was available for manual acceptance.",
-    "No physical printer, live WCPOS/POS scanner, macOS Safari, Windows browser or manual screen-reader test was performed.",
-    "Owner security/support/conduct contacts, final WordPress.org screenshots/artwork, public translation review, and explicit publication/release approvals remain."
-  ]
+  "verified_head": "aa2c836489543a1489ee7eb0df1f76dec06d66d0",
+  "generated_utc": "2026-11-08T15:43:00Z"
 }
