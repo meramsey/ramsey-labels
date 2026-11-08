@@ -69,6 +69,10 @@ Both ZIPs are built from deterministic fixed-timestamp allowlists, install separ
 tests/development dependencies/archives, and pass installed-package checks. WordPress.org slug
 lookup/reservation is not approval, and no WordPress.org acceptance is claimed.
 
+The exact source/artifact checksums and both complete runtime file manifests are committed under
+`docs/evidence/rc11-verification.json`, `docs/evidence/rc11-legacy-manifest.json`,
+`docs/evidence/rc11-public-manifest.json`, and `docs/evidence/rc11-checksums.sha256`.
+
 ## Blocking owner gates and residual limits
 
 - **Provenance blocks public redistribution.** Every inherited RC8 source component—including

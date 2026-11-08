@@ -1,0 +1,160 @@
+{
+  "status": "READY FOR OWNER REVIEW; NOT OWNER-APPROVED OR PUBLISHED",
+  "version": "1.0.0-rc.11",
+  "source_commit": "9f901b2c475ef206582bf600f11628fe6b6bce7f",
+  "branch": "engineering/wordpress-org-readiness",
+  "tests": {
+    "javascript_unit": {
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0,
+      "command": "npm test"
+    },
+    "phpunit": {
+      "tests": 16,
+      "assertions": 23,
+      "failed": 0,
+      "command": "composer test (Composer 2.8.12 container)"
+    },
+    "phpcs_wpcs": {
+      "errors": 0,
+      "warnings": 0,
+      "command": "composer lint"
+    },
+    "phpstan": {
+      "level": 5,
+      "errors": 0,
+      "command": "composer analyse"
+    },
+    "integration": {
+      "assertions": 99,
+      "environment": "WordPress 7.1.4 / PHP 8.3.35 / WooCommerce 11.2.2 / legacy order storage"
+    },
+    "multisite": {
+      "integration_assertions": 29,
+      "browser_scenarios": 1,
+      "browser_passed": 1,
+      "coverage": [
+        "cross-site isolation",
+        "network/site authorization",
+        "site membership",
+        "deleted site",
+        "conflict",
+        "partial write",
+        "concurrent writer",
+        "fingerprint rollback",
+        "redacted metadata pagination"
+      ]
+    },
+    "upgrade": {
+      "fixtures": [
+        "RC8",
+        "RC9",
+        "RC10"
+      ],
+      "result": "exact saved-library equality"
+    },
+    "browser": {
+      "chromium": {
+        "passed": 27,
+        "failed": 0
+      },
+      "firefox": {
+        "passed": 27,
+        "failed": 0
+      },
+      "playwright_webkit": {
+        "passed": 27,
+        "failed": 0
+      }
+    },
+    "installed_legacy_zip": {
+      "integration_assertions": 99,
+      "chromium_scenarios": 27,
+      "plugin_check_errors": 0,
+      "plugin_check_warnings": 0,
+      "installed_files_match_manifest": true
+    },
+    "installed_public_zip": {
+      "integration_assertions": 99,
+      "chromium_scenarios": 27,
+      "plugin_check_errors": 0,
+      "plugin_check_warnings": 0,
+      "legacy_folder_transition": "passed"
+    },
+    "independent_svg": {
+      "python_xml_parser": "passed",
+      "imagemagick_rasterizer": "passed",
+      "chromium_svg_rasterizer": "passed",
+      "barcode_roundtrip": [
+        "Code128",
+        "QRCode",
+        "DataMatrix"
+      ],
+      "physical_units": "millimeter dimensions match browser/PDF within documented raster rounding"
+    },
+    "sheet_geometry": {
+      "manufacturer_presets": [
+        "Avery L7164 12-up",
+        "Avery L7163 14-up",
+        "Avery L7162 16-up",
+        "Avery L7160 21-up",
+        "Avery L7159 24-up",
+        "Avery L7651 65-up"
+      ],
+      "generic_counts": [
+        12,
+        14,
+        16,
+        21,
+        24,
+        40,
+        44,
+        56,
+        65,
+        120,
+        189,
+        230,
+        324
+      ],
+      "pdf_media": "A4 physical page sizes checked",
+      "calibration_svg": "parsed/rasterized, offsets and skipped slots checked"
+    },
+    "stress": {
+      "catalog_products": 301,
+      "catalog_pages": 11,
+      "streamed_pdf_pages": 4500,
+      "arithmetic_labels": 100000,
+      "cancellation_retry": "passed"
+    }
+  },
+  "audits": {
+    "npm_audit": "0 vulnerabilities",
+    "composer_audit": "0 security advisories",
+    "license_metadata": "90 npm and 36 Composer development packages accepted",
+    "translation_catalog": "regenerated with zero extraction warnings and deterministic comparison"
+  },
+  "artifacts": {
+    "legacy": {
+      "archive": "ramsey-labels-independent-1.0.0-rc.11.zip",
+      "sha256": "ecd291bc2b3c5c39598b5a7606f872ae2e48d3184f17c1f35a61338ff96f5962",
+      "manifest": "rc11-legacy-manifest.json",
+      "file_count": 21
+    },
+    "public": {
+      "archive": "ramsey-labels-1.0.0-rc.11.zip",
+      "sha256": "3eda1167c8d63e3ad6f98d11dfba0cba9f3c6c9cee76268c8c2b0520c7578666",
+      "manifest": "rc11-public-manifest.json",
+      "file_count": 21
+    }
+  },
+  "remaining_gates": [
+    "owner attestation for every inherited RC8 source file, encoder/table/template rights and GPL distribution",
+    "owner approval for author/brand/public slug/support/security contacts/directory assets/publication",
+    "physical thermal/A4 print and feed calibration, exact scanner/WCPOS test",
+    "manual screen-reader, Windows, macOS Safari acceptance",
+    "PHP 7.4/8.5, oldest WordPress/WooCommerce, and HPOS compatibility matrix not rerun for RC11; RC10 matrix remains historical only",
+    "WordPress.org submission acceptance not established; slug is not reserved"
+  ],
+  "publication": "No push, merge, tag, WordPress.org submission, public GitHub release, or deployment."
+}
