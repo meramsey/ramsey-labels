@@ -3,6 +3,7 @@
 import base64
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -48,10 +49,15 @@ for node in root.iter():
         vector_barcode_rects += len(node.findall('s:rect', ns))
 if vector_barcode_rects < 3:
     raise SystemExit(f'Expected vector barcode primitives; found {vector_barcode_rects}')
-subprocess.run(['convert', '-background', 'white', '-density', str(dpi), str(svg_path), str(png_path)], check=True)
+renderer = 'ImageMagick'
+if shutil.which('rsvg-convert'):
+    renderer = 'librsvg'
+    subprocess.run(['rsvg-convert', '--dpi-x', str(dpi), '--dpi-y', str(dpi), '--output', str(png_path), str(svg_path)], check=True)
+else:
+    subprocess.run(['convert', '-background', 'white', '-density', str(dpi), str(svg_path), str(png_path)], check=True)
 dimensions = subprocess.check_output(['identify', '-format', '%wx%h', str(png_path)], text=True)
 actual_width, actual_height = (int(value) for value in dimensions.split('x'))
 expected_width, expected_height = (round(width_mm * dpi / 25.4), round(height_mm * dpi / 25.4))
 if abs(actual_width - expected_width) > 1 or abs(actual_height - expected_height) > 1:
     raise SystemExit(f'Raster geometry {dimensions} differs by more than one pixel from expected {expected_width}x{expected_height}')
-print(f'PASS: Python XML parser accepted safe SVG; {vector_barcode_rects} vector barcode runs, {image_count} embedded PNG image(s); ImageMagick rasterized {dimensions} at {dpi} DPI (<=1 px physical-unit rounding).')
+print(f'PASS: Python XML parser accepted safe SVG; {vector_barcode_rects} vector barcode runs, {image_count} embedded PNG image(s); {renderer} rasterized {dimensions} at {dpi} DPI (<=1 px physical-unit rounding).')

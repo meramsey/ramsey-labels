@@ -3,6 +3,7 @@
 import json
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -33,9 +34,14 @@ for node in root.iter():
             raise SystemExit('External image reference found in calibration SVG')
         if 'url(' in value and not re.fullmatch(r'url\(#[A-Za-z0-9_.:-]+\)', value):
             raise SystemExit('External resource reference found in calibration SVG')
-subprocess.run(['convert', '-background', 'white', '-density', '150', str(source), str(png)], check=True)
+renderer = 'ImageMagick'
+if shutil.which('rsvg-convert'):
+    renderer = 'librsvg'
+    subprocess.run(['rsvg-convert', '--dpi-x', '150', '--dpi-y', '150', '--output', str(png), str(source)], check=True)
+else:
+    subprocess.run(['convert', '-background', 'white', '-density', '150', str(source), str(png)], check=True)
 actual = tuple(map(int, subprocess.check_output(['identify', '-format', '%wx%h', str(png)], text=True).split('x')))
 expected = (round(metadata['widthMm'] * 150 / 25.4), round(metadata['heightMm'] * 150 / 25.4))
 if any(abs(a - e) > 1 for a, e in zip(actual, expected)):
     raise SystemExit(f'Calibration raster {actual} does not match physical sheet {expected}')
-print(f"PASS: {len(metadata['slots'])} grid marks, {metadata['startSlot']} skipped positions, no external resources; raster {actual} matches page mm geometry.")
+print(f"PASS: {len(metadata['slots'])} grid marks, {metadata['startSlot']} skipped positions, no external resources; {renderer} raster {actual} matches page mm geometry.")

@@ -60,7 +60,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
-      - run: sudo apt-get update && sudo apt-get install -y imagemagick poppler-utils
+      - run: sudo apt-get update && sudo apt-get install -y imagemagick poppler-utils librsvg2-bin
       - run: npx playwright install --with-deps chromium
       - run: npx playwright install --with-deps firefox webkit
       - run: docker compose up -d --wait wordpress
@@ -117,6 +117,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
+      - run: sudo apt-get update && sudo apt-get install -y imagemagick poppler-utils librsvg2-bin
       - run: npx playwright install --with-deps chromium
       - run: docker compose up -d --wait wordpress
       - run: docker compose run --rm cli wp core install --url=http://127.0.0.1:18886 --title='Synthetic Labels Test' --admin_user=labels_admin --admin_password=local-test-only-password --admin_email=labels@example.test --skip-email
