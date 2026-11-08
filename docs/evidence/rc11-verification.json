@@ -17,7 +17,11 @@
       "command": "composer test (Composer 2.8.12 container)"
     },
     "php_syntax": {
-      "versions": ["7.4.33", "8.3.35", "8.5.12"],
+      "versions": [
+        "7.4.33",
+        "8.3.35",
+        "8.5.12"
+      ],
       "result": "all distributed/source PHP entry and include files pass php -l"
     },
     "phpcs_wpcs": {
@@ -130,35 +134,165 @@
       "streamed_pdf_pages": 4500,
       "arithmetic_labels": 100000,
       "cancellation_retry": "passed"
+    },
+    "current_stack_runtime_matrix": {
+      "wordpress": "7.1.4",
+      "woocommerce": "11.2.2",
+      "php_cli": {
+        "7.4.33": {
+          "legacy_assertions": 99,
+          "hpos_assertions": 99
+        },
+        "8.3.35": {
+          "legacy_assertions": 99,
+          "hpos_assertions": 99
+        },
+        "8.5.12": {
+          "legacy_assertions": 99,
+          "hpos_assertions": 99
+        }
+      },
+      "web_runtime": {
+        "php_8.3.35": {
+          "chromium": 27,
+          "firefox": 27,
+          "webkit": 27
+        },
+        "php_8.5.12": {
+          "chromium": 27
+        }
+      },
+      "note": "PHP 7.4/8.5 WordPress integration runs used WP-CLI on the synthetic current WP/WooCommerce database; PHP 8.3/8.5 Apache browser runs were executed. Do not treat PHP 7.4 current-stack CLI results as PHP 7.4 web-runtime verification."
+    },
+    "oldest_stack_runtime": {
+      "wordpress": "6.0.3",
+      "woocommerce": "7.0.1",
+      "php": "7.4.33",
+      "order_storage": "legacy",
+      "integration_assertions": 98,
+      "chromium_scenarios": 27,
+      "upgrades": [
+        "RC8",
+        "RC9",
+        "RC10"
+      ]
+    },
+    "current_hpos": {
+      "php_cli_7_4_assertions": 99,
+      "php_cli_8_3_assertions": 99,
+      "php_cli_8_5_assertions": 99
+    },
+    "phpunit_by_php": {
+      "7.4.33": {
+        "tests": 16,
+        "assertions": 23,
+        "result": "pass"
+      },
+      "8.3.35": {
+        "tests": 16,
+        "assertions": 23,
+        "result": "pass"
+      },
+      "8.5.12": {
+        "tests": 16,
+        "assertions": 23,
+        "result": "pass"
+      }
+    },
+    "upgrade_by_php": {
+      "7.4.33": {
+        "fixtures": [
+          "RC8",
+          "RC9",
+          "RC10"
+        ],
+        "result": "exact saved-library equality passed"
+      },
+      "8.3.35": {
+        "fixtures": [
+          "RC8",
+          "RC9",
+          "RC10"
+        ],
+        "result": "exact saved-library equality passed"
+      },
+      "8.5.12": {
+        "fixtures": [
+          "RC8",
+          "RC9",
+          "RC10"
+        ],
+        "result": "exact saved-library equality passed"
+      }
     }
   },
   "audits": {
     "npm_audit": "0 vulnerabilities",
     "composer_audit": "0 security advisories",
     "license_metadata": "90 npm and 36 Composer development packages accepted",
-    "translation_catalog": "regenerated with zero extraction warnings and deterministic comparison"
+    "translation_catalog": "regenerated with zero extraction warnings and deterministic comparison",
+    "full_history_secret_scan": {
+      "tool": "Gitleaks",
+      "version": "8.30.0",
+      "commits_scanned": 8,
+      "result": "no leaks found; 8 commits reachable from exact verified HEAD",
+      "scope": "all commits reachable from local refs; repository is not shallow"
+    },
+    "workflow_validation": {
+      "tool": "actionlint",
+      "version": "1.7.7",
+      "result": "both workflow files lint clean at verified HEAD"
+    },
+    "hosted_ci": "not run; no hosted workflow result claimed",
+    "artifact_secret_scan": {
+      "tool": "Gitleaks",
+      "version": "8.30.0",
+      "artifacts_scanned": [
+        "legacy ZIP extraction",
+        "public ZIP extraction"
+      ],
+      "result": "no leaks found in both exact deterministic ZIP extractions"
+    },
+    "runtime_package_contents": {
+      "legacy_files": 21,
+      "public_files": 21,
+      "runtime_third_party_dependencies": 0,
+      "tests_or_dev_dependencies_bundled": false,
+      "original_RC8_archive_bundled": false,
+      "verified_against_manifests": true
+    }
   },
   "artifacts": {
     "legacy": {
       "archive": "ramsey-labels-independent-1.0.0-rc.11.zip",
-      "sha256": "ecd291bc2b3c5c39598b5a7606f872ae2e48d3184f17c1f35a61338ff96f5962",
+      "sha256": "096666d908b494c4aa7310e3fe9cc348fa59e49521417535a08117c440edb6b2",
       "manifest": "rc11-legacy-manifest.json",
-      "file_count": 21
+      "file_count": 21,
+      "manifest_commit": "aa2c836489543a1489ee7eb0df1f76dec06d66d0"
     },
     "public": {
       "archive": "ramsey-labels-1.0.0-rc.11.zip",
-      "sha256": "3eda1167c8d63e3ad6f98d11dfba0cba9f3c6c9cee76268c8c2b0520c7578666",
+      "sha256": "e48c93667efb23e8705a17b7465253881ee159bb59410a657c17f6155ea0d0df",
       "manifest": "rc11-public-manifest.json",
-      "file_count": 21
+      "file_count": 21,
+      "manifest_commit": "aa2c836489543a1489ee7eb0df1f76dec06d66d0"
     }
   },
   "remaining_gates": [
-    "owner attestation for every inherited RC8 source file, encoder/table/template rights and GPL distribution",
+    "rights-holder attestation for every inherited RC8 file, encoder/table/template rights and GPL distribution; no third-party provenance is inferred",
     "owner approval for author/brand/public slug/support/security contacts/directory assets/publication",
-    "physical thermal/A4 print and feed calibration, exact scanner/WCPOS test",
-    "manual screen-reader, Windows, macOS Safari acceptance",
-    "PHP 7.4/8.5, oldest WordPress/WooCommerce, and HPOS compatibility matrix not rerun for RC11; RC10 matrix remains historical only",
+    "physical thermal/A4 print/feed alignment, exact scanner/WCPOS test, manual screen-reader, Windows and macOS Safari acceptance",
+    "no real production-scale or long-duration load certification",
     "WordPress.org submission acceptance not established; slug is not reserved"
   ],
-  "publication": "No push, merge, tag, WordPress.org submission, public GitHub release, or deployment."
+  "publication": "No push, merge, tag, WordPress.org submission, public GitHub release, or deployment.",
+  "provenance": {
+    "RC8_archive_sha256": "b62a94518299b891cb125590df96f8f4830f4e552a659eb9c7935f54769a01ef",
+    "RC8_file_count": 16,
+    "classification": "all 16 inherited files have uncertain authorship/derivation pending rights-holder evidence; no third-party-licensed runtime code was identified in the RC8 archive; no owner attestation is fabricated",
+    "redistribution": "BLOCKED pending attestation or clean-room replacement",
+    "RC11_additions": "listed separately in docs/provenance/rc8-file-audit.md; third-party competitor source was not used"
+  },
+  "verified_head": "aa2c836489543a1489ee7eb0df1f76dec06d66d0",
+  "generated_utc": "2026-11-08T15:43:00Z"
 }
