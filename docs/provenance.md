@@ -52,10 +52,20 @@ Before any public redistribution the rights holder must confirm, for **each of t
 - [ ] No personal, customer, order, credential or confidential data is present in source, comments, fixtures, history or screenshots.
 - [ ] The attestation is dated, names the rights holder and covered revision/files, and is retained in the project records before submission.
 
-**Current result: every inherited RC8 implementation component remains BLOCKED for public
-redistribution until the applicable owner/source checks above are attested.** This document does
-not sign off on behalf of the owner. The local candidate and its tests can continue to be evaluated,
-but zero Plugin Check findings do not resolve copyright or trademark rights.
+**Owner attestation received (2026-11-08):** The project owner, Michael Ramsey / Ramsey Resin Art,
+states that the RC8 implementation was generated during an earlier ChatGPT-assisted development
+conversation as an independent functional alternative. The commercial plugin's documented behavior
+was used as a feature reference; the intent was to avoid copying its implementation. The owner
+states that all code was made fresh and not copied, and that all rights are cleared.
+
+This statement is recorded as owner-provided provenance context. It is not a signed legal
+instrument, and does not by itself establish the terms under which the AI service generated the
+code or verify the absence of third-party material in generated output. The owner should retain
+the original ChatGPT conversation export and any generation records as supporting evidence.
+
+**Current result: The owner has attested that the implementation was made fresh and not copied.
+The blocking gate is cleared pending the owner's retention of supporting generation records.
+Third-party runtime dependencies remain none; dev/test dependencies are separately inventoried.**
 
 ## Replacement proposal if provenance is unavailable
 

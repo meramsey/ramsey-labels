@@ -7,9 +7,15 @@ component needs documented redistribution rights compatible with the selected pr
 
 ## Source, copyright, license and brand
 
-For every file in [`rc8-file-audit.md`](provenance/rc8-file-audit.md), the owner must identify the
-author/rights holder and confirm one of the following with records: created by the owner/employee
-within assigned work; assigned to the owner; or received under a compatible written license.
+**Owner attestation received (2026-11-08):** Michael Ramsey / Ramsey Resin Art attests that:
+- All RC8 code was generated during an earlier ChatGPT-assisted development conversation.
+- The commercial plugin's documented behavior was used as a feature reference only.
+- No competitor source code, assets, templates, or proprietary implementation details were copied.
+- All code was made fresh and not copied.
+- All rights are cleared for redistribution under GPL-2.0-or-later.
+
+The owner should retain the original ChatGPT conversation export and any generation records as
+supporting evidence. This attestation is recorded but is not a signed legal instrument.
 
 - [ ] Confirm the complete RC8 file inventory, its original archive checksum, and the source history predating that archive.
 - [ ] If retained, supply the earlier ChatGPT-assisted development transcript/export and identify which files/sections came from that conversation, any human edits, model/service terms applicable at the time, and any sources/pasted reference material. This may support provenance, but is not a substitute for verifying third-party rights or a license.
