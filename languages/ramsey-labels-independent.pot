@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-08T03:28:20+00:00\n"
+"POT-Creation-Date: 2026-11-09T03:39:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ramsey-labels-independent\n"
@@ -451,27 +451,27 @@ msgstr ""
 msgid "Rollback unchanged copy"
 msgstr ""
 
-#: includes/NetworkJobs.php:615
+#: includes/NetworkJobs.php:616
 msgid "Show more quarantined jobs for this owner"
 msgstr ""
 
-#: includes/NetworkJobs.php:619
+#: includes/NetworkJobs.php:620
 msgid "No quarantined legacy jobs were found on this page."
 msgstr ""
 
-#: includes/NetworkJobs.php:633
+#: includes/NetworkJobs.php:635
 msgid "Previous jobs for owner"
 msgstr ""
 
-#: includes/NetworkJobs.php:645
+#: includes/NetworkJobs.php:648
 msgid "Next jobs for owner"
 msgstr ""
 
-#: includes/NetworkJobs.php:657
+#: includes/NetworkJobs.php:660
 msgid "Previous owner page"
 msgstr ""
 
-#: includes/NetworkJobs.php:668
+#: includes/NetworkJobs.php:671
 msgid "Next owner page"
 msgstr ""
 

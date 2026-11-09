@@ -34,3 +34,17 @@ Remove the override when upstream adopts a fixed supported range. No audit findi
 Stop just this environment with `docker compose stop`. Do not delete volumes casually: they
 retain migration/test evidence. No remote repository is created or pushed by these scripts.
 See compose.yaml for test-only credentials; they are not deployment secrets.
+
+## Security and release preparation
+
+Run all scanners only against this source tree and the disposable local fixture:
+
+```sh
+bin/release-supply-chain.sh
+python3 bin/check-licenses.py
+docker run --rm -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks:v8.30.0 git /repo --redact --no-banner
+```
+
+See `docs/security-scanning.md` for Semgrep, OSV, Trivy, Checkov, ZAP, CodeQL, and Scorecard
+scope; see `docs/sbom.md` to validate generated CycloneDX/SPDX runtime SBOMs. Do not scan
+production endpoints, customer data, or WCPOS with the supplied workflows.

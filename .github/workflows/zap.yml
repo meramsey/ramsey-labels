@@ -1,0 +1,40 @@
+#checkov:skip=CKV_GHA_7: Manual confirmation prevents non-isolated ZAP targets.
+name: Isolated OWASP ZAP baseline
+on:
+  #checkov:skip=CKV_GHA_7: Manual confirmation input gates a destructive or isolated-only workflow.
+  workflow_dispatch:
+    inputs:
+      confirm_isolated_target:
+        description: 'Type ISOLATED to scan only the disposable local WordPress fixture'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  baseline:
+    if: inputs.confirm_isolated_target == 'ISOLATED'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with: {persist-credentials: false}
+      - run: docker compose up -d --wait wordpress
+      - run: bash bin/setup-test-site.sh
+      - name: Non-destructive baseline scan of isolated fixture only
+        run: |
+          mkdir -p reports
+          set +e
+          docker run --rm --network host -e HTTP_PROXY= -e HTTPS_PROXY= -e NO_PROXY=127.0.0.1,localhost -v "$PWD/reports:/zap/wrk:rw" zaproxy/zap-stable@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af \
+            zap-baseline.py -t http://127.0.0.1:18885 -J zap-baseline.json -r zap-baseline.html -m 3
+          status=$?
+          set -e
+          echo "ZAP baseline exit status: $status (2 means warnings were reported; reports are uploaded for triage)."
+          test "$status" -eq 0 -o "$status" -eq 2
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        if: always()
+        with:
+          name: zap-isolated-${{ github.sha }}
+          path: reports/
+          retention-days: 30
+      - if: always()
+        run: docker compose stop || true

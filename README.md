@@ -1,167 +1,136 @@
 # Ramsey Labels for WooCommerce
 
-Free WooCommerce label design, SKU barcodes, complete segmented batch
-previews, thermal/sheet browser printing and lossless raster PDF export.
+**Free, open-source WooCommerce barcode, QR, and product label printing.** Design labels visually,
+search and bulk-select products, print thermal or sheet labels, and export PDF, PNG, or SVG—without
+license keys, premium feature gates, telemetry, or artificial total-print quotas.
 
-**Engineering release candidate RC11: not approved for publication or production.**
-See [release readiness](docs/release-readiness.md) for actual results and blockers.
-No code has been pushed or submitted to WordPress.org.
-Public redistribution remains blocked until the rights holder verifies the provenance and
-compatible license for inherited RC8 components; an owner preference cannot grant rights to
-third-party code.
+> **Release candidate:** RC11 is software-verified but is not a stable public release. Physical
+> printer/scanner/WCPOS acceptance and owner publication approval remain pending. Read
+> [release readiness](docs/release-readiness.md) before production use.
 
-## What it does
+![Ramsey Labels visual designer with synthetic QR product label](docs/assets/gallery/01-main-interface.png)
 
-- Product/variation name and SKU search, category filtering, paginated results and thumbnails.
-- Product row links and Products > All Products bulk-action queue handoffs.
-- Queue thumbnails, names, SKUs, prices, selection and quantities; variation image or parent-image fallback, with a clear missing-image placeholder.
-- Automatic, vertically stacked previews of every page in each bounded segment, with Previous/Next segment navigation; streamed PDF includes every selected label.
-- Thermal roll and sheet geometry, skipped slots, offsets and saved print profiles.
-- Visual text, barcode, image and shape elements; optional inert HTML layouts.
-- QR-left / SKU-below / price-and-name-right 50.8 × 25.4 mm card.
-- CODE128, CODE39, EAN-13, EAN-8, UPC-A, UPC-E, QR and ECC200 Data Matrix.
-- GS1-128 common-AI validation (including GTIN check digits, dates and variable-field separators); unsupported GS1 AIs are rejected, not guessed.
-- JSON library import/export, CSV import/export, order/item and alternate record adapters.
-- Bounded product/category/API pages, queue pagination, arithmetic label segmentation and incremental PDF streaming.
-- Per-user saved jobs, WordPress personal-data export/erasure callbacks, and a PHP/JavaScript developer API.
-- A separately built `ramsey-labels` directory candidate with a dual-active runtime guard.
-- Full-label SVG (vector text/shapes/barcodes with embedded raster images), independently parsed/rasterized and decoded.
-- Six manufacturer-source A4 sheet presets plus generic, clearly unbranded N-up starters (12/14/16/21/24/40/44/56/65/120/189/230/324); print calibration SVG.
-- Stable product-name/SKU sorting and original selection-order restoration.
-- Explicit multisite legacy-job quarantine and network-admin-only dry-run/assign/rollback workflow.
-- GS1-128 support is limited to the AIs in [the support matrix](docs/gs1-support-matrix.md); other GS1 families are explicitly unsupported.
-- Saved RC8/RC9 multisite jobs remain quarantined until a network administrator confirms an owning site; no assignment is automatic.
-- Read-only legacy configuration discovery with explicit migration preview and backup/restore.
+## Install
 
-No runtime npm/Composer libraries, fonts, external scripts, telemetry or barcode services.
-No commercial competitor code or assets were used as implementation material in this engineering
-pass. The origin of inherited RC8 code is separately audited and remains unverified.
+1. Use an isolated staging WooCommerce site and back up existing label settings.
+2. Install the appropriate [release candidate artifact](docs/github-release-draft.md):
+   - `ramsey-labels-independent-*.zip` for in-place RC8/RC9/RC10 upgrades.
+   - `ramsey-labels-*.zip` only for the separately tested public-directory transition.
+3. **Never activate both ZIP identities at once.**
+4. Open **WooCommerce → Ramsey Labels**, choose a profile, add products, preview, then test-print at
+   actual size before a production batch.
 
-![Synthetic default 50.8 × 25.4 mm QR label showing Twinkle Light Earrings, $12.00 and RRA-726474](docs/assets/qr-label.png)
+## Highlights
 
-*The QR payload was independently decoded from the generated PDF. This is software-rendered artwork, not a hardware print.*
+- **Visual label designer** — text, product images, barcode elements, lines, rectangles, ellipses,
+  alignment, rotation, conditions, saved profiles, and reusable templates.
+- **Product workflows** — name/SKU search, category filtering, WooCommerce Products bulk actions,
+  queue thumbnails, quantities, keyboard reordering, and stable name/SKU sorting.
+- **Real WooCommerce thumbnails** — simple-product images, variation-specific images, parent-image
+  fallback, and a clear missing-image placeholder are retained from search through print queue.
+- **Label media** — default 2 × 1 inch thermal QR-left/SKU-below card; A4, Letter, P4, generic
+  sheets, verified A4 stock presets, offsets, start slots, and printable calibration SVGs.
+- **Barcode formats** — CODE128, CODE39, EAN-13, EAN-8, UPC-A, UPC-E, QR Code, and Data Matrix
+  ECC200. GS1-128 is limited to the documented [supported AI subset](docs/gs1-support-matrix.md).
+- **Export** — complete multi-page PDF, label PNG, barcode-only SVG, and full-label SVG with vector
+  text/shapes/barcodes plus bounded embedded raster product images.
+- **WooCommerce data** — products, variations, order items, orders, coupons, users, posts, supported
+  custom fields/attributes, CSV queue import/export, and JSON library import/export.
+- **Large jobs** — paged lookups, bounded rendering segments, streamed PDF generation, cancellation,
+  and no artificial total-print quota.
+- **Privacy and security** — per-user saved jobs, capability checks, privacy export/erasure hooks,
+  local attachment handling, resource budgets, no telemetry, and no external barcode service.
 
-![Synthetic visual designer and accessible element controls](docs/assets/synthetic-designer.png)
+## Feature gallery
 
-![Synthetic product-search result and queued label with thumbnail, SKU and price](docs/assets/synthetic-product-search.png)
+| | | |
+|---|---|---|
+| [![Visual designer](docs/assets/gallery/02-visual-designer.png)](docs/screenshots.md) | [![SKU search](docs/assets/gallery/05-product-sku-search.png)](docs/screenshots.md) | [![Queue images](docs/assets/gallery/09-print-queue-images.png)](docs/screenshots.md) |
+| [![Thermal preview](docs/assets/gallery/12-thermal-two-by-one-layout.png)](docs/screenshots.md) | [![A4 sheet](docs/assets/gallery/13-a4-sheet-layout.png)](docs/screenshots.md) | [![Full-label SVG](docs/assets/gallery/17-full-label-svg-export.png)](docs/screenshots.md) |
 
-![Synthetic vertically stacked batch preview and full-batch PDF controls](docs/assets/synthetic-batch-preview.png)
-
-![Rendered WooCommerce variation thumbnail queue: own image, parent fallback, and missing-image placeholder](docs/assets/synthetic-thumbnail-queue.png)
-
-## Requirements and installation
-
-Use an isolated staging installation with WooCommerce and a modern browser.
-[Compatibility](docs/compatibility.md) distinguishes tested combinations from inherited,
-unverified environments. The tested floor is WordPress 6.0.3 / PHP 7.4.32 (Apache) / WooCommerce 7.0.1.
-
-Build the in-place RC11 ZIP with `python3 bin/build.py`, then upload via Plugins > Add New.
-The package deliberately retains `ramsey-labels-independent/ramsey-labels-independent.php`
-for RC8/RC9 in-place update safety. The separate candidate directory ZIP is built with
-`python3 bin/build-public.py`. Follow [migration](docs/migration.md); do not leave both
-runtime copies active. The slug was unlisted when checked but is not reserved or approved.
+See the [complete 24-screen gallery](docs/screenshots.md), including bulk selection, category
+filtering, variation thumbnails, presets, calibration, exports, custom fields, orders, and keyboard
+controls. All screenshots use synthetic data in an isolated WooCommerce fixture.
 
 ## Quick start
 
-1. Open **WooCommerce > Ramsey Labels** and choose the thermal 2 × 1-inch profile.
-2. Use Design to choose a template, edit elements and dimensions, then **Save settings**.
-3. Under **Products & orders**, search by name/SKU and press Enter, or choose a category
-   and click Search. Previous/Next paginate; select results and **Add selected to job**.
-4. Set quantities and open **Print preview**. Every page in the active segment renders automatically; navigate segments to inspect the complete job.
-5. Choose **Export full PDF** for the complete selected batch, **Export PDF** for the active segment, or print the active segment at scale 100%, no margins, headers/footers off.
+1. Choose a thermal or sheet profile under **Design**.
+2. Search by product name or exact SKU under **Products & orders**, or select a category.
+3. Select products, use a WooCommerce bulk action, or enter permitted direct IDs.
+4. Check thumbnails, names, SKUs, prices, quantities, and sort order in the print queue.
+5. Open **Print preview**. For a large job, navigate every bounded segment.
+6. Print the active segment at 100% scale with margins, headers, and footers disabled, or use
+   **Export full PDF** for every selected label.
 
-From Products > All Products select rows, choose **Ramsey: print product labels** and Apply.
-Only selected IDs are handed off in a short-lived, current-user-scoped token.
+The default QR card encodes the exact SKU (falling back to product ID), not a product permalink.
+Software decoders verify the payload; scanner setup and WCPOS lookup still require owner acceptance.
 
-## Designer and saved libraries
+## Labels, sheets, and exports
 
-Select an element to edit it, or Tab to an element and press Enter to access its numeric
-position fields. Dragging is optional. Text expressions use `{{name}}`, `{{price}}`,
-`{{sku|id}}` (fallback), or explicit custom metadata bindings. Save as template for reuse.
-Duplicate profiles for different media. Export the JSON library before upgrading.
-Import replaces editor contents only; Save settings persists validated configuration.
-CSS with URL-bearing functions, escapes or at-rules is rejected, not executed.
+- Thermal profile: 50.8 × 25.4 mm / 2 × 1 inch. Confirm driver media size, actual-size scaling, and
+  feed alignment with a plain-paper test first.
+- Source-backed Avery A4 presets: L7159, L7160, L7162, L7163, L7164, and L7651. Other requested
+  label counts are **generic grids**, not manufacturer compatibility claims. See
+  [sheet presets](docs/sheet-presets.md).
+- Calibration SVG marks labels, centers, margins, pitch, offsets, and skipped positions. It verifies
+  software geometry; it does not certify a printer.
+- PDF is lossless raster at profile DPI. Full-label SVG is mixed vector/raster when product imagery
+  is present and has no external resource dependencies.
 
-## QR, SKU and WCPOS
+## Compatibility and limits
 
-The default card encodes `RRA-726474` exactly, not a product URL. Empty SKU falls back
-to product ID. CODE128 preserves ASCII alphanumeric SKUs; CODE39 requires uppercase.
-Retail EAN/UPC formats accept digits only and validate checksums. Do not choose retail
-formats for hyphenated SKUs. Scanner output settings can expand UPC-E or prefix UPC-A;
-configure your scanner/POS lookup accordingly. Software round-trip checks are not live
-WCPOS integration certification. Existing SKU-generation hooks are not modified.
+The tested floor is WordPress 6.0.3 / WooCommerce 7.0.1 / PHP 7.4.33. Current CI also tests
+WordPress 7.1.4 / WooCommerce 11.2.2 with legacy and HPOS storage. See
+[compatibility](docs/compatibility.md) for exact scope.
 
-## Printer setup and PDF
+Resource budgets protect browser/server stability: 2.2 MB library documents, 8 MB live browser
+queue, 2 MB saved jobs per user, 4,096 elements/design, 16 megapixels/label, and 2,000 labels per
+in-memory render segment. These are safety bounds, not paid-product restrictions; complete batches
+use pagination and segments.
 
-Set the driver stock size to 50.8 × 25.4 mm for the default roll profile. Disable fit-to-page,
-choose actual size, and calibrate gap sensing/feed using your printer's instructions.
-Sheet profiles have independent margins, gaps, rows, columns, flow and X/Y calibration.
-Test one sheet/label before a large batch. PDF labels are lossless RGB rasters at profile DPI.
-Full-label SVG keeps text, shapes and barcodes vector and embeds product images as bounded raster
-PNG; it does not embed external resources. The separate barcode-only SVG remains available.
-Physical printer and feed validation is not claimed.
+## Security, privacy, and support
 
-## Troubleshooting
+- No telemetry, license keys, remote fonts, remote scripts, or barcode SaaS.
+- External label images need session consent; local attachment reads are permission checked.
+- Saved jobs can contain customer/order data and are private to the WordPress account on that site.
+- See [security policy](SECURITY.md), [security scanning](docs/security-scanning.md), and
+  [security audit](docs/security-audit.md). Do not include credentials, customer data, exports, or
+  private URLs in public issues.
 
-- No products: activate WooCommerce, check staff permissions and refine category/search.
-- Search works via CLI but not browser: run the plain/permalink browser regression tests;
-  check the browser console and REST response, without sharing private order payloads.
-- Barcode too dense: increase box width/DPI or shorten the payload. QR quiet zones are required.
-- Text overflow: enlarge the element or reduce its minimum font size; rendering errors block printing.
-- Unexpected pages: review quantities, selected rows, sheet capacity and skipped slots.
-- Image failure: use a local WordPress media attachment. External image requests need consent
-  and CORS; credentials in image URLs are rejected.
-- Conflicting settings save: another tab updated the revision. Export edits before reloading.
-- Very large jobs are partitioned automatically by bounded decoded-image, encoded-image and page budgets; use segment navigation, or stream all segments into one complete PDF.
+Hardware, scanner, WCPOS, macOS Safari, Windows, and hands-on assistive-technology certification
+are not claimed. Use the [owner acceptance checklist](docs/owner-acceptance.md).
 
-## Security and privacy
+## Developers
 
-Administrative REST routes require capabilities; WordPress cookie auth supplies REST nonce
-verification. Order adapters use WooCommerce CRUD. Jobs can contain customer addresses;
-restrict staff access and protect exported files and backups. Uninstall preserves data unless
-the explicit purge constant is enabled. See [SECURITY.md](SECURITY.md),
-[audit](docs/security-audit.md), and [privacy details](docs/security.md).
+The documented PHP hooks include `rli_field_value` and `rli_records`; the browser API is exposed at
+`window.RamseyLabels`. Read [API documentation](docs/api.md), preserve persisted keys and public
+hooks, and validate all external values as bounded scalar data.
 
-## Development and tests
+## Development and testing
 
-Node/npm, Python 3, Docker Compose and Composer/PHP (or the documented containers) are needed.
-No production connection is required or permitted for these tests.
-
-```sh
-npm ci
-composer install
-npm test
+```bash
+npm ci --ignore-scripts
 npm run lint
-composer test
-composer analyse
-composer lint
-docker compose up -d wordpress
-bash bin/setup-test-site.sh
+npm test
 bash bin/integration.sh
 npm run test:e2e
-python3 bin/build.py
+bin/release-supply-chain.sh
 ```
 
-See [development](docs/development.md), [test coverage and limitations](docs/testing.md),
-[architecture](docs/architecture.md), and [release process](docs/release-process.md).
-CI is designed to fail outstanding standards/security gates, not conceal them.
+See [development](docs/development.md), [testing](docs/testing.md),
+[security scanning](docs/security-scanning.md), and [release process](docs/release-process.md).
+All test sites must be isolated and synthetic-only.
 
-## Contributing, support and license
+## Contributing
 
-Use the repository issue templates for reproducible, redacted bug reports once the owner
-approves publication. See [CONTRIBUTING.md](CONTRIBUTING.md) and
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). No commercial support or response SLA is promised.
-For vulnerabilities, follow SECURITY.md; do not post customer data or exploit details publicly.
+Focused, tested contributions are welcome after public contribution support is approved. Read
+[CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and the
+[provenance requirements](docs/provenance.md). Do not copy commercial code/assets or add unknown-
+license dependencies.
 
-GPL-2.0-or-later, author credit inherited from RC8: **Ramsey Resin Art, owner confirmation pending**.
-No proprietary artwork or commercial package was consulted or copied in this engineering pass.
-Original-source authorship still needs an owner attestation; inspection alone cannot prove provenance.
-Independent barcode decoders are development-only dependencies and are not shipped.
-See [license/provenance inventory](docs/provenance.md) and LICENSE.
+## License and provenance
 
-### Safe sample visuals
-
-Browser tests generate `build/synthetic-preview.png` and `build/labels-e2e.pdf` using only
-Twinkle Light Earrings / RRA-726474 / $12.00 and a generated purple image.
-These local evidence files are not production assets. Directory screenshot/banner/icon work
-is tracked in [submission checklist](docs/wordpress-org-submission.md).
+Ramsey Labels is GPL-2.0-or-later. The owner has attested that the inherited implementation was
+made fresh without copying; retain the documented supporting records and read the
+[file-level provenance audit](docs/provenance/rc8-file-audit.md). This repository is not a
+commercial-plugin API or template clone.

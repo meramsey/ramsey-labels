@@ -603,6 +603,7 @@ final class NetworkJobs {
 			echo '</td></tr>';
 			if ( ! empty( $row['has_more_jobs'] ) ) {
 				$next_offset = $owner_filter ? $job_offset + 100 : 50;
+				// nosemgrep: php.lang.security.injection.echoed-request.echoed-request -- URL is built from bounded numeric IDs and escaped by esc_url().
 				echo '<tr><td colspan="6"><a class="button" href="' . esc_url(
 					add_query_arg(
 						array(
@@ -621,6 +622,7 @@ final class NetworkJobs {
 		echo '</tbody></table>';
 		if ( $owner_filter ) {
 			if ( $job_offset > 0 ) {
+				// nosemgrep: php.lang.security.injection.echoed-request.echoed-request -- URL is built from bounded pagination values and escaped by esc_url().
 				echo '<a class="button" href="' . esc_url(
 					add_query_arg(
 						array(
@@ -633,6 +635,7 @@ final class NetworkJobs {
 				) . '">' . esc_html__( 'Previous jobs for owner', 'ramsey-labels-independent' ) . '</a> ';
 			}
 			if ( ! empty( $inventory['has_more_jobs'] ) ) {
+				// nosemgrep: php.lang.security.injection.echoed-request.echoed-request -- URL is built from bounded pagination values and escaped by esc_url().
 				echo '<a class="button" href="' . esc_url(
 					add_query_arg(
 						array(

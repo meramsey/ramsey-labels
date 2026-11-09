@@ -1,16 +1,24 @@
 # Security policy
 
-This release candidate is not approved for production. Only the current engineering candidate
-is being evaluated; there is no promised historical security support or response SLA yet.
+Ramsey Labels is currently a release candidate. Do not post vulnerabilities, credentials,
+order/customer exports, media URLs, or private site details in public issues.
 
-Do not post vulnerabilities, credentials, order/customer exports or private site URLs in public issues.
-After publication, use GitHub's private **Report a vulnerability** facility if enabled by the owner.
-If it is unavailable, request a private reporting channel without including exploit details.
-An owner-confirmed contact and monitored reporting process are required before release.
+## Reporting
 
-Include affected version, capability/role required, synthetic reproduction and impact.
-Maintainers will reproduce locally, coordinate a patch and advisory, and agree disclosure timing.
-No acknowledgement deadlines are promised until the owner establishes an operational policy.
+After the owner enables GitHub private vulnerability reporting, use the repository’s **Report a
+vulnerability** flow. Until then, request a private reporting channel without sending exploit
+payloads or customer data through public GitHub discussions.
 
-Read docs/security-audit.md for reviewed controls and outstanding risks. Do not interpret
-passing automated checks as proof that every vulnerability has been excluded.
+Include the affected version, WordPress/WooCommerce/PHP versions, required role/capability,
+synthetic-only reproduction, impact, and whether private customer/order data is involved.
+
+## Response and disclosure
+
+The owner must approve an operational security contact and response expectations before public
+release. Maintainers will reproduce reports in an isolated synthetic environment, prepare a patch,
+coordinate an advisory, and agree disclosure timing. No acknowledgement or remediation SLA is
+promised until the owner establishes one.
+
+Automated security scans, SBOMs, Plugin Check, and tests support review but do not prove absence of
+vulnerabilities. See [security scanning](docs/security-scanning.md),
+[security triage](docs/security-triage.md), and [security audit](docs/security-audit.md).

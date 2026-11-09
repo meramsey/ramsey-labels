@@ -1,29 +1,50 @@
-# Release process — manual approval required
+# Release process — explicit owner approval required
 
-1. Work on engineering branches, never rewrite history or push protected branches.
-2. Resolve every gate in release-readiness.md and wordpress-org-submission.md.
-3. Run unit, integration, browser, static, standards, Plugin Check, audit and secret/license checks.
-4. Verify the oldest supported combination and current stable; test HPOS and legacy storage.
-5. Test file replacement from RC8 with saved custom templates and print profiles.
-6. Build `python3 bin/build.py` twice; byte-for-byte hashes must match. The archive uses a fixed
-   timestamp, sorted manifest, standard permissions and a single legacy top-level folder.
-7. Install the built ZIP in a fresh isolated WordPress volume; activate, check the installed
-   package (not developer checkout), and repeat critical browser/regression tests.
-8. Review archive contents, metadata and checksum. No .git, RC8 archive, tests, dependencies,
-   environment files, logs, screenshots, usernames or local paths may be included.
-9. Record exact commit, tool versions, test evidence, artifact hash and unresolved manual acceptance.
-10. Obtain explicit owner approval for branding, licensing, slug/migration, support contact,
-    publication, push/tag/release and directory submission. These are separate approvals.
+This process prepares verifiable artifacts; it does not grant authority to tag, publish, create a
+GitHub Release, or submit to WordPress.org.
 
-The first recoverable baseline commit inherited the workstation's auto-configured author
-name/email. Review that Git metadata for publication privacy. Preserve it as source history;
-do not rewrite the checkpoint to hide the prior identity.
+## Before a release
 
-The initial preservation commit used the workstation's automatically configured author
-identity. Review that commit metadata for privacy before any public push. This engineering
-pass does not rewrite the recoverable baseline history to conceal it.
+1. Work on an engineering branch and verify author/committer identity with `git var`.
+2. Pass hosted quality, security, browser, oldest-supported, current storage, package, migration,
+   and identity-history checks for the exact candidate commit.
+3. Review provenance, license inventory, SBOMs, vulnerability triage, WordPress.org metadata, and
+   owner hardware acceptance.
+4. Confirm the legacy and public-directory candidates remain separate packages and are not installed
+   together.
+5. Obtain explicit owner approval for version, tag, publication, GitHub release assets, contacts,
+   screenshots, WordPress.org listing, and SVN deployment.
 
-CI only uploads a candidate artifact after all dependency jobs pass. The manual workflow has
-no write token or deployment step; it does not create a GitHub Release or submit to WordPress.org.
-Do not call an uploaded Actions artifact a published release. Release assets/checksums must
-match the reviewed commit; don't add production configuration to the source tree.
+## Build and verify
+
+```bash
+bin/release-supply-chain.sh
+sha256sum -c build/release/SHA256SUMS
+jq -e '.bomFormat == "CycloneDX"' build/release/*.cdx.json
+jq -e '.spdxVersion' build/release/*.spdx.json
+```
+
+The process builds both fixed-timestamp allowlisted ZIPs, verifies their manifests, generates
+CycloneDX/SPDX runtime SBOMs from ZIP extraction, records file hashes/provenance, and scans release
+artifacts. Development dependencies are not runtime dependencies and are not shipped in either ZIP.
+
+## Approved publication only
+
+The manual `release.yml` workflow is environment-gated and prepares artifacts/provenance only when
+its approval input and GitHub Environment approval are supplied. A separate owner-approved action
+must create an annotated/signed tag and GitHub Release. Verify downloaded asset hashes and
+attestation/provenance before announcing a release.
+
+## Rollback
+
+Do not delete a published release to roll back a bad plugin build. Publish a corrected higher version
+or explicitly mark the bad release as pre-release/withdrawn after owner review. For a site rollback,
+deactivate the candidate, restore the backed-up settings if needed, and reactivate the previously
+approved package. Never activate legacy and public-directory copies together.
+
+## WordPress.org
+
+WordPress.org SVN deployment is separately manual and environment-gated. It requires an accepted
+listing, official slug, approved credentials, approved screenshots/assets, a matching release tag,
+and owner approval. GitHub remains canonical development source. The workflow must never print SVN
+credentials or deploy ordinary PR commits.
