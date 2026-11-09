@@ -10,9 +10,9 @@ jobs:
   javascript:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v4
         with: {persist-credentials: false, fetch-depth: 0}
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v4
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
       - run: npm run lint
@@ -32,7 +32,7 @@ jobs:
   php:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with: {persist-credentials: false}
       - run: docker run --rm -v "$PWD:/app" -w /app composer:2.8.12 install --no-interaction --prefer-dist
       - name: Syntax, PHPUnit and static analysis
@@ -56,9 +56,9 @@ jobs:
       WP_IMAGE: ${{ matrix.wordpress-image }}
       CLI_IMAGE: ${{ matrix.cli-image }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with: {persist-credentials: false}
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
       - run: sudo apt-get update && sudo apt-get install -y imagemagick poppler-utils librsvg2-bin
@@ -113,9 +113,9 @@ jobs:
       CLI_IMAGE: wordpress:cli-2.7.1-php7.4
       TEST_PORT: '18886'
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with: {persist-credentials: false}
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
       - run: sudo apt-get update && sudo apt-get install -y imagemagick poppler-utils librsvg2-bin
@@ -135,9 +135,9 @@ jobs:
   security-license:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with: {fetch-depth: 0, persist-credentials: false}
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with: {node-version: '22', cache: npm}
       - run: npm ci --ignore-scripts
       - run: python3 bin/check-licenses.py

@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with: {persist-credentials: false, fetch-depth: 0}
       - name: Semgrep PHP and JavaScript security scan
         run: |
@@ -51,7 +51,7 @@ jobs:
             git /repo --redact --no-banner --report-format sarif --report-path /reports/gitleaks.sarif
       - name: Upload scanner reports
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         with:
           name: security-reports-${{ github.sha }}
           path: reports/
