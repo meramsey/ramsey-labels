@@ -11,6 +11,7 @@ not an approval to publish.
 | Topics | 20/20: WooCommerce/WordPress plugins, barcode/label, thermal, QR, PDF/SVG, formats, POS, free/open-source | GitHub topic limit is already occupied; no metadata change required. WordPress.org Plugin Check permits at most five readme tags, so readme.txt uses its five strongest user-search terms. |
 | Website | Empty | Do not invent a public website; add only after owner approves a maintained URL |
 | Default branch | `main` | Verified after hosted CI passed |
+| Branch protection | Not enabled (GitHub API reports `Branch not protected`) | Owner approval is required before changing repository policy. Before merge/release, require pull requests, at least one approval, no force pushes/deletions, and the Quality, CodeQL, and Security scans checks. |
 | Releases/tags | None | Correct: RC candidate assets are not a public release |
 | Open PRs | None | Historical Dependabot PRs are closed; their branches were not deliberately deleted |
 
