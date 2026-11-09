@@ -1,0 +1,55 @@
+name: Approved release preparation
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Approved release version (must match plugin metadata)'
+        required: true
+        type: string
+      approval:
+        description: 'Type PREPARE to generate gated release artifacts; publication remains disabled'
+        required: true
+        type: string
+permissions:
+  contents: read
+  attestations: write
+  id-token: write
+  actions: read
+jobs:
+  prepare:
+    if: inputs.approval == 'PREPARE'
+    environment: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false, ref: "${{ github.ref }}" }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts
+      - run: sudo apt-get update && sudo apt-get install -y jq
+      - run: test "$(node -p "require('./package.json').version")" = "${{ inputs.version }}"
+      - run: bin/release-supply-chain.sh
+      - name: Scan exact release artifacts
+        run: |
+          mkdir -p build/release/reports
+          docker run --rm -v "$PWD/build:/build:ro" -v "$PWD/build/release/reports:/reports" aquasec/trivy@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb \
+            fs --format json --output /reports/trivy-release.json /build
+      - uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be
+        with:
+          subject-path: |
+            build/ramsey-labels-independent-*.zip
+            build/public/ramsey-labels-*.zip
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: approved-release-preparation-${{ github.sha }}
+          path: |
+            build/release/
+            build/ramsey-labels-independent-*.zip
+            build/ramsey-labels-independent-*.zip.sha256
+            build/artifact-manifest.json
+            build/public/ramsey-labels-*.zip
+            build/public/ramsey-labels-*.zip.sha256
+            build/public/artifact-manifest.json
+          retention-days: 90
+          if-no-files-found: error

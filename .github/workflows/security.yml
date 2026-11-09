@@ -1,0 +1,59 @@
+name: Security scans
+on:
+  pull_request:
+  push:
+    branches: [main, engineering/**]
+  schedule:
+    - cron: '23 4 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  sast-and-supply-chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false, fetch-depth: 0}
+      - name: Semgrep PHP and JavaScript security scan
+        run: |
+          mkdir -p reports
+          docker run --rm -v "$PWD:/src:ro" -v "$PWD/reports:/reports" returntocorp/semgrep@sha256:cc1b68266f267878b39739373ea9985b9a78e5d64497dd875c8de100b22695ed \
+            semgrep scan --config p/php --config p/javascript --sarif --output /reports/semgrep.sarif /src
+      - name: Download pinned OSV-Scanner
+        run: |
+          curl -fsSLO https://github.com/google/osv-scanner/releases/download/v2.7.0/osv-scanner_linux_amd64
+          echo '160c6253e2922e9e0a6a9771c5c4c40a4b3c6090b34a3cdd5e80c96cc2e4218b  osv-scanner_linux_amd64' | sha256sum -c -
+          install -m 0755 osv-scanner_linux_amd64 /usr/local/bin/osv-scanner
+      - name: OSV lockfile scan
+        run: |
+          mkdir -p reports
+          osv-scanner scan source --lockfile=package-lock.json --lockfile=composer.lock --format=json > reports/osv.json
+      - name: Trivy filesystem and configuration scan
+        run: |
+          mkdir -p reports
+          docker run --rm -v "$PWD:/src:ro" -v "$PWD/reports:/reports" aquasec/trivy@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb \
+            fs --scanners vuln,secret,misconfig --format json --output /reports/trivy.json /src
+      - name: Checkov workflow and Compose scan
+        run: |
+          mkdir -p reports
+          docker run --rm -v "$PWD:/src:ro" -v "$PWD/reports:/reports" bridgecrew/checkov@sha256:bfe9d70bb7f044aba49bd99675813445f106dee6072da583f51008cb667f3a63 \
+            -d /src --framework github_actions,github_configuration --skip-path /src/vendor --skip-path /src/node_modules --skip-path /src/build --output json > reports/checkov.json
+      - name: Scan complete Git history for secrets
+        run: |
+          mkdir -p reports
+          docker run --rm -v "$PWD:/repo:ro" -v "$PWD/reports:/reports" ghcr.io/gitleaks/gitleaks@sha256:691af3c7c5a48b16f187ce3446d5f194838f91238f27270ed36eef6359a574d9 \
+            git /repo --redact --no-banner --report-format sarif --report-path /reports/gitleaks.sarif
+      - name: Upload scanner reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: security-reports-${{ github.sha }}
+          path: reports/
+          retention-days: 30
+          if-no-files-found: warn

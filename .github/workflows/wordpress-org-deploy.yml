@@ -1,0 +1,55 @@
+#checkov:skip=CKV_GHA_7: Manual tag and confirmation are required for separately approved SVN deployment.
+name: Approved WordPress.org SVN deployment
+on:
+  #checkov:skip=CKV_GHA_7: Manual confirmation input gates a destructive or isolated-only workflow.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Owner-approved existing annotated or signed release tag only'
+        required: true
+        type: string
+      approval:
+        description: 'Type DEPLOY-WORDPRESS-ORG after listing acceptance and owner approval'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  deploy:
+    if: inputs.approval == 'DEPLOY-WORDPRESS-ORG'
+    environment: wordpress-org
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false, ref: "${{ inputs.tag }}", fetch-depth: 0}
+      - name: Confirm tag, accepted slug, and approved secrets
+        env:
+          SVN_USER: ${{ secrets.WORDPRESS_ORG_SVN_USERNAME }}
+          SVN_PASS: ${{ secrets.WORDPRESS_ORG_SVN_PASSWORD }}
+          SVN_SLUG: ${{ vars.WORDPRESS_ORG_SLUG }}
+        run: |
+          test "$(git cat-file -t "${{ inputs.tag }}")" = tag
+          test -n "$SVN_SLUG"
+          test -n "$SVN_USER"
+          test -n "$SVN_PASS"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts
+      - run: python3 bin/build-public.py
+      - name: Prepare SVN trunk, tag, and approved directory assets
+        env:
+          SVN_USER: ${{ secrets.WORDPRESS_ORG_SVN_USERNAME }}
+          SVN_PASS: ${{ secrets.WORDPRESS_ORG_SVN_PASSWORD }}
+          SVN_SLUG: ${{ vars.WORDPRESS_ORG_SLUG }}
+        run: |
+          svn checkout --non-interactive --no-auth-cache --username "$SVN_USER" --password "$SVN_PASS" "https://plugins.svn.wordpress.org/$SVN_SLUG" svn
+          rm -rf svn/trunk/*
+          unzip -q "build/public/ramsey-labels-$(node -p "require('./package.json').version").zip" -d /tmp/ramsey-public
+          cp -a /tmp/ramsey-public/ramsey-labels/. svn/trunk/
+          mkdir -p svn/assets
+          cp docs/wordpress-org-assets/screenshot-*.png svn/assets/
+          svn add --force svn/trunk svn/assets
+          while IFS= read -r stale; do svn delete --force "$stale"; done < <(svn status svn | awk '/^!/ {print $2}')
+          svn copy svn/trunk "svn/tags/${{ inputs.tag }}"
+          svn commit --non-interactive --no-auth-cache --username "$SVN_USER" --password "$SVN_PASS" -m "Deploy $SVN_SLUG ${{ inputs.tag }} from approved GitHub tag"

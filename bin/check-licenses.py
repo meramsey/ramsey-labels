@@ -26,4 +26,4 @@ for package in composer['packages']+composer['packages-dev']:
         if license not in approved: findings.append(f"{package['name']}: {license}")
 if findings: raise SystemExit('\n'.join(findings))
 print(f"PASS: license metadata allowlist for {len(node['packages'])-1} npm and {len(composer['packages'])+len(composer['packages-dev'])} Composer development packages")
-print('Runtime dependencies: none; RC8 provenance still requires owner attestation (docs/provenance.md).')
+print('Runtime dependencies: none; RC8 owner attestation and file-level provenance are documented in docs/provenance.md.')
