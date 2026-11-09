@@ -41,3 +41,8 @@ History rewrites produce new commit IDs. Existing cryptographic signatures canno
 attribution rewrite unchanged; no owner-authored commit in the rewritten lineage had a valid
 signature. The recovery bundle is stored outside this repository and is not included in runtime
 artifacts.
+
+GitHub creates a synthetic pull-request merge commit whose display name can differ from the approved
+maintainer name. CI validates `github.event.pull_request.head.sha` for pull requests and `github.sha`
+for pushes, so it checks the submitted branch history rather than incorrectly rejecting GitHub's
+transient merge test object.
