@@ -8,7 +8,7 @@ not an approval to publish.
 | Item | Current state | Assessment |
 |---|---|---|
 | Description | Free, open-source WooCommerce barcode & QR label printer; visual designer, bulk printing, thermal/A4, PDF/SVG; no paid tiers | Accurate and discoverable |
-| Topics | 20/20: WooCommerce/WordPress plugins, barcode/label, thermal, QR, PDF/SVG, formats, POS, free/open-source | GitHub topic limit is already occupied; no metadata change required |
+| Topics | 20/20: WooCommerce/WordPress plugins, barcode/label, thermal, QR, PDF/SVG, formats, POS, free/open-source | GitHub topic limit is already occupied; no metadata change required. WordPress.org Plugin Check permits at most five readme tags, so readme.txt uses its five strongest user-search terms. |
 | Website | Empty | Do not invent a public website; add only after owner approves a maintained URL |
 | Default branch | `main` | Verified after hosted CI passed |
 | Releases/tags | None | Correct: RC candidate assets are not a public release |

@@ -1,6 +1,6 @@
 === Ramsey Labels for WooCommerce ===
 Contributors: meramsey
-Tags: woocommerce, barcode, product labels, qr code, label printing, thermal printer, code128, pdf
+Tags: woocommerce, barcode, product labels, qr code, label printing
 Requires at least: 6.0.3
 Tested up to: 7.1
 Requires PHP: 7.4.32

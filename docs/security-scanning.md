@@ -11,7 +11,7 @@ never scan targets.
 | OSV-Scanner | Apache-2.0; lockfile/transitive vulnerability scan | JSON | Runtime-impacting HIGH/CRITICAL findings block pending triage |
 | Trivy | Apache-2.0; filesystem, dependency, secret and config scan | JSON/SARIF | HIGH/CRITICAL findings require triage |
 | Gitleaks | MIT; history and release artifact secret scan | JSON/log | Any credible secret blocks release and requires rotation/removal |
-| Checkov | Apache-2.0; GitHub Actions/Compose configuration checks | JSON | Confirmed security findings require remediation or narrow review |
+| Checkov | Apache-2.0; GitHub Actions configuration checks (Compose is covered by Trivy configuration scanning) | JSON | Confirmed security findings require remediation or narrow review |
 | OWASP ZAP | Apache-2.0; isolated baseline web scan | HTML/JSON | Manual, isolated-only; never scans production |
 | OpenSSF Scorecard | Apache-2.0; repository practice assessment | GitHub workflow artifact | Weekly visibility and remediation tracking |
 
