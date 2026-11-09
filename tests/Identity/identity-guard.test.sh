@@ -38,6 +38,7 @@ mkdir "$tmp/bin"
 cat > "$tmp/bin/gh" <<'MOCK'
 #!/usr/bin/env bash
 printf '%s\n' "${MOCK_VERIFIED:-false}"
+exit "${MOCK_STATUS:-0}"
 MOCK
 chmod +x "$tmp/bin/gh"
 export PATH="$tmp/bin:$PATH"
@@ -46,6 +47,9 @@ if MOCK_VERIFIED=false "$root/bin/check-git-identity.sh" --commit-range "$base..
     echo 'Unverified web merge was accepted.' >&2; exit 1
 fi
 MOCK_VERIFIED=true "$root/bin/check-git-identity.sh" --commit-range "$base..HEAD"
+if MOCK_VERIFIED=true MOCK_STATUS=1 "$root/bin/check-git-identity.sh" --commit-range "$base..HEAD"; then
+    echo 'Failed API request was accepted.' >&2; exit 1
+fi
 if MOCK_VERIFIED=true RLI_GITHUB_REPOSITORY=attacker/repo "$root/bin/check-git-identity.sh" --commit-range "$base..HEAD"; then
     echo 'Untrusted repository was accepted.' >&2; exit 1
 fi

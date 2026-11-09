@@ -63,12 +63,13 @@ check_current() {
 # GitHub web merges use the account display name, independently of local Git identity.
 # Only accept that name on an API-verified, GitHub-signed two-parent merge.
 verified_web_merge() {
-    local commit=$1
+    local commit=$1 verified
     [[ ${RLI_GITHUB_REPOSITORY:-} == meramsey/ramsey-labels ]] || return 1
     [[ $(git show -s --format='%P' "$commit" | wc -w) -eq 2 ]] || return 1
     [[ $(git show -s --format='%cn <%ce>' "$commit") == 'GitHub <noreply@github.com>' ]] || return 1
-    [[ $(gh api "repos/$RLI_GITHUB_REPOSITORY/commits/$commit" --jq \
-        '.commit.verification.verified and .commit.verification.reason == "valid" and .committer.login == "web-flow" and (.parents | length) == 2') == true ]]
+    verified=$(gh api "repos/$RLI_GITHUB_REPOSITORY/commits/$commit" --jq \
+        '.commit.verification.verified and .commit.verification.reason == "valid" and .committer.login == "web-flow" and (.parents | length) == 2') || return 1
+    [[ "$verified" == true ]]
 }
 
 check_range() {
