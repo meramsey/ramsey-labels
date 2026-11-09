@@ -48,3 +48,19 @@ docker run --rm -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks:v8.30.0 git /repo -
 See `docs/security-scanning.md` for Semgrep, OSV, Trivy, Checkov, ZAP, CodeQL, and Scorecard
 scope; see `docs/sbom.md` to validate generated CycloneDX/SPDX runtime SBOMs. Do not scan
 production endpoints, customer data, or WCPOS with the supplied workflows.
+
+## GitHub merge identity and CI evidence
+
+Local commits must use the verified global identity, Michael Ramsey <mike@hackerdise.me>.
+GitHub web merges use the account display name. The history guard permits `Mik Ram`
+only for a two-parent merge committed by GitHub, with a valid signature verified by
+GitHub's commits API and the `web-flow` committer in `meramsey/ramsey-labels`.
+Set `RLI_GITHUB_REPOSITORY=meramsey/ramsey-labels` when checking or pushing history
+containing those merges from an authenticated `gh` shell. API errors fail closed.
+Neither local commit checks nor retired-identity checks are relaxed.
+
+Multisite uses Playwright's installed Chromium unless `CHROME_PATH` is explicitly set.
+`MULTISITE_PORT` and `COMPOSE_PROJECT_NAME` allow an isolated local fixture; `WP_IMAGE`
+and `CLI_IMAGE` select the PHP matrix images. Browser failures are printed and saved,
+with screenshots/traces retained. CI uploads build/test evidence for each PHP matrix
+entry even on failure, and lets both matrix entries finish independently.

@@ -13,8 +13,8 @@ services:
       interval: 3s
       retries: 40
   wordpress:
-    image: wordpress:7.1.4-php8.3-apache
-    ports: ["127.0.0.1:18890:80"]
+    image: ${WP_IMAGE:-wordpress:7.1.4-php8.3-apache}
+    ports: ["127.0.0.1:${MULTISITE_PORT:-18890}:80"]
     environment: &network_env
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: labels_network
@@ -25,7 +25,7 @@ services:
     depends_on:
       db: {condition: service_healthy}
   cli:
-    image: wordpress:cli-2.12.0-php8.3
+    image: ${CLI_IMAGE:-wordpress:cli-2.12.0-php8.3}
     user: "33:33"
     environment: *network_env
     volumes: ["network_wordpress:/var/www/html", "./:/var/www/html/wp-content/plugins/ramsey-labels-independent:ro"]
