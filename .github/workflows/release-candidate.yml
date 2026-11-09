@@ -14,7 +14,7 @@ jobs:
         with: {persist-credentials: false}
       - run: python3 bin/build.py
       - run: python3 bin/build-public.py
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: reviewed-candidate-${{ github.sha }}
           path: |
