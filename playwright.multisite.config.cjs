@@ -7,9 +7,11 @@ module.exports = defineConfig({
     use: {
         baseURL: 'http://127.0.0.1:' + (process.env.TEST_PORT || '18890'),
         headless: true,
+        screenshot: 'only-on-failure',
+        trace: 'retain-on-failure',
         browserName: 'chromium',
         launchOptions: {
-            executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome',
+            executablePath: process.env.CHROME_PATH,
             args: ['--no-sandbox'],
         },
     },

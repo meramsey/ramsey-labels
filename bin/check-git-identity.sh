@@ -60,14 +60,33 @@ check_current() {
     }
 }
 
+# GitHub web merges use the account display name, independently of local Git identity.
+# Only accept that name on an API-verified, GitHub-signed two-parent merge.
+verified_web_merge() {
+    local commit=$1 verified
+    [[ ${RLI_GITHUB_REPOSITORY:-} == meramsey/ramsey-labels ]] || return 1
+    [[ $(git show -s --format='%P' "$commit" | wc -w) -eq 2 ]] || return 1
+    [[ $(git show -s --format='%cn <%ce>' "$commit") == 'GitHub <noreply@github.com>' ]] || return 1
+    verified=$(gh api "repos/$RLI_GITHUB_REPOSITORY/commits/$commit" --jq \
+        '.commit.verification.verified and .commit.verification.reason == "valid" and .committer.login == "web-flow" and (.parents | length) == 2') || return 1
+    [[ "$verified" == true ]]
+}
+
 check_range() {
     local range=$1 commit author_name author_email committer_name committer_email
+    local commits
+    commits=$(git rev-list "$range") || return
     while IFS= read -r commit; do
+        [[ -n "$commit" ]] || continue
         IFS=$'\t' read -r author_name author_email < <(parse_ident "$(git show -s --format='%an <%ae>' "$commit")")
         IFS=$'\t' read -r committer_name committer_email < <(parse_ident "$(git show -s --format='%cn <%ce>' "$commit")")
-        reject_known_bad author "$author_name" "$author_email" "$commit"
+        if [[ "$author_name" == 'Mik Ram' && "$author_email" == "$expected_email" ]] && verified_web_merge "$commit"; then
+            printf 'Identity guard: verified GitHub web merge %s.\n' "$commit"
+        else
+            reject_known_bad author "$author_name" "$author_email" "$commit"
+        fi
         reject_known_bad committer "$committer_name" "$committer_email" "$commit"
-    done < <(git rev-list "$range")
+    done <<< "$commits"
 }
 
 case ${1:-} in

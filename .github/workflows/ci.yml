@@ -19,6 +19,8 @@ jobs:
       - run: npm test
       - name: Validate submitted commit identity history
         env:
+          GH_TOKEN: ${{ github.token }}
+          RLI_GITHUB_REPOSITORY: ${{ github.repository }}
           RLI_EXPECTED_GIT_NAME: Michael Ramsey
           RLI_EXPECTED_GIT_EMAIL: mike@hackerdise.me
           RLI_IDENTITY_RANGE: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -44,6 +46,7 @@ jobs:
   integration-browser-package:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - php: '8.3'
@@ -99,6 +102,16 @@ jobs:
           python3 bin/build-public.py
           cmp build/public-first.sha256 build/public/*.zip.sha256
           bash bin/check-public-migration.sh
+      - name: Preserve integration and browser evidence
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: integration-evidence-php-${{ matrix.php }}
+          path: |
+            build/
+            test-results/
+          if-no-files-found: error
+          retention-days: 14
       - if: always()
         run: |
           docker compose stop || true
