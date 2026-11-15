@@ -35,7 +35,7 @@ jobs:
           mkdir -p build/release/reports
           docker run --rm -v "$PWD/build:/build:ro" -v "$PWD/build/release/reports:/reports" aquasec/trivy@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb \
             fs --format json --output /reports/trivy-release.json /build
-      - uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8
         with:
           subject-path: |
             build/ramsey-labels-independent-*.zip
