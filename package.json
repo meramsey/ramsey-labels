@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "@axe-core/playwright": "4.11.0",
-        "@playwright/test": "1.65.0",
+        "@playwright/test": "1.65.1",
         "@undecaf/zbar-wasm": "0.11.0",
         "eslint": "10.14.0",
         "espree": "11.2.0",
